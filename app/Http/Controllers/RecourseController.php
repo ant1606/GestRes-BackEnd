@@ -40,7 +40,8 @@ class RecourseController extends ApiController
             "comment" => $commentAutogenerate
         ]);
 
-        // $recourse->tags()->attach($request->tags);
+        // dd($request->tags);
+        $recourse->tags()->syncWithoutDetaching($request->tags);
 
         return $this->showOne($recourse, Response::HTTP_CREATED);
     }

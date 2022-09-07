@@ -92,8 +92,6 @@ class RegistrationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-
-        //TODO Agregar etiquetas al recurso
         $tags = Tag::factory(5)->create();
 
         $selectedTags = $tags->pluck('id')->random(3);
@@ -141,7 +139,7 @@ class RegistrationTest extends TestCase
             "comment" => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA",
         ]);
 
-        $tags->each(function ($item, $key) {
+        $selectedTags->each(function ($item, $key) {
             $this->assertDatabaseHas('taggables', [
                 "tag_id" => $item,
                 "taggable_id" => 1,
