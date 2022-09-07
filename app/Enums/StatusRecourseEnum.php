@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum StatusResourceEnum: string
+enum StatusRecourseEnum: string
 {
   case STATUS_REGISTRADO = 'REGISTRADO';
   case STATUS_POREMPEZAR = 'POR EMPEZAR';
