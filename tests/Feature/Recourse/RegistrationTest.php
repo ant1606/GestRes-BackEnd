@@ -10,55 +10,49 @@ use App\Models\Settings;
 use App\Enums\TypeRecourseEnum;
 use App\Enums\StatusRecourseEnum;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Recourse\RecourseDataTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
-
-    //TODO Hacer un caso donde se verifique el registro correcto del recurso mediante Transactions
+    use RecourseDataTrait;
 
     //TODO Hacer test de las reglas de validacion
+
     /** @test */
     public function recourses_can_be_register_with_minimul_values()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         /* Given */
-        //Creamos un objeto de tipo Recourse con sus datos
-        $recourse = [
-            "name" => 'Nombre de mi recurso',
-            "source" => 'D://micarpeta/misvideos/micurso',
-            "author" => null,
-            "editorial" => null,
-            "type_id" => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-            "total_pages" => null,
-            "total_chapters" => null,
-            "total_videos" => 150,
-            "total_hours" => "15:30:12"
-        ];
+        $recourse = $this->recourseValidData([
+            'author' => null,
+            'editorial' => null,
+        ]);
 
         $response = $this->postJson(route('recourse.store'), $recourse);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertDatabaseHas('recourses', [
-            "name" => 'Nombre de mi recurso',
-            "source" => 'D://micarpeta/misvideos/micurso',
-            "author" => null,
-            "editorial" => null,
-            "type_id" => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-            "total_pages" => null,
-            "total_chapters" => null,
-            "total_videos" => 150,
-            "total_hours" => "15:30:12"
+            "name" => $recourse['name'],
+            "source" => $recourse['source'],
+            "author" => $recourse['author'],
+            "editorial" => $recourse['editorial'],
+            "type_id" => $recourse['type_id'],
+            "total_pages" => $recourse['total_pages'],
+            "total_chapters" => $recourse['total_chapters'],
+            "total_videos" => $recourse['total_videos'],
+            "total_hours" => $recourse['total_hours'],
         ]);
 
         $this->assertDatabaseHas('progress_histories', [
             "recourse_id" => 1,
             "done" => 0,
-            "pending" => 150,
+            "pending" => Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?
+                $recourse['total_pages'] : $recourse['total_videos'],
             // "date" => Carbon::now(),
             "comment" => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA",
         ]);
@@ -72,15 +66,15 @@ class RegistrationTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                "name" => 'Nombre de mi recurso',
-                "source" => 'D://micarpeta/misvideos/micurso',
-                "author" => null,
-                "editorial" => null,
-                "type_id" => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-                "total_videos" => 150,
-                "total_hours" => "15:30:12",
-                "total_pages" => null,
-                "total_chapters" => null,
+                "name" => $recourse['name'],
+                "source" => $recourse['source'],
+                "author" => $recourse['author'],
+                "editorial" => $recourse['editorial'],
+                "type_id" => $recourse['type_id'],
+                "total_pages" => $recourse['total_pages'],
+                "total_chapters" => $recourse['total_chapters'],
+                "total_videos" => $recourse['total_videos'],
+                "total_hours" => $recourse['total_hours'],
                 // "id" => $recourse->id
             ]
         ]);
@@ -89,44 +83,32 @@ class RegistrationTest extends TestCase
     /** @test */
     public function recourses_can_be_register_with_all_values()
     {
-        $this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $tags = Tag::factory(5)->create();
-
         $selectedTags = $tags->pluck('id')->random(3);
-        $recourse = [
-            "name" => 'Nombre de mi recurso',
-            "source" => 'D://micarpeta/misvideos/micurso',
-            "author" => "Pepe LUna",
-            "editorial" => "Mi editorial Nroam",
-            "type_id" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-            "total_pages" => 250,
-            "total_chapters" => 10,
-            "total_videos" => null,
-            "total_hours" => null,
-            "tags" => $selectedTags,
-        ];
+        $recourse = $this->recourseValidData(["tags" => $selectedTags,]);
 
         $response = $this->postJson(route('recourse.store'), $recourse);
 
         $response->assertStatus(Response::HTTP_CREATED);
-
         $this->assertDatabaseHas('recourses', [
-            "name" => 'Nombre de mi recurso',
-            "source" => 'D://micarpeta/misvideos/micurso',
-            "author" => "Pepe LUna",
-            "editorial" => "Mi editorial Nroam",
-            "type_id" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-            "total_pages" => 250,
-            "total_chapters" => 10,
-            "total_videos" => null,
-            "total_hours" => null
+            "name" => $recourse['name'],
+            "source" => $recourse['source'],
+            "author" => $recourse['author'],
+            "editorial" => $recourse['editorial'],
+            "type_id" => $recourse['type_id'],
+            "total_pages" => $recourse['total_pages'],
+            "total_chapters" => $recourse['total_chapters'],
+            "total_videos" => $recourse['total_videos'],
+            "total_hours" => $recourse['total_hours'],
         ]);
 
         $this->assertDatabaseHas('progress_histories', [
             "Recourse_id" => 1,
             "done" => 0,
-            "pending" => 250,
+            "pending" => Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?
+                $recourse['total_pages'] : $recourse['total_videos'],
             // "date" => Carbon::now(),
             "comment" => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA",
         ]);
@@ -146,19 +128,17 @@ class RegistrationTest extends TestCase
             ]);
         });
 
-
         $response->assertJson([
             'data' => [
-                "name" => 'Nombre de mi recurso',
-                "source" => 'D://micarpeta/misvideos/micurso',
-                "author" => "Pepe LUna",
-                "editorial" => "Mi editorial Nroam",
-                "type_id" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                "total_pages" => 250,
-                "total_chapters" => 10,
-                "total_videos" => null,
-                "total_hours" => null
-                // "id" => $recourse->id
+                "name" => $recourse['name'],
+                "source" => $recourse['source'],
+                "author" => $recourse['author'],
+                "editorial" => $recourse['editorial'],
+                "type_id" => $recourse['type_id'],
+                "total_pages" => $recourse['total_pages'],
+                "total_chapters" => $recourse['total_chapters'],
+                "total_videos" => $recourse['total_videos'],
+                "total_hours" => $recourse['total_hours'],
             ]
         ]);
     }
@@ -172,18 +152,12 @@ class RegistrationTest extends TestCase
         $tags = Tag::factory(5)->create();
 
         $selectedTags = $tags->pluck('id')->random(3);
-        $recourse = [
+        $recourse = $this->recourseValidData([
             "name" => null,
             "source" => null,
-            "author" => "Pepe LUna",
-            "editorial" => "Mi editorial Nroam",
             "type_id" => null,
-            "total_pages" => 250,
-            "total_chapters" => 10,
-            "total_videos" => null,
-            "total_hours" => null,
             "tags" => $selectedTags,
-        ];
+        ]);
 
         $response = $this->postJson(route('recourse.store'), $recourse);
         // dd($response->exception->getMessage());
@@ -200,55 +174,26 @@ class RegistrationTest extends TestCase
             'error',
             'code'
         ]);
-
-        // $response->assertJson([
-        //     'data' => [
-        //         "name" => 'Nombre de mi recurso',
-        //         "source" => 'D://micarpeta/misvideos/micurso',
-        //         "author" => "Pepe LUna",
-        //         "editorial" => "Mi editorial Nroam",
-        //         "type_id" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-        //         "total_pages" => 250,
-        //         "total_chapters" => 10,
-        //         "total_videos" => null,
-        //         "total_hours" => null
-        //         // "id" => $recourse->id
-        //     ]
-        // ]);
     }
 
     /** @test */
     public function recourses_can_not_be_register_when_an_error_occurs_in_transaction()
     {
         $tags = Tag::factory(5)->create();
-
         //Enviamos incorrectamente la data de los tags, para ocasionar un error en la transaccion
         $selectedTags = $tags->pluck('name')->random(3);
 
-        $recourse = [
-            "name" => "mi Nombre",
-            "source" => "ABS",
-            "author" => "Pepe LUna",
-            "editorial" => "Mi editorial Nroam",
-            "type_id" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-            "total_pages" => 250,
-            "total_chapters" => 10,
-            "total_videos" => null,
-            "total_hours" => null,
+        $recourse = $this->recourseValidData([
             "tags" => $selectedTags,
-        ];
+        ]);
 
         $response = $this->postJson(route('recourse.store'), $recourse);
-        // dd($response->exception->getMessage());
-        // dd($response->exception->getCode());
-        // dd(gettype($response->exception));
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertDatabaseCount('recourses', 0);
         $this->assertDatabaseCount('progress_histories', 0);
         $this->assertDatabaseCount('status_histories', 0);
         $this->assertDatabaseCount('taggables', 0);
-
         $response->assertJsonStructure([
             'error',
             'code'

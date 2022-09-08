@@ -20,9 +20,6 @@ class RecourseController extends ApiController
 {
     public function store(RecoursePostRequest $request)
     {
-        // dd($request->all());
-
-
         $dateHistoryCreation = Carbon::now();
         $commentAutogenerate = "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA";
 
@@ -34,7 +31,9 @@ class RecourseController extends ApiController
             ProgressHistory::create([
                 "Recourse_id" => $recourse->id,
                 "done" => 0,
-                "pending" => $recourse->total_videos ? $recourse->total_videos : $recourse->total_pages,
+                "pending" =>
+                Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?
+                    $recourse->total_pages : $recourse->total_videos,
                 "date" => $dateHistoryCreation,
                 "comment" => $commentAutogenerate
             ]);
@@ -46,11 +45,11 @@ class RecourseController extends ApiController
                 "comment" => $commentAutogenerate
             ]);
 
-            // dd($request->tags);
             $recourse->tags()->syncWithoutDetaching($request->tags);
 
             DB::commit();
 
+            // dd($recourse);
             return $this->showOne($recourse, Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
