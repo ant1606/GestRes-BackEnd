@@ -20,7 +20,7 @@ class RegistrationTest extends TestCase
     //TODO Hacer un caso donde se verifique el registro correcto del recurso mediante Transactions
     //TODO Hacer un caso donde se verifique que no se registro nada si es que ocurrio un error durante el registro de
     //     recurso o HistorialdeProgreso o historialdeEstado
-
+    //TODO Hacer test de las reglas de validacion
     /** @test */
     public function recourses_can_be_register_with_minimul_values()
     {
@@ -112,7 +112,7 @@ class RegistrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->assertDatabaseHas('Recourses', [
+        $this->assertDatabaseHas('recourses', [
             "name" => 'Nombre de mi recurso',
             "source" => 'D://micarpeta/misvideos/micurso',
             "author" => "Pepe LUna",
@@ -162,5 +162,59 @@ class RegistrationTest extends TestCase
                 // "id" => $recourse->id
             ]
         ]);
+    }
+
+    /** @test */
+    public function recourses_can_not_be_register_without_required_values()
+    {
+        // $this->withoutExceptionHandling();
+        // $this->withExceptionHandling();
+
+        $tags = Tag::factory(5)->create();
+
+        $selectedTags = $tags->pluck('id')->random(3);
+        $recourse = [
+            "name" => null,
+            "source" => null,
+            "author" => "Pepe LUna",
+            "editorial" => "Mi editorial Nroam",
+            "type_id" => null,
+            "total_pages" => 250,
+            "total_chapters" => 10,
+            "total_videos" => null,
+            "total_hours" => null,
+            "tags" => $selectedTags,
+        ];
+
+        $response = $this->postJson(route('recourse.store'), $recourse);
+        // dd($response->exception->getMessage());
+        // dd($response->exception->getCode());
+        // dd(gettype($response->exception));
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertDatabaseCount('recourses', 0);
+        $this->assertDatabaseCount('progress_histories', 0);
+        $this->assertDatabaseCount('status_histories', 0);
+        $this->assertDatabaseCount('taggables', 0);
+
+        $response->assertJsonStructure([
+            'error',
+            'code'
+        ]);
+
+        // $response->assertJson([
+        //     'data' => [
+        //         "name" => 'Nombre de mi recurso',
+        //         "source" => 'D://micarpeta/misvideos/micurso',
+        //         "author" => "Pepe LUna",
+        //         "editorial" => "Mi editorial Nroam",
+        //         "type_id" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+        //         "total_pages" => 250,
+        //         "total_chapters" => 10,
+        //         "total_videos" => null,
+        //         "total_hours" => null
+        //         // "id" => $recourse->id
+        //     ]
+        // ]);
     }
 }
