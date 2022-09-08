@@ -2,11 +2,16 @@
 
 namespace App\Exceptions;
 
+use App\Traits\ApiResponser;
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponser;
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -43,8 +48,33 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        // $this->reportable(function (Throwable $e) {
+        //     dd($e);
+        // });
+
+        // $this->renderable(function (Throwable $e) {
+        //     // dd($e);
+        // });
+
+        $this->renderable(function (Exception $exception, $request) {
+
+
+
+            // dd($request);
+            if ($request->is('api/*')) {
+
+                if ($exception instanceof ValidationException) {
+                    return $this->errorResponse(
+                        $exception->validator->errors()->getMessages(),
+                        Response::HTTP_UNPROCESSABLE_ENTITY
+                    );
+                }
+            }
         });
     }
+
+    // private function isFrontend($request)
+    // {
+    //     return $request->acceptsHtml() &&  collect($request->route()->middleware())->contains('web');
+    // }
 }
