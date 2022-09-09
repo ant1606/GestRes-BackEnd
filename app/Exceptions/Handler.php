@@ -2,12 +2,13 @@
 
 namespace App\Exceptions;
 
-use App\Traits\ApiResponser;
 use Exception;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
+use App\Traits\ApiResponser;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -58,9 +59,10 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (Exception $exception, $request) {
 
+            // dd($request->is('api/*'));
+            // dd($exception instanceof NotFoundHttpException);
+            // dd(get_class($exception));
 
-
-            // dd($request);
             if ($request->is('api/*')) {
 
                 if ($exception instanceof ValidationException) {
@@ -68,6 +70,10 @@ class Handler extends ExceptionHandler
                         $exception->validator->errors()->getMessages(),
                         Response::HTTP_UNPROCESSABLE_ENTITY
                     );
+                }
+                //Usado cuando un usuario intenta acceder a una ruta no existente (404)
+                if ($exception instanceof NotFoundHttpException) {
+                    return $this->errorResponse("No se encontró la URL especificada", 404);
                 }
             }
         });

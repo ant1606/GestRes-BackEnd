@@ -16,14 +16,15 @@ trait RecourseDataTrait
       TypeRecourseEnum::TYPE_VIDEO->name => 1
     ]);
 
+
     $total_pages = $total_chapters = $total_videos = $total_hours = null;
 
-    if ($typeName === TypeRecourseEnum::TYPE_LIBRO->name) {
+    if ($typeName == TypeRecourseEnum::TYPE_LIBRO->name) {
       $total_pages = 150;
       $total_chapters = 20;
     }
 
-    if ($typeName === TypeRecourseEnum::TYPE_VIDEO->name) {
+    if ($typeName == TypeRecourseEnum::TYPE_VIDEO->name) {
       $total_videos = 50;
       $total_hours = "15:20:13";
     }

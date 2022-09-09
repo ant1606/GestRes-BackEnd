@@ -19,8 +19,6 @@ class RegistrationTest extends TestCase
     use RefreshDatabase;
     use RecourseDataTrait;
 
-    //TODO Hacer test de las reglas de validacion
-
     /** @test */
     public function recourses_can_be_register_with_minimul_values()
     {
