@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('status_histories', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('Recourse_id');
+            $table->unsignedBigInteger('recourse_id');
             $table->unsignedBigInteger('status_id');
             $table->date('date');
             $table->string('comment', 100)->nullable();
 
-            $table->foreign('Recourse_id')->references('id')->on('Recourses');
+            $table->foreign('recourse_id')->references('id')->on('recourses');
             $table->foreign('status_id')->references('id')->on('settings');
 
             $table->timestamps();

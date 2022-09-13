@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\StatusHistory;
+use App\Models\Recourse;
 use Illuminate\Http\Request;
+use App\Models\StatusHistory;
+use Symfony\Component\HttpFoundation\Response;
 
-class StatusHistoryController extends Controller
+class StatusHistoryController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -23,9 +25,15 @@ class StatusHistoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Recourse $recourse, Request $request)
     {
-        //
+        $status = StatusHistory::create([
+            'recourse_id' => $recourse->id,
+            'status_id' => $request->status_id,
+            'date' => $request->date,
+            'comment' => $request->comment
+        ]);
+        return $this->showOne($status, Response::HTTP_CREATED);
     }
 
     /**

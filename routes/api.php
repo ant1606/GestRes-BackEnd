@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecourseController;
+use App\Http\Controllers\StatusHistoryController;
+use App\Models\StatusHistory;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +21,5 @@ use App\Http\Controllers\RecourseController;
 //     return $request->user();
 // });
 Route::post('recourse', [RecourseController::class, 'store'])->name('recourse.store');
+
+Route::post('recourse/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');

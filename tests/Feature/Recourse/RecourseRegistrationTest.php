@@ -14,7 +14,7 @@ use Tests\Feature\Recourse\RecourseDataTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class RegistrationTest extends TestCase
+class RecourseRegistrationTest extends TestCase
 {
     use RefreshDatabase;
     use RecourseDataTrait;

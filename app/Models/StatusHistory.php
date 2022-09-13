@@ -10,7 +10,7 @@ class StatusHistory extends Model
     use HasFactory;
 
     protected $fillable = [
-        "Recourse_id",
+        "recourse_id",
         "status_id",
         "date",
         "comment",

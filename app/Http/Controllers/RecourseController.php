@@ -20,7 +20,7 @@ class RecourseController extends ApiController
 {
     public function store(RecoursePostRequest $request)
     {
-        $dateHistoryCreation = Carbon::now();
+        $dateHistoryCreation = Carbon::now()->toDateString();
         $commentAutogenerate = "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA";
 
         try {
@@ -39,7 +39,7 @@ class RecourseController extends ApiController
             ]);
 
             StatusHistory::create([
-                "Recourse_id" => $recourse->id,
+                "recourse_id" => $recourse->id,
                 "status_id" => Settings::getData(StatusRecourseEnum::STATUS_REGISTRADO->name, "id"),
                 "date" => $dateHistoryCreation,
                 "comment" => $commentAutogenerate

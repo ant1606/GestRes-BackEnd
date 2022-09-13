@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Enums\TypeRecourseEnum;
+use App\Models\Recourse;
 use App\Models\Settings;
+use App\Models\StatusHistory;
+use App\Enums\TypeRecourseEnum;
+use App\Enums\StatusRecourseEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +22,7 @@ class RecourseFactory extends Factory
      */
     public function definition()
     {
+        //TODO terminar de completar el factory con todos los datos 
         return [
             'name' => $this->faker->words($this->faker->numberBetween(5, 15), true),
             'source' => $this->faker->url(),
@@ -26,5 +31,17 @@ class RecourseFactory extends Factory
                 Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
             ]),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Recourse $recourse) {
+            StatusHistory::factory()->create([
+                'recourse_id' => $recourse->id,
+                'status_id' => Settings::getData(StatusRecourseEnum::STATUS_REGISTRADO->name, "id"),
+                'date' => Carbon::now()->toDateString(),
+                'comment' => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA"
+            ]);
+        });
     }
 }

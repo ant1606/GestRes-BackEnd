@@ -17,6 +17,13 @@ trait ApiResponser
     return response()->json(['error' => $message, 'code' => $code], $code);
   }
 
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param  Illuminate\Database\Eloquent\Model  $instance
+   * @param  Symfony\Component\HttpFoundation\Response  $code
+   * @return Json
+   */
   protected function showOne(Model $instance, $code)
   {
     return $this->successResponse(['data' => $instance], $code);
