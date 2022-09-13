@@ -25,7 +25,7 @@ class StatusHistoryFactory extends Factory
             'recourse_id' => function () {
                 return Recourse::factory()->create();
             },
-            'status_id' => $this->faker->randomElements([
+            'status_id' => $this->faker->randomElement([
                 Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
                 Settings::getData(StatusRecourseEnum::STATUS_ENPROCESO->name, "id"),
                 Settings::getData(StatusRecourseEnum::STATUS_CULMINADO->name, "id"),

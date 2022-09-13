@@ -41,4 +41,24 @@ class StatusRegistrationTest extends TestCase
 
         $this->assertDatabaseCount('status_histories', 2);
     }
+
+    /** @test */
+    public function a_status_can_not_be_register_with_a_invalid_date()
+    {
+        $this->withoutExceptionHandling();
+        $recourse = Recourse::factory()->create();
+
+        $date = Carbon::now()->subDays(15);
+        $status = [
+            'status_id' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+            'date' => $date,
+            'comment' => 'Curso a punto de empezar'
+        ];
+
+        $response = $this->postJson(route('status.store', $recourse->id), $status);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertDatabaseCount('status_histories', 1);
+    }
 }

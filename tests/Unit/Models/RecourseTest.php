@@ -16,7 +16,7 @@ class RecourseTest extends TestCase
     /** @test */
     public function a_recourse_has_many_tags()
     {
-        $this->withExceptionHandling();
+        // $this->withExceptionHandling();
 
         $recourse = Recourse::factory()->create();
         $tags = Tag::factory(3)->create();

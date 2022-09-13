@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Recourse;
 use Illuminate\Http\Request;
 use App\Models\StatusHistory;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
 class StatusHistoryController extends ApiController
@@ -27,6 +28,13 @@ class StatusHistoryController extends ApiController
      */
     public function store(Recourse $recourse, Request $request)
     {
+        //TODO ver si la validacion de la fecha se puede realizar en un formRequest
+        $lastStatus = $recourse->status->last();
+
+        // dd(Carbon::create($request->date)->diffInDays(Carbon::create($lastStatus->date)));
+        if ($request->date < $lastStatus->date)
+            return $this->errorResponse("La fecha ingresada no es correcta", Response::HTTP_UNPROCESSABLE_ENTITY);
+
         $status = StatusHistory::create([
             'recourse_id' => $recourse->id,
             'status_id' => $request->status_id,
