@@ -31,4 +31,9 @@ class Recourse extends Model
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
+
+    public function status()
+    {
+        return $this->hasMany(StatusHistory::class);
+    }
 }
