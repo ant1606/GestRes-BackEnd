@@ -22,7 +22,7 @@ class RecourseRegistrationTest extends TestCase
     /** @test */
     public function recourses_can_be_register_with_minimul_values()
     {
-        $this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         /* Given */
         $recourse = $this->recourseValidData([

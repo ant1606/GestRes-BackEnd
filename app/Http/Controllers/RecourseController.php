@@ -29,7 +29,7 @@ class RecourseController extends ApiController
             $recourse = Recourse::create($request->all());
 
             ProgressHistory::create([
-                "Recourse_id" => $recourse->id,
+                "recourse_id" => $recourse->id,
                 "done" => 0,
                 "pending" =>
                 Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?

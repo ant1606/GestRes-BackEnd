@@ -36,4 +36,9 @@ class Recourse extends Model
     {
         return $this->hasMany(StatusHistory::class);
     }
+
+    public function progress()
+    {
+        return $this->hasMany(ProgressHistory::class);
+    }
 }

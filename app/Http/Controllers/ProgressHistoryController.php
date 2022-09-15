@@ -6,6 +6,7 @@ use App\Models\Recourse;
 use Illuminate\Http\Request;
 use App\Models\ProgressHistory;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\ProgressHistoryStoreRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProgressHistoryController extends ApiController
@@ -26,8 +27,14 @@ class ProgressHistoryController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Recourse $recourse, Request $request)
+    public function store(Recourse $recourse, ProgressHistoryStoreRequest $request)
     {
+        //TODO Hacer Test UNitario de las relaciones entre ProgressHistory y Recourse
+        $lastProgress = $recourse->progress->last();
+
+        if ($request->date < $lastProgress->date)
+            return $this->errorResponse("La fecha ingresada es menor al último registro existente.", Response::HTTP_UNPROCESSABLE_ENTITY);
+
         $progress = ProgressHistory::create([
             'recourse_id' => $recourse->id,
             'done' => $request->done,
