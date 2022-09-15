@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('progress_histories', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('Recourse_id');
+            $table->unsignedBigInteger('recourse_id');
             $table->unsignedInteger('done');
             $table->unsignedInteger('pending');
             $table->date('date');
             $table->string('comment', 100)->nullable();
 
-            $table->foreign('Recourse_id')->references('id')->on('Recourses');
+            $table->foreign('recourse_id')->references('id')->on('recourses');
 
             $table->timestamps();
         });

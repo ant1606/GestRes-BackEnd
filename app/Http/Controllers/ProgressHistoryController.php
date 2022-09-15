@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProgressHistory;
+use App\Models\Recourse;
 use Illuminate\Http\Request;
+use App\Models\ProgressHistory;
+use App\Http\Controllers\ApiController;
+use Symfony\Component\HttpFoundation\Response;
 
-class ProgressHistoryController extends Controller
+class ProgressHistoryController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -23,9 +26,17 @@ class ProgressHistoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Recourse $recourse, Request $request)
     {
-        //
+        $progress = ProgressHistory::create([
+            'recourse_id' => $recourse->id,
+            'done' => $request->done,
+            'pending' => $request->pending,
+            'date' => $request->date,
+            'comment' => $request->comment,
+        ]);
+
+        return $this->showOne($progress, Response::HTTP_CREATED);
     }
 
     /**

@@ -10,7 +10,7 @@ class ProgressHistory extends Model
     use HasFactory;
 
     protected $fillable = [
-        "Recourse_id",
+        "recourse_id",
         "done",
         "pending",
         "date",

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProgressHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecourseController;
@@ -23,3 +24,4 @@ use App\Models\StatusHistory;
 Route::post('recourse', [RecourseController::class, 'store'])->name('recourse.store');
 
 Route::post('recourse/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
+Route::post('recourse/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
