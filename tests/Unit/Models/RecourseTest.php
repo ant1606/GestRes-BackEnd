@@ -2,9 +2,11 @@
 
 namespace Tests\Unit\Models;
 
+use App\Models\ProgressHistory;
 use App\Models\Recourse;
 use App\Models\StatusHistory;
 use App\Models\Tag;
+use Database\Factories\ProgressHistoryFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 // use PHPUnit\Framework\TestCase;
@@ -38,5 +40,17 @@ class RecourseTest extends TestCase
         ]);
 
         $this->assertInstanceOf(StatusHistory::class, $recourse->status->first());
+    }
+
+    /** @test */
+    public function a_recourse_has_many_progress()
+    {
+        $recourse = Recourse::factory()->create();
+
+        ProgressHistory::factory()->create([
+            'recourse_id' => $recourse->id
+        ]);
+
+        $this->assertInstanceOf(ProgressHistory::class, $recourse->progress->first());
     }
 }

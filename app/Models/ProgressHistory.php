@@ -16,4 +16,9 @@ class ProgressHistory extends Model
         "date",
         "comment",
     ];
+
+    public function recourse()
+    {
+        return $this->belongsTo(Recourse::class);
+    }
 }

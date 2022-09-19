@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
+use App\Models\Recourse;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,13 @@ class ProgressHistoryFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'recourse_id' => function () {
+                return Recourse::factory()->create();
+            },
+            'done' => $this->faker->numberBetween(10, 20),
+            'pending' => $this->faker->numberBetween(21, 40),
+            'date' => Carbon::now()->toDateString(),
+            'comment' => "",
         ];
     }
 }

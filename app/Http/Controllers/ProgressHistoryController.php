@@ -29,7 +29,6 @@ class ProgressHistoryController extends ApiController
      */
     public function store(Recourse $recourse, ProgressHistoryStoreRequest $request)
     {
-        //TODO Hacer Test UNitario de las relaciones entre ProgressHistory y Recourse
         $lastProgress = $recourse->progress->last();
 
         if ($request->date < $lastProgress->date)

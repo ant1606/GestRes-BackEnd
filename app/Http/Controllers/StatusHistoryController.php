@@ -28,10 +28,11 @@ class StatusHistoryController extends ApiController
      */
     public function store(Recourse $recourse, Request $request)
     {
-        //TODO ver si la validacion de la fecha se puede realizar en un formRequest
+        /*TODO ver si la validacion de la fecha se puede realizar en un formRequest
+        ver esta documentacion https://stackoverflow.com/questions/20953525/laravel-4-validation-afterdate-get-date-from-database
+         */
         $lastStatus = $recourse->status->last();
 
-        // dd(Carbon::create($request->date)->diffInDays(Carbon::create($lastStatus->date)));
         if ($request->date < $lastStatus->date)
             return $this->errorResponse("La fecha ingresada no es correcta", Response::HTTP_UNPROCESSABLE_ENTITY);
 
