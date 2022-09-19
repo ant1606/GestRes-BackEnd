@@ -25,7 +25,9 @@ class ProgressHistoryStoreRequest extends FormRequest
     {
         return [
             "done" => 'required|numeric|min:1',
-            "pending" => 'required|numeric|min:0'
+            "pending" => 'required|numeric|min:0',
+            "date" => 'required|date',
+            "comment" => 'max:100'
         ];
     }
 
