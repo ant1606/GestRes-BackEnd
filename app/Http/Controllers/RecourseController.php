@@ -56,4 +56,23 @@ class RecourseController extends ApiController
             return $this->errorResponse($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
+    public function show($recourse)
+    {
+        //TODO si el recurso no tiene una relacion de Tags, falla la consulta
+        //   Method Illuminate\Database\Eloquent\Collection::tags does not exist.
+        // https://stackoverflow.com/questions/35054498/eager-load-relation-when-relation-doesnt-exist
+        // https://laracasts.com/discuss/channels/eloquent/eager-loading-when-relation-does-not-exist
+        // https://laravel.com/docs/9.x/eloquent-relationships#eager-loading
+        $recourse = Recourse::findOrFail($recourse)
+            ->with(['status', 'progress', 'tags'])
+            ->get()
+            // ->take(1)
+            ->first();
+
+        // dd($recourse);
+
+        // dd($this->showOne($recourse, Response::HTTP_OK));
+        return $this->showOne($recourse, Response::HTTP_OK);
+    }
 }

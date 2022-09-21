@@ -22,6 +22,7 @@ use App\Models\StatusHistory;
 //     return $request->user();
 // });
 Route::post('recourse', [RecourseController::class, 'store'])->name('recourse.store');
+Route::get('recourse/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
 
 Route::post('recourse/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
 Route::post('recourse/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');

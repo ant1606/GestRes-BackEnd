@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,6 +27,15 @@ class Recourse extends Model
         'created_at',
         'updated_at',
     ];
+
+    protected $appends = ['type_name'];
+
+    protected function typeName(): Attribute
+    {
+        return new Attribute(
+            get: fn () => Settings::getData(Settings::getKeyfromId($this->type_id), "value")
+        );
+    }
 
     public function tags()
     {

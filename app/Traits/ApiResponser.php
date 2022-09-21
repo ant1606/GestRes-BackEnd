@@ -24,7 +24,7 @@ trait ApiResponser
    * @param  Symfony\Component\HttpFoundation\Response  $code
    * @return Json
    */
-  protected function showOne(Model $instance, $code)
+  protected function showOne($instance, $code)
   {
     return $this->successResponse(['data' => $instance], $code);
   }

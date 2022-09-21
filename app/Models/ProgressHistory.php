@@ -17,6 +17,11 @@ class ProgressHistory extends Model
         "comment",
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     public function recourse()
     {
         return $this->belongsTo(Recourse::class);

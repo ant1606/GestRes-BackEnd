@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Throwable;
 use App\Traits\ApiResponser;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -73,7 +74,12 @@ class Handler extends ExceptionHandler
                 }
                 //Usado cuando un usuario intenta acceder a una ruta no existente (404)
                 if ($exception instanceof NotFoundHttpException) {
+                    // dd($exception);
                     return $this->errorResponse("No se encontró la URL especificada", 404);
+                }
+
+                if ($exception instanceof ModelNotFoundException) {
+                    return $this->errorResponse("No se encontraron resultados", 404);
                 }
             }
         });

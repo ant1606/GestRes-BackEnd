@@ -14,6 +14,11 @@ class Tag extends Model
         'style'
     ];
 
+    protected $hidden = [
+        'pivot'
+    ];
+
+    //TODO Definir como llenar el atributo style tanto en el proceso como en los factories 
     public function recourses()
     {
         return $this->morphedByMany(Recourse::class, 'taggable');
