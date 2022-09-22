@@ -21,8 +21,9 @@ use App\Models\StatusHistory;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::post('recourse', [RecourseController::class, 'store'])->name('recourse.store');
-Route::get('recourse/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
+Route::post('recourses', [RecourseController::class, 'store'])->name('recourse.store');
+Route::get('recourses/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
+Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
 
-Route::post('recourse/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
-Route::post('recourse/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
+Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
+Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');

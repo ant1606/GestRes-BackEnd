@@ -7,13 +7,16 @@ use App\Models\Recourse;
 
 
 use App\Models\Settings;
+use Illuminate\Http\Request;
 use App\Models\StatusHistory;
 use App\Enums\TypeRecourseEnum;
 use App\Models\ProgressHistory;
 use App\Enums\StatusRecourseEnum;
+use Illuminate\Support\Facades\DB;
+
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\RecoursePostRequest;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\RecourseUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class RecourseController extends ApiController
@@ -74,5 +77,32 @@ class RecourseController extends ApiController
 
         // dd($this->showOne($recourse, Response::HTTP_OK));
         return $this->showOne($recourse, Response::HTTP_OK);
+    }
+
+    public function update(Recourse $recourse, RecourseUpdateRequest $request)
+    {
+        $recourse->fill($request->only([
+            'name',
+            'source',
+            'author',
+            'editorial',
+            'type_id',
+            'total_pages',
+            'total_chapters',
+            'total_videos',
+            'total_hours',
+        ]));
+
+
+        if ($recourse->isClean()) {
+            return $this->errorResponse(
+                "Se debe especificar al menos un valor diferente para actualizar",
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $recourse->save();
+
+        return $this->showOne($recourse, Response::HTTP_ACCEPTED);
     }
 }
