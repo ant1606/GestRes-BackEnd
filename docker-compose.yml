@@ -47,6 +47,7 @@ services:
 networks:
     pygesres:
         driver: bridge
+        name: pygesres
 volumes:
     pygesres-mysql:
         driver: local
