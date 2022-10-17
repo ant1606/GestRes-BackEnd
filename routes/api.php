@@ -4,6 +4,7 @@ use App\Http\Controllers\ProgressHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecourseController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusHistoryController;
 use App\Models\StatusHistory;
 
@@ -27,3 +28,7 @@ Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name(
 
 Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
 Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
+
+Route::get('settings', [SettingsController::class, 'show'])->name('settings.show');
+
+//Crear ruta para enviar los datos de los settings

@@ -59,6 +59,17 @@ class Settings extends Model
         return $keySearch;
     }
 
+    protected static function reload_data_settings_to_cache()
+    {
+        Cache::forget('settings');
+
+        $settingsJson = self::transform_data_settings_to_json(Settings::all());
+
+        Cache::remember('settings', 60 * 10, function () use ($settingsJson) {
+            return $settingsJson;
+        });
+    }
+
     protected static function transform_data_settings_to_json(Collection $collection)
     {
         $res = $collection->mapWithKeys(function ($item, $key) {
@@ -71,16 +82,5 @@ class Settings extends Model
                 ];
         });
         return $res->toJson();
-    }
-
-    protected static function reload_data_settings_to_cache()
-    {
-        Cache::forget('settings');
-
-        $settingsJson = self::transform_data_settings_to_json(Settings::all());
-
-        Cache::remember('settings', 60 * 10, function () use ($settingsJson) {
-            return $settingsJson;
-        });
     }
 }

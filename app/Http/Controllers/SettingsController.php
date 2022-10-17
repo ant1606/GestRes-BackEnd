@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusRecourseEnum;
+use App\Enums\TypeRecourseEnum;
 use App\Models\Settings;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class SettingsController extends Controller
+use function PHPSTORM_META\map;
+
+class SettingsController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -34,9 +39,38 @@ class SettingsController extends Controller
      * @param  \App\Models\Settings  $settings
      * @return \Illuminate\Http\Response
      */
-    public function show(Settings $settings)
+    public function show(Request $request)
     {
-        //
+        // dd(Settings::getData("TYPE_LIBRO"));
+        // dd(collect(TypeRecourseEnum::cases()));
+
+        // dd($value);
+        $value = $request->value;
+        switch ($value) {
+            case 'type':
+                $typeEnum = TypeRecourseEnum::class;
+                break;
+            case 'status':
+                $typeEnum = StatusRecourseEnum::class;
+                break;
+            default:
+                $typeEnum = null;
+                break;
+        }
+
+        if ($typeEnum) {
+            // dd(Settings::getData("TYPE_LIBRO"));
+            // dd($typeEnum::cases());
+
+            // dd($res);
+            $res = collect($typeEnum::cases())->map(function ($case) {
+                return Settings::getData($case->name);
+            });
+
+            return $this->showAll($res, Response::HTTP_OK);
+        } else {
+            return $this->errorResponse("Error al procesar la data", Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     /**
