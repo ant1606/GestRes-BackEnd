@@ -45,7 +45,9 @@ class SettingsController extends ApiController
         // dd(collect(TypeRecourseEnum::cases()));
 
         // dd($value);
+        // dd($request->value);
         $value = $request->value;
+        // $value = "type";
         switch ($value) {
             case 'type':
                 $typeEnum = TypeRecourseEnum::class;

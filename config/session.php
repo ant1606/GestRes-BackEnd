@@ -128,7 +128,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+        Str::slug(env('APP_NAME', 'laravel'), '_') . '_session'
     ),
 
     /*
@@ -155,6 +155,7 @@ return [
     |
     */
 
+    // 'domain' => '172.25.0.4:5173',
     'domain' => env('SESSION_DOMAIN'),
 
     /*

@@ -21,7 +21,7 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - pygesres
+            - pygesres_net
         depends_on:
             - mysql
     mysql:
@@ -39,13 +39,13 @@ services:
             - 'pygesres-mysql:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
-            - pygesres
+            - pygesres_net
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
 networks:
-    pygesres:
+    pygesres_net:
         driver: bridge
         name: pygesres
 volumes:
