@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TagRequest;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -39,20 +40,14 @@ class TagController extends ApiController
         return $this->showAll($tags, Response::HTTP_ACCEPTED);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(TagRequest $request)
     {
         $validated = $request->validate([
             'name' => 'required|unique:tags|max:50',
         ]);
 
         $tag = Tag::create([
-            "name" => $request->name,
+            "name" => Str::headline($request->name),
             "style" => $request->style,
         ]);
 
