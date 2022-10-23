@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class TagController extends Controller
+class TagController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +26,16 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|unique:tags|max:50',
+        ]);
+
+        $tag = Tag::create([
+            "name" => $request->name,
+            "style" => $request->style,
+        ]);
+
+        return $this->showOne($tag, Response::HTTP_CREATED);
     }
 
     /**
