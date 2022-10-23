@@ -34,5 +34,6 @@ Route::middleware(['cors'])->group(function () {
   Route::post('settings', [SettingsController::class, 'show'])->name('settings.show');
 
   Route::post('tag', [TagController::class, 'store'])->name('tag.store');
+  Route::get('tag', [TagController::class, 'index'])->name('tag.index');
   //Crear ruta para enviar los datos de los settings
 });

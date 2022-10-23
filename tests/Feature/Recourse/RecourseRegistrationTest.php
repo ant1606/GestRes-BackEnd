@@ -168,6 +168,7 @@ class RecourseRegistrationTest extends TestCase
         $this->assertDatabaseCount('status_histories', 0);
         $this->assertDatabaseCount('taggables', 0);
 
+        dd($response->getContent());
         $response->assertJsonStructure([
             'error',
             'code'

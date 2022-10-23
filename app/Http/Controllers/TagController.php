@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Str;
+
+use function PHPUnit\Framework\isNull;
 
 class TagController extends ApiController
 {
@@ -13,9 +17,26 @@ class TagController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index(Request $request)
     {
-        //
+        if (isset($request->filter) && Str::length($request->filter) >= 1 && Str::length($request->filter) <= 2) {
+            return $this->errorResponse(
+                "El valor del filtro debe ser mayor a 2 caracteres.",
+                Response::HTTP_LENGTH_REQUIRED
+            );
+        }
+
+        $tags = Tag::where('name', 'like', '%' . $request->filter . '%')
+            ->get();
+
+        if ($tags->count() === 0)
+            return $this->errorResponse(
+                "No se encontraron resultados.",
+                Response::HTTP_ACCEPTED
+            );
+
+        return $this->showAll($tags, Response::HTTP_ACCEPTED);
     }
 
     /**

@@ -15,7 +15,9 @@ class Tag extends Model
     ];
 
     protected $hidden = [
-        'pivot'
+        'pivot',
+        'created_at',
+        'updated_at'
     ];
 
     //TODO Definir como llenar el atributo style tanto en el proceso como en los factories 
