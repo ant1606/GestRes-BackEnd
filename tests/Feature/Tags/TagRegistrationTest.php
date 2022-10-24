@@ -26,10 +26,11 @@ class TagRegistrationTest extends TestCase
         $response = $this->postJson(route("tag.store"), $tag);
 
         $response->assertStatus(Response::HTTP_CREATED);
-
+        // dd($response->getContent());
+        $this->assertDatabaseCount("tags", 1);
         $this->assertDatabaseHas("tags", [
-            "name" => "Etiqueta de prueba",
-            "style" => "bg-gray-700",
+            "name" => Str::upper($tag['name']),
+            "style" => $tag['style']
         ]);
     }
 
@@ -61,13 +62,16 @@ class TagRegistrationTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $tagDuplicated = [
-            "name" => Str::headline("mi etiqueta"),
+            "name" => Str::upper("mi etiqueta"),
             "style" => "bg-gray-700",
         ];
 
         Tag::factory()->create($tagDuplicated);
 
+        $this->assertDatabaseCount("tags", 1);
+
         $response = $this->postJson(route("tag.store"), $tagDuplicated);
+        // dd($response->getContent());
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -78,6 +82,9 @@ class TagRegistrationTest extends TestCase
 
         $this->assertDatabaseCount("tags", 1);
 
-        $this->assertDatabaseHas("tags", $tagDuplicated);
+        $this->assertDatabaseHas("tags", [
+            "name" => Str::upper($tagDuplicated['name']),
+            "style" => "bg-gray-700",
+        ]);
     }
 }

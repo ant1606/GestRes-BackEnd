@@ -21,14 +21,15 @@ class TagController extends ApiController
 
     public function index(Request $request)
     {
-        if (isset($request->filter) && Str::length($request->filter) >= 1 && Str::length($request->filter) <= 2) {
-            return $this->errorResponse(
-                "El valor del filtro debe ser mayor a 2 caracteres.",
-                Response::HTTP_LENGTH_REQUIRED
-            );
-        }
+        // if (isset($request->filter) && Str::length($request->filter) >= 1 && Str::length($request->filter) <= 2) {
+        //     return $this->errorResponse(
+        //         "El valor del filtro debe ser mayor a 2 caracteres.",
+        //         Response::HTTP_LENGTH_REQUIRED
+        //     );
+        // }
 
         $tags = Tag::where('name', 'like', '%' . $request->filter . '%')
+            ->orderBy('name', 'asc')
             ->get();
 
         if ($tags->count() === 0)
@@ -42,12 +43,8 @@ class TagController extends ApiController
 
     public function store(TagRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|unique:tags|max:50',
-        ]);
-
         $tag = Tag::create([
-            "name" => Str::headline($request->name),
+            "name" => Str::upper($request->name),
             "style" => $request->style,
         ]);
 
@@ -80,11 +77,15 @@ class TagController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Tag  $tag
+     * @param  \Number  $tag 
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tag $tag)
+    public function destroy($tag)
     {
-        //
+        $tagObj = Tag::findOrFail($tag);
+
+        $tagObj->delete();
+
+        return $this->showOne($tag, Response::HTTP_ACCEPTED);
     }
 }

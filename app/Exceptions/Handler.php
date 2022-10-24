@@ -65,6 +65,8 @@ class Handler extends ExceptionHandler
 
             if ($request->is('api/*')) {
 
+                // dd(get_class($exception));
+                // dd($exception instanceof NotFoundHttpException);
                 if ($exception instanceof ValidationException) {
                     return $this->errorResponse(
                         $exception->validator->errors()->getMessages(),
@@ -73,7 +75,6 @@ class Handler extends ExceptionHandler
                 }
                 //Usado cuando un usuario intenta acceder a una ruta no existente (404)
                 if ($exception instanceof NotFoundHttpException) {
-                    // dd($exception);
                     return $this->errorResponse("No se encontró la URL especificada", 404);
                 }
 

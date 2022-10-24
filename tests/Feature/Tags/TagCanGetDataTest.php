@@ -81,23 +81,23 @@ class TagCanGetDataTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_not_get_results_when_filter_is_less_or_equal_to_2()
-    {
-        $this->withoutExceptionHandling();
+    // /** @test */
+    // public function can_not_get_results_when_filter_is_less_or_equal_to_2()
+    // {
+    //     $this->withoutExceptionHandling();
 
-        Tag::Factory(10)->create();
-        $filter = "Mi";
-        $tag = Tag::create(['name' => "Mi Etiqueta"]);
+    //     Tag::Factory(10)->create();
+    //     $filter = "Mi";
+    //     $tag = Tag::create(['name' => "Mi Etiqueta"]);
 
-        $response = $this->getJson(route('tag.index', ["filter" => $filter]));
+    //     $response = $this->getJson(route('tag.index', ["filter" => $filter]));
 
-        $response->assertStatus(Response::HTTP_LENGTH_REQUIRED);
-        $response->assertJsonStructure([
-            'error',
-            'code'
-        ]);
-        // $response->assertJsonCount(1);
-        // dd($tags);
-    }
+    //     $response->assertStatus(Response::HTTP_LENGTH_REQUIRED);
+    //     $response->assertJsonStructure([
+    //         'error',
+    //         'code'
+    //     ]);
+    //     // $response->assertJsonCount(1);
+    //     // dd($tags);
+    // }
 }

@@ -32,7 +32,7 @@ class TagRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'name' => Str::headline($this->name),
+            'name' => Str::upper($this->name),
         ]);
     }
 }
