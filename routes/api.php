@@ -36,6 +36,7 @@ Route::middleware(['cors'])->group(function () {
   Route::post('tag', [TagController::class, 'store'])->name('tag.store');
   Route::get('tag', [TagController::class, 'index'])->name('tag.index');
   Route::delete('tag/{tag}', [TagController::class, 'destroy'])->name('tag.destroy');
+  Route::put('tag/{tag}', [TagController::class, 'update'])->name('tag.update');
 
   //Crear ruta para enviar los datos de los settings
 });

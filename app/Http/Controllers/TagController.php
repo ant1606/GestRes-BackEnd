@@ -69,9 +69,24 @@ class TagController extends ApiController
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tag $tag)
+    public function update(TagRequest $request, Tag $tag)
     {
-        //
+        // dd($request->name);
+        $tag->fill($request->only([
+            "name"
+        ]));
+
+        if ($tag->isClean()) {
+            return $this->errorResponse(
+                "No se realizó ninguna modificacion de la etiqueta. Se cancelo la operación",
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $tag->save();
+
+        return $this->showOne($tag, Response::HTTP_ACCEPTED);
+        // dd($tag->name);
     }
 
     /**
@@ -86,6 +101,6 @@ class TagController extends ApiController
 
         $tagObj->delete();
 
-        return $this->showOne($tag, Response::HTTP_ACCEPTED);
+        return $this->showOne($tagObj, Response::HTTP_ACCEPTED);
     }
 }
