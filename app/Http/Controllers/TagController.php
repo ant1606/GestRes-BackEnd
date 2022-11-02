@@ -19,7 +19,7 @@ class TagController extends ApiController
 
     public function __construct()
     {
-        $this->middleware('transform.input:' . TagResource::class);
+        $this->middleware('transform.input:' . TagResource::class)->only(['store', 'update']);
     }
 
     public function index(Request $request)
@@ -51,7 +51,7 @@ class TagController extends ApiController
             "style" => $request->style,
         ]);
 
-        return $this->showOne($tag, Response::HTTP_CREATED);
+        return $this->showOne(new TagResource($tag), Response::HTTP_CREATED);
     }
 
     public function show(Tag $tag)
@@ -59,13 +59,6 @@ class TagController extends ApiController
         return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Tag  $tag
-     * @return \Illuminate\Http\Response
-     */
     public function update(TagRequest $request, Tag $tag)
     {
         // dd($request->name);
@@ -82,22 +75,14 @@ class TagController extends ApiController
 
         $tag->save();
 
-        return $this->showOne($tag, Response::HTTP_ACCEPTED);
+        return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
         // dd($tag->name);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Number  $tag 
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($tag)
+    public function destroy(Tag $tag)
     {
-        $tagObj = Tag::findOrFail($tag);
+        $tag->delete();
 
-        $tagObj->delete();
-
-        return $this->showOne($tagObj, Response::HTTP_ACCEPTED);
+        return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
     }
 }
