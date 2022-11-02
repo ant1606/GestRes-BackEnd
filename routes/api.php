@@ -34,6 +34,7 @@ Route::middleware(['cors'])->group(function () {
   Route::post('settings', [SettingsController::class, 'show'])->name('settings.show');
 
   Route::post('tag', [TagController::class, 'store'])->name('tag.store');
+  Route::get('tag/{tag}', [TagController::class, 'show'])->name('tag.show');
   Route::get('tag', [TagController::class, 'index'])->name('tag.index');
   Route::delete('tag/{tag}', [TagController::class, 'destroy'])->name('tag.destroy');
   Route::put('tag/{tag}', [TagController::class, 'update'])->name('tag.update');

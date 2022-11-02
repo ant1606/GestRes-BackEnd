@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TagRequest;
+use App\Http\Resources\TagCollection;
+use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -28,17 +30,21 @@ class TagController extends ApiController
         //     );
         // }
 
-        $tags = Tag::where('name', 'like', '%' . $request->filter . '%')
-            ->orderBy('name', 'asc')
-            ->get();
+        // $tags = Tag::where('name', 'like', '%' . $request->filter . '%')
+        //     ->orderBy('name', 'asc')
+        //     ->get();
 
-        if ($tags->count() === 0)
-            return $this->errorResponse(
-                "No se encontraron resultados.",
-                Response::HTTP_ACCEPTED
-            );
+        // if ($tags->count() === 0)
+        //     return $this->errorResponse(
+        //         "No se encontraron resultados.",
+        //         Response::HTTP_ACCEPTED
+        //     );
 
-        return $this->showAll($tags, Response::HTTP_ACCEPTED);
+        // return $this->showAll($tags, Response::HTTP_ACCEPTED);
+
+        // return TagResource::collection(Tag::all());
+        // return new TagCollection(Tag::all());
+        return $this->showAllResource(new TagCollection(Tag::all()), Response::HTTP_ACCEPTED);
     }
 
     public function store(TagRequest $request)
@@ -51,15 +57,11 @@ class TagController extends ApiController
         return $this->showOne($tag, Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Tag  $tag
-     * @return \Illuminate\Http\Response
-     */
     public function show(Tag $tag)
     {
-        //
+        // dd($tag);
+        // return new TagResource(Tag::findOrFail($tag));
+        return new TagResource($tag);
     }
 
     /**

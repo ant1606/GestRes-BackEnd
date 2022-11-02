@@ -6,6 +6,7 @@ use App\Models\Settings;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+// use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,5 +32,7 @@ class AppServiceProvider extends ServiceProvider
             // dd("hola");
             Settings::reload_data_settings_to_cache();
         }
+
+        // JsonResource::withoutWrapping();
     }
 }
