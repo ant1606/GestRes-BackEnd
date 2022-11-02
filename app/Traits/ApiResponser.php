@@ -3,8 +3,10 @@
 namespace App\Traits;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -39,14 +41,25 @@ trait ApiResponser
 
   protected function showAllResource(ResourceCollection $collection, $code)
   {
-    $collection = $this->paginate($collection);
+    if ($collection->count() === 0)
+      return $this->errorResponse(
+        "No se encontraron resultados.",
+        Response::HTTP_ACCEPTED
+      );
 
+    $collection = $this->paginate($collection);
+    $collection = $this->cacheResponse($collection);
+    // dd($collection);
     return $this->successResponse($this->responsePaginateJson($collection), $code);
   }
 
-
   protected function paginate(ResourceCollection $collection)
   {
+
+    if ($collection->isEmpty()) {
+      return $this->successResponse(['data' => $collection], 200);
+    }
+
     $rules = [
       'per_page' => 'integer|min:2|max:50'
     ];
@@ -75,6 +88,25 @@ trait ApiResponser
     $paginated->appends(request()->all());
 
     return $paginated;
+  }
+
+  protected function cacheResponse($data)
+  {
+    $url = request()->url();
+    //Obtenemos los queryStrings (Parametros de la url) y las ordenamos por su key
+    $queryParams = request()->query();
+    ksort($queryParams);
+
+    //Generamos un queryString ordenado y lo anexamos a la url del recurso
+    $queryString = http_build_query($queryParams);
+    $fullUrl = "{$url}?{$queryString}";
+
+    //15/60 se refiere a 15 segundos, 
+    //Si se desea minutos, solo basta con colocar el numero, sin la division, si se desea en segundos
+    // se debe dividir con 60 segundos
+    return Cache::remember($fullUrl, 15 / 60, function () use ($data) {
+      return $data;
+    });
   }
 
   protected function responsePaginateJson(LengthAwarePaginator $pagination)

@@ -6,6 +6,7 @@ use App\Http\Requests\TagRequest;
 use App\Http\Resources\TagCollection;
 use App\Http\Resources\TagResource;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,9 +31,22 @@ class TagController extends ApiController
         //     );
         // }
 
-        // $tags = Tag::where('name', 'like', '%' . $request->filter . '%')
-        //     ->orderBy('name', 'asc')
-        //     ->get();
+        $tags = Tag::query();
+
+        if ($request->has('searchNombre') && $request->searchNombre !== null)
+            $tags = Tag::where('name', 'like', '%' . $request->searchNombre . '%');
+
+        if (
+            $request->has('sortNombre') &&
+            $request->sortNombre !== null &&
+            (Str::lower($request->sortNombre) === 'desc' || Str::lower($request->sortNombre) === 'asc')
+        ) {
+            $tags = $tags->orderBy('name', $request->sortNombre);
+        } else {
+            $tags = $tags->latest();
+        }
+
+        $tags = $tags->get();
 
         // if ($tags->count() === 0)
         //     return $this->errorResponse(
@@ -40,11 +54,7 @@ class TagController extends ApiController
         //         Response::HTTP_ACCEPTED
         //     );
 
-        // return $this->showAll($tags, Response::HTTP_ACCEPTED);
-
-        // return TagResource::collection(Tag::all());
-        // return new TagCollection(Tag::all());
-        return $this->showAllResource(new TagCollection(Tag::all()), Response::HTTP_ACCEPTED);
+        return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
     }
 
     public function store(TagRequest $request)
