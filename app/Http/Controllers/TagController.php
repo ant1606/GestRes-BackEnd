@@ -16,21 +16,14 @@ use function PHPUnit\Framework\isNull;
 
 class TagController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function __construct()
+    {
+        $this->middleware('transform.input:' . TagResource::class);
+    }
 
     public function index(Request $request)
     {
-        // if (isset($request->filter) && Str::length($request->filter) >= 1 && Str::length($request->filter) <= 2) {
-        //     return $this->errorResponse(
-        //         "El valor del filtro debe ser mayor a 2 caracteres.",
-        //         Response::HTTP_LENGTH_REQUIRED
-        //     );
-        // }
-
         $tags = Tag::query();
 
         if ($request->has('searchNombre') && $request->searchNombre !== null)
@@ -48,12 +41,6 @@ class TagController extends ApiController
 
         $tags = $tags->get();
 
-        // if ($tags->count() === 0)
-        //     return $this->errorResponse(
-        //         "No se encontraron resultados.",
-        //         Response::HTTP_ACCEPTED
-        //     );
-
         return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
     }
 
@@ -69,9 +56,7 @@ class TagController extends ApiController
 
     public function show(Tag $tag)
     {
-        // dd($tag);
-        // return new TagResource(Tag::findOrFail($tag));
-        return new TagResource($tag);
+        return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
     }
 
     /**

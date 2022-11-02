@@ -17,9 +17,19 @@ trait ApiResponser
     return response()->json($data, $code);
   }
 
-  protected function errorResponse($message, $code)
+  protected function errorResponse($message, $code, $title = "Error")
   {
-    return response()->json(['error' => $message, 'code' => $code], $code);
+    return response()->json(
+      [
+        'error' =>  [
+          "status" => $code,
+          // "title" => $title,
+          "detail" => $message
+          // "source": { "pointer": "/data/attributes/firstName" },
+        ]
+      ],
+      $code
+    );
   }
 
   protected function showMessage($message, $code = 200)
@@ -39,12 +49,13 @@ trait ApiResponser
     return $this->successResponse(['data' => $collection], $code);
   }
 
+  //TODO Cambiar el contenido de showAll por showAllResource en los controladores
   protected function showAllResource(ResourceCollection $collection, $code)
   {
     if ($collection->count() === 0)
-      return $this->errorResponse(
-        "No se encontraron resultados.",
-        Response::HTTP_ACCEPTED
+      return $this->successResponse(
+        ['data' => [], 'message' => "No se encontraron resultados"],
+        Response::HTTP_OK
       );
 
     $collection = $this->paginate($collection);

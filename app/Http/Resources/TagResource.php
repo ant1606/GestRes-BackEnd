@@ -22,4 +22,37 @@ class TagResource extends JsonResource
             'estilos' => $this->style,
         ];
     }
+
+    // Mapeamos los atributos transformados con los atributos originales
+    public static function originalAttribute($index)
+    {
+        $attributes = [
+            'identificador' => 'id',
+            'nombre' => 'name',
+            'estilos' => 'style'
+        ];
+
+        return isset($attributes[$index]) ? $attributes[$index] : null;
+    }
+
+    // Mapeamos los atributos originales con los atributos transformados
+    public static function transformedAttribute($index)
+    {
+        $attributes = [
+            'id' => 'identificador',
+            'name' => 'nombre',
+            'style' => 'estilos'
+        ];
+
+        return isset($attributes[$index]) ? $attributes[$index] : null;
+    }
+
+    // public function with($request)
+    // {
+    //     return [
+    //         'meta' => [
+    //             'status' => 'status'
+    //         ]
+    //     ];
+    // }
 }
