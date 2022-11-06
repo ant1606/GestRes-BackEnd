@@ -41,7 +41,7 @@ class TagResource extends JsonResource
         $attributes = [
             'id' => 'identificador',
             'name' => 'nombre',
-            'style' => 'estilos'
+            'style' => 'estilo'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

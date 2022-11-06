@@ -68,6 +68,7 @@ class Handler extends ExceptionHandler
                 // dd(get_class($exception));
                 // dd($exception instanceof NotFoundHttpException);
                 if ($exception instanceof ValidationException) {
+                    // dd($exception->validator->errors()->getMessages());
                     return $this->errorResponse(
                         $exception->validator->errors()->getMessages(),
                         Response::HTTP_UNPROCESSABLE_ENTITY

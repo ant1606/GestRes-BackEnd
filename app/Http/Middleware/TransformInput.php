@@ -32,17 +32,27 @@ class TransformInput
 
         //Transformamos los datos en los casos que ocurran errores de validacion
         if (isset($response->exception) && $response->exception instanceof ValidationException) {
-            $data = $response->getData();
 
+            $data = $response->getData();
             $transformedErrors = [];
-            foreach ($data->error->detail as $field => $error) {
+            foreach ($data->error[0]->detail as $field => $error) {
                 // dd($data->error, $field, $error[0], "hola");
+
                 $transformedField = $transform::transformedAttribute($field);
-                $transformedErrors[$transformedField] = str_replace($field, $transformedField, $error[0]);
+                // $transformedErrors[$transformedField] = str_replace($field, $transformedField, $error[0]);
+                array_push(
+                    $transformedErrors,
+                    [
+                        "status" => $data->error[0]->status,
+                        "inputName" => $transformedField,
+                        "detail" => str_replace($field, $transformedField, $error[0])
+                    ]
+                );
             }
 
+            // dd($transformedErrors);
+            // dd($data->error->status);
             $data->error = $transformedErrors;
-
             $response->setData($data);
         }
 

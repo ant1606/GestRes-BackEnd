@@ -19,13 +19,22 @@ trait ApiResponser
 
   protected function errorResponse($message, $code, $title = "Error")
   {
+    // {
+    //   status: "422",
+    //   inputName: "nombre",
+    //   detail: "El nombre no es válido."
+    // }
+
+
     return response()->json(
       [
-        'error' =>  [
-          "status" => $code,
-          // "title" => $title,
-          "detail" => $message
-          // "source": { "pointer": "/data/attributes/firstName" },
+        "error" =>  [
+          [
+            "status" => $code,
+            // "title" => $title,
+            "detail" => $message
+            // "source": { "pointer": "/data/attributes/firstName" },]
+          ]
         ]
       ],
       $code
