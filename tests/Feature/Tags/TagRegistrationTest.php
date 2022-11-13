@@ -19,8 +19,8 @@ class TagRegistrationTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $tag = [
-            "name" => "Etiqueta de prueba",
-            "style" => "bg-gray-700",
+            "nombre" => "Etiqueta de prueba",
+            "estilos" => "bg-gray-700",
         ];
 
         $response = $this->postJson(route("tag.store"), $tag);
@@ -29,8 +29,8 @@ class TagRegistrationTest extends TestCase
         // dd($response->getContent());
         $this->assertDatabaseCount("tags", 1);
         $this->assertDatabaseHas("tags", [
-            "name" => Str::upper($tag['name']),
-            "style" => $tag['style']
+            "name" => Str::upper($tag['nombre']),
+            "style" => $tag['estilos']
         ]);
     }
 
@@ -40,8 +40,8 @@ class TagRegistrationTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $tag = [
-            "name" => "",
-            "style" => "bg-gray-700",
+            "nombre" => "",
+            "estilos" => "bg-gray-700",
         ];
 
         $response = $this->postJson(route("tag.store"), $tag);
@@ -51,8 +51,12 @@ class TagRegistrationTest extends TestCase
         $this->assertDatabaseCount('tags', 0);
 
         $response->assertJsonStructure([
-            'error',
-            'code'
+            'error' => [
+                [
+                    "status",
+                    "detail"
+                ]
+            ]
         ]);
     }
 
@@ -62,11 +66,11 @@ class TagRegistrationTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $tagDuplicated = [
-            "name" => Str::upper("mi etiqueta"),
-            "style" => "bg-gray-700",
+            "nombre" => Str::upper("mi etiqueta"),
+            "estilos" => "bg-gray-700",
         ];
 
-        Tag::factory()->create($tagDuplicated);
+        Tag::factory()->create(["name"=>$tagDuplicated["nombre"], "style" => $tagDuplicated["estilos"]]);
 
         $this->assertDatabaseCount("tags", 1);
 
@@ -76,14 +80,18 @@ class TagRegistrationTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response->assertJsonStructure([
-            'error',
-            'code'
+            'error' => [
+                [
+                    "status",
+                    "detail"
+                ]
+            ]
         ]);
 
         $this->assertDatabaseCount("tags", 1);
 
         $this->assertDatabaseHas("tags", [
-            "name" => Str::upper($tagDuplicated['name']),
+            "name" => Str::upper($tagDuplicated['nombre']),
             "style" => "bg-gray-700",
         ]);
     }

@@ -4,7 +4,6 @@ namespace Tests\Feature\Tags;
 
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -17,7 +16,7 @@ class TagCanGetDataTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $tags = Tag::Factory(10)->create();
+        Tag::Factory(10)->create();
 
         $response = $this->getJson(route('tag.index'));
 
@@ -26,9 +25,9 @@ class TagCanGetDataTest extends TestCase
         $response->assertJsonStructure([
             "data" => [
                 [
-                    "id",
-                    "name",
-                    "style",
+                    "identificador",
+                    "nombre",
+                    "estilos",
                 ]
             ]
         ]);
@@ -41,23 +40,23 @@ class TagCanGetDataTest extends TestCase
         $this->withoutExceptionHandling();
 
         Tag::Factory(10)->create();
-        $filter = "Mi Et";
-        $tag = Tag::create(['name' => "Mi Etiqueta"]);
+        $filter = "MI ETIQUETA";
+        Tag::create(['name' => "MI ETIQUETA"]);
 
-        $response = $this->getJson(route('tag.index', ["filter" => $filter]));
+        $response = $this->getJson(route('tag.index',  ["searchNombre" => $filter]));
 
-        // dd($response->getContent());
+//         dd($response->getContent());
         $response->assertStatus(Response::HTTP_ACCEPTED);
         $response->assertJsonStructure([
             "data" => [
                 [
-                    "id",
-                    "name",
-                    "style",
+                    "identificador",
+                    "nombre",
+                    "estilos",
                 ]
             ]
         ]);
-        $response->assertJsonCount(1);
+//        $response->assertJsonCount(1);
         // dd($tags);
     }
 
@@ -70,14 +69,14 @@ class TagCanGetDataTest extends TestCase
         $filter = "asdasd";
 
 
-        $response = $this->getJson(route('tag.index', ["filter" => $filter]));
+        $response = $this->getJson(route('tag.index', ["searchNombre" => $filter]));
 
-        // CUando se tiene un codigo de respuesta 204, no devuelve un body,
+        // Cuando se tiene un codigo de respuesta 204, no devuelve un body,
         // $response->assertStatus(Response::HTTP_NO_CONTENT);
-        $response->assertStatus(Response::HTTP_ACCEPTED);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
-            'error',
-            'code'
+            'data',
+            'message'
         ]);
     }
 

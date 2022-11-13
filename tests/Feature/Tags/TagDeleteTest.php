@@ -24,8 +24,9 @@ class TagDeleteTest extends TestCase
         $this->assertDatabaseCount("tags", 0);
         $response->assertJsonStructure([
             "data" => [
-                "name",
-                "id"
+                "identificador",
+                "nombre",
+                "estilos"
             ]
         ]);
         // $this->assertSoftDeleted($tag);
@@ -46,8 +47,12 @@ class TagDeleteTest extends TestCase
         // dd($response->getContent());
         $this->assertDatabaseCount("tags", 10);
         $response->assertJsonStructure([
-            "error",
-            "code"
+            "error"=>[
+                [
+                    "status",
+                    "detail"
+                ]
+            ]
         ]);
         // $this->assertSoftDeleted($tag);
     }

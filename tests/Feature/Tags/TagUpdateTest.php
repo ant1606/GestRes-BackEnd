@@ -19,19 +19,19 @@ class TagUpdateTest extends TestCase
         $tag = Tag::factory()->create();
 
         $updatedTag = [
-            "id" => $tag->id,
-            "name" => "etiqueta actualizada",
+            "identificador" => $tag->id,
+            "nombre" => "etiqueta actualizada",
         ];
 
-        $response = $this->putJson(route('tag.update', $updatedTag["id"]), $updatedTag);
+        $response = $this->putJson(route('tag.update', $updatedTag["identificador"]), $updatedTag);
 
         $response->assertStatus(Response::HTTP_ACCEPTED);
 
         $this->assertDatabaseCount("tags", 1);
 
         $this->assertDatabaseHas("tags", [
-            "name" => Str::upper($updatedTag["name"]),
-            "id" => $updatedTag["id"],
+            "name" => Str::upper($updatedTag["nombre"]),
+            "id" => $updatedTag["identificador"],
         ]);
     }
 
@@ -43,14 +43,18 @@ class TagUpdateTest extends TestCase
             "style" => "estilo"
         ]);
 
-        $response = $this->putJson(route('tag.update', $tag["id"]), ["id" => $tag->id, "name" => $tag->name]);
+        $response = $this->putJson(route('tag.update', $tag["id"]), ["identificador" => $tag->id, "nombre" => $tag->name]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->assertDatabaseCount("tags", 1);
         $response->assertJsonStructure([
-            "error",
-            "code"
+            "error"=>[
+                [
+                    "status",
+                    "detail"
+                ]
+            ]
         ]);
     }
 }
