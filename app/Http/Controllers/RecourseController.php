@@ -87,6 +87,7 @@ class RecourseController extends ApiController
 
     public function update(Recourse $recourse, RecourseUpdateRequest $request)
     {
+
         $recourse->fill($request->only([
             'name',
             'source',
@@ -99,6 +100,8 @@ class RecourseController extends ApiController
             'total_hours',
         ]));
 
+
+
         if ($recourse->isClean()) {
             return $this->errorResponse(
                 "Se debe especificar al menos un valor diferente para actualizar",
@@ -107,7 +110,6 @@ class RecourseController extends ApiController
         }
 
         $recourse->save();
-
         return $this->showOne(new RecourseResource($recourse), Response::HTTP_ACCEPTED);
     }
 }

@@ -58,7 +58,9 @@ class CanEditRecourseDataTest extends TestCase
     public function recourse_can_be_edited_when_change_all_values()
     {
         $recourse = Recourse::factory()->create();
+
         $this->assertDatabaseCount('recourses', 1);
+
         $recourseUpdate = $this->recourseValidData([ "nombre" => 'Mi Recurso Actualizado nuevo' ] );
 
         $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);

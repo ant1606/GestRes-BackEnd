@@ -21,7 +21,7 @@ class TransformInput
 
         foreach ($request->request->all() as $input => $value) {
             $attribute = $transform::originalAttribute($input);
-            if (isset($attribute, $value)) {
+            if (isset($attribute)) {
                 $transformedInput[$attribute] = $value;
             }
         }
@@ -30,28 +30,21 @@ class TransformInput
 
         $response = $next($request);
 
-        //Transformamos los datos en los casos que ocurran errores de validacion
+        //Transformamos los datos en los casos que ocurran errores de validacion (Request)
         if (isset($response->exception) && $response->exception instanceof ValidationException) {
 
             $data = $response->getData();
             $transformedErrors = [];
             foreach ($data->error[0]->detail as $field => $error) {
-                // dd($data->error, $field, $error[0], "hola");
-
                 $transformedField = $transform::transformedAttribute($field);
-                // $transformedErrors[$transformedField] = str_replace($field, $transformedField, $error[0]);
-                array_push(
-                    $transformedErrors,
-                    [
-                        "status" => $data->error[0]->status,
-                        "inputName" => $transformedField,
-                        "detail" => str_replace($field, $transformedField, $error[0])
-                    ]
-                );
+
+                $transformedErrors[] = [
+                    "status" => $data->error[0]->status,
+                    "inputName" => $transformedField,
+                    "detail" => str_replace($field, $transformedField, $error[0])
+                ];
             }
 
-            // dd($transformedErrors);
-            // dd($data->error->status);
             $data->error = $transformedErrors;
             $response->setData($data);
         }
