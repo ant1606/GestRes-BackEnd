@@ -32,7 +32,7 @@ class RecourseResource extends JsonResource
             "totalHoras" => $this-> total_hours,
             "tags" => RecourseResource::collection($this->whenLoaded('tags')),
             "status" => RecourseResource::collection($this->whenLoaded('status')),
-            "progress" => RecourseResource::collection($this->whenLoaded('progress')),
+            "progress" => ProgressResource::collection($this->whenLoaded('progress')),
         ];
     }
 
