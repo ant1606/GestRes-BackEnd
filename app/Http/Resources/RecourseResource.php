@@ -14,7 +14,11 @@ class RecourseResource extends JsonResource
      */
     public function toArray($request)
     {
-//        return parent::toArray($request);
+        //  return parent::toArray($request);
+        // TODO Generar el TagResource, ProgressResource y StatusResource y cambiarlo en
+        // "tags" => RecourseResource::collection($this->whenLoaded('tags')),
+        // "status" => RecourseResource::collection($this->whenLoaded('status')),
+        // "progress" => RecourseResource::collection($this->whenLoaded('progress')),
         return [
             "identificador" => $this->id,
             "nombre" => $this->name,
@@ -27,6 +31,8 @@ class RecourseResource extends JsonResource
             "totalVideos" => $this->total_videos,
             "totalHoras" => $this-> total_hours,
             "tags" => RecourseResource::collection($this->whenLoaded('tags')),
+            "status" => RecourseResource::collection($this->whenLoaded('status')),
+            "progress" => RecourseResource::collection($this->whenLoaded('progress')),
         ];
     }
 
@@ -43,7 +49,9 @@ class RecourseResource extends JsonResource
             "totalCapitulos" =>"total_chapters",
             "totalVideos" =>"total_videos",
             "totalHoras" =>"total_hours",
-            "tags" =>"tags"
+            "tags" =>"tags",
+            "status" =>"status",
+            "progress" =>"progress",
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -63,6 +71,8 @@ class RecourseResource extends JsonResource
             "total_videos" => "totalVideos",
             "total_hours" => "totalHoras",
             "tags" => "tags",
+            "status" =>"status",
+            "progress" =>"progress",
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

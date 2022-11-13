@@ -24,7 +24,7 @@ class RecourseController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('transform.input:' . RecourseResource::class)->only(['store', 'update']);
+        $this->middleware('transform.input:' . RecourseResource::class)->only(['store', 'update','index']);
     }
 
     public function store(RecoursePostRequest $request)
@@ -82,10 +82,7 @@ class RecourseController extends ApiController
             // ->take(1)
             ->first();
 
-        // dd($recourse);
-
-        // dd($this->showOne($recourse, Response::HTTP_OK));
-        return $this->showOne($recourse, Response::HTTP_OK);
+        return $this->showOne(new RecourseResource($recourse), Response::HTTP_OK);
     }
 
     public function update(Recourse $recourse, RecourseUpdateRequest $request)

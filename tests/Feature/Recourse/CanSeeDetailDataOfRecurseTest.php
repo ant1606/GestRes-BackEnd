@@ -30,15 +30,15 @@ class CanSeeDetailDataOfRecurseTest extends TestCase
 
         $response->assertJsonStructure([
             "data" => [
-                "name",
-                "source",
-                "author",
+                "nombre",
+                "ruta",
+                "autor",
                 "editorial",
-                "type_id",
-                "total_pages",
-                "total_chapters",
-                "total_videos",
-                "total_hours",
+                "tipoId",
+                "totalPaginas",
+                "totalCapitulos",
+                "totalVideos",
+                "totalHoras",
                 "status",
                 "progress",
                 "tags"
@@ -60,15 +60,15 @@ class CanSeeDetailDataOfRecurseTest extends TestCase
         // dd($response->getContent());
         $response->assertJsonStructure([
             "data" => [
-                "name",
-                "source",
-                "author",
+                "nombre",
+                "ruta",
+                "autor",
                 "editorial",
-                "type_id",
-                "total_pages",
-                "total_chapters",
-                "total_videos",
-                "total_hours",
+                "tipoId",
+                "totalPaginas",
+                "totalCapitulos",
+                "totalVideos",
+                "totalHoras",
                 "status",
                 "progress",
                 "tags"
