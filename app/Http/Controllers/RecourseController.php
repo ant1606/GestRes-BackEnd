@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecourseResource;
 use Carbon\Carbon;
 use App\Models\Recourse;
 
@@ -21,6 +22,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RecourseController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware('transform.input:' . RecourseResource::class)->only(['store', 'update']);
+    }
+
     public function store(RecoursePostRequest $request)
     {
         $dateHistoryCreation = Carbon::now()->toDateString();
@@ -62,8 +68,8 @@ class RecourseController extends ApiController
 
     public function show($recourse)
     {
-        //TODO si el recurso no tiene una relacion de Tags, falla la consulta
-        //   Method Illuminate\Database\Eloquent\Collection::tags does not exist.
+        // TODO si el recurso no tiene una relacion de Tags, falla la consulta
+        // Method Illuminate\Database\Eloquent\Collection::tags does not exist.
         // https://stackoverflow.com/questions/35054498/eager-load-relation-when-relation-doesnt-exist
         // https://laracasts.com/discuss/channels/eloquent/eager-loading-when-relation-does-not-exist
         // https://laravel.com/docs/9.x/eloquent-relationships#eager-loading
