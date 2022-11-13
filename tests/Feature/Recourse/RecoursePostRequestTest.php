@@ -15,17 +15,39 @@ class RecoursePostRequestTest extends TestCase
     use RefreshDatabase;
     use RecourseDataTrait;
 
-    #region NAME 
+    #region NAME
+    /** @test */
+    public function the_name_may_not_be_greater_than_150_characters()
+    {
+        $response = $this->postJson(
+            route('recourse.store'),
+            $this->recourseValidData(['nombre' => Str::random(151)])
+        );
+
+        $response->assertJsonFragment(
+            [
+                "status" => 422,
+                "inputName" => "nombre",
+            ]
+        );
+    }
+
     /** @test */
     public function the_name_is_required()
     {
         $response = $this->postJson(
             route('recourse.store'),
-            $this->recourseValidData(['name' => null])
+            $this->recourseValidData(['nombre' => null])
         );
 
         $response->assertJsonStructure([
-            'error' => ['name']
+            'error' => [
+                [
+                    "status",
+                    "inputName",
+                    "detail"
+                ]
+            ]
         ]);
 
         // $response->assertJson([
@@ -37,31 +59,22 @@ class RecoursePostRequestTest extends TestCase
         // });
     }
 
-    /** @test */
-    public function the_name_may_not_be_greater_than_150_characters()
-    {
-        $response = $this->postJson(
-            route('recourse.store'),
-            $this->recourseValidData(['name' => Str::random(151)])
-        );
-
-        $response->assertJsonStructure([
-            'error' => ['name']
-        ]);
-    }
     #endregion
 
     #region SOURCE
+
+
     /** @test */
     public function the_source_is_required()
     {
         $response = $this->postJson(
             route('recourse.store'),
-            $this->recourseValidData(['source' => null])
+            $this->recourseValidData(['ruta' => null])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['source']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "ruta",
         ]);
     }
 
@@ -70,11 +83,12 @@ class RecoursePostRequestTest extends TestCase
     {
         $response = $this->postJson(
             route('recourse.store'),
-            $this->recourseValidData(['source' => Str::random(256)])
+            $this->recourseValidData(['ruta' => Str::random(256)])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['source']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "ruta",
         ]);
     }
     #endregion
@@ -86,11 +100,12 @@ class RecoursePostRequestTest extends TestCase
     {
         $response = $this->postJson(
             route('recourse.store'),
-            $this->recourseValidData(['author' => Str::random(76)])
+            $this->recourseValidData(['autor' => Str::random(76)])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['author']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "autor",
         ]);
     }
 
@@ -106,8 +121,9 @@ class RecoursePostRequestTest extends TestCase
             $this->recourseValidData(['editorial' => Str::random(76)])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['editorial']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "editorial",
         ]);
     }
 
@@ -120,11 +136,12 @@ class RecoursePostRequestTest extends TestCase
     {
         $response = $this->postJson(
             route('recourse.store'),
-            $this->recourseValidData(['type_id' => null])
+            $this->recourseValidData(['tipoId' => null])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['type_id']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "tipoId",
         ]);
     }
 
@@ -142,11 +159,12 @@ class RecoursePostRequestTest extends TestCase
 
         $response = $this->postJson(
             route('recourse.store'),
-            $this->recourseValidData(['type_id' => $type_id])
+            $this->recourseValidData(['tipoId' => $type_id])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['type_id']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "tipoId",
         ]);
     }
 
@@ -160,13 +178,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                'total_pages' => null
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+                'totalPaginas' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_pages']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalPaginas",
         ]);
     }
 
@@ -176,13 +195,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                'total_pages' => Str::random(10)
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+                'totalPaginas' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_pages']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalPaginas",
         ]);
     }
 
@@ -196,13 +216,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                'total_chapters' => null
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+                'totalCapitulos' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_chapters']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalCapitulos",
         ]);
     }
 
@@ -212,13 +233,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                'total_chapters' => Str::random(10)
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+                'totalCapitulos' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_chapters']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalCapitulos",
         ]);
     }
     #endregion
@@ -231,13 +253,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-                'total_videos' => null
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
+                'totalVideos' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_videos']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalVideos",
         ]);
     }
 
@@ -247,13 +270,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                'total_videos' => Str::random(10)
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+                'totalVideos' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_videos']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalVideos",
         ]);
     }
 
@@ -267,13 +291,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-                'total_hours' => null
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
+                'totalHoras' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_hours']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalHoras",
         ]);
     }
 
@@ -283,13 +308,14 @@ class RecoursePostRequestTest extends TestCase
         $response = $this->postJson(
             route('recourse.store'),
             $this->recourseValidData([
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-                'total_hours' => Str::random(10)
+                'tipoId' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+                'totalHoras' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['total_hours']
+        $response->assertJsonFragment([
+            "status" => 422,
+            "inputName" => "totalHoras",
         ]);
     }
 
