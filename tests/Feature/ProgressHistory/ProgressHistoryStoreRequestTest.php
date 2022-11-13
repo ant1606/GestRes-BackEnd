@@ -2,12 +2,9 @@
 
 namespace Tests\Feature\ProgressHistory;
 
-use App\Http\Requests\RecoursePostRequest;
-use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Recourse;
 use Illuminate\Support\Str;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProgressHistoryStoreRequestTest extends TestCase
@@ -24,12 +21,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'done' => null
+                'realizado' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['done']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "realizado"
         ]);
     }
 
@@ -40,12 +38,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'done' => 0
+                'realizado' => 0
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['done']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "realizado"
         ]);
     }
 
@@ -56,12 +55,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'done' => -15
+                'realizado' => -15
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['done']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "realizado"
         ]);
     }
 
@@ -72,12 +72,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'done' => Str::random(10)
+                'realizado' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['done']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "realizado"
         ]);
     }
 
@@ -92,12 +93,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'pending' => null
+                'pendiente' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['pending']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "pendiente"
         ]);
     }
 
@@ -108,12 +110,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'pending' => -15
+                'pendiente' => -15
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['pending']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "pendiente"
         ]);
     }
 
@@ -124,7 +127,7 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'pending' => 0
+                'pendiente' => 0
             ])
         );
 
@@ -138,12 +141,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'pending' => Str::random(10)
+                'pendiente' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['pending']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "pendiente"
         ]);
     }
 
@@ -158,12 +162,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'date' => null
+                'fecha' => null
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['date']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "fecha"
         ]);
     }
 
@@ -174,12 +179,13 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $response = $this->postJson(
             route('progress.store', $recourse),
             $this->progressHistoryValidData([
-                'date' => Str::random(10)
+                'fecha' => Str::random(10)
             ])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['date']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "fecha"
         ]);
     }
 
@@ -193,11 +199,12 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $recourse = Recourse::factory()->create();
         $response = $this->postJson(
             route('progress.store', $recourse),
-            $this->progressHistoryValidData(['comment' => Str::random(101)])
+            $this->progressHistoryValidData(['comentario' => Str::random(101)])
         );
 
-        $response->assertJsonStructure([
-            'error' => ['comment']
+        $response->assertJsonFragment([
+            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+            "inputName" => "comentario"
         ]);
     }
 
@@ -207,7 +214,7 @@ class ProgressHistoryStoreRequestTest extends TestCase
         $recourse = Recourse::factory()->create();
         $response = $this->postJson(
             route('progress.store', $recourse),
-            $this->progressHistoryValidData(['comment' => null])
+            $this->progressHistoryValidData(['comentario' => null])
         );
 
         $response->assertStatus(201);
