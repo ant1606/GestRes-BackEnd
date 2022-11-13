@@ -23,14 +23,17 @@ class CanEditRecourseDataTest extends TestCase
 
         $this->assertDatabaseCount('recourses', 1);
 
-        $recourseUpdate = array_merge(
-            $recourse->toArray(),
-            [
-                'name' => 'Recurso Actualizado',
-                'author' => null,
-                'editorial' => null
-            ]
-        );
+        $recourseUpdate = [
+            "nombre" => "Recurso Actualizado",
+            "ruta" => $recourse['source'],
+            "autor" => $recourse['author'],
+            "editorial" => $recourse['editorial'],
+            "tipoId" => $recourse['type_id'],
+            "totalPaginas" => $recourse['total_pages'],
+            "totalCapitulos" => $recourse['total_chapters'],
+            "totalVideos" => $recourse['total_videos'],
+            "totalHoras" => $recourse['total_hours'],
+        ];
 
         $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
 
@@ -39,15 +42,15 @@ class CanEditRecourseDataTest extends TestCase
         $this->assertDatabaseCount('recourses', 1);
 
         $this->assertDatabaseHas('recourses', [
-            "name" => $recourseUpdate['name'],
-            "source" => $recourseUpdate['source'],
-            "author" => $recourseUpdate['author'],
-            "editorial" => $recourseUpdate['editorial'],
-            "type_id" => $recourseUpdate['type_id'],
-            "total_pages" => $recourseUpdate['total_pages'],
-            "total_chapters" => $recourseUpdate['total_chapters'],
-            "total_videos" => $recourseUpdate['total_videos'],
-            "total_hours" => $recourseUpdate['total_hours']
+            "name" => $recourseUpdate["nombre"],
+            "source" => $recourseUpdate["ruta"],
+            "author" => $recourseUpdate["autor"],
+            "editorial" => $recourseUpdate["editorial"],
+            "type_id" => $recourseUpdate["tipoId"],
+            "total_pages" => $recourseUpdate["totalPaginas"],
+            "total_chapters" => $recourseUpdate["totalCapitulos"],
+            "total_videos" => $recourseUpdate["totalVideos"],
+            "total_hours" => $recourseUpdate["totalHoras"]
         ]);
     }
 
@@ -55,40 +58,23 @@ class CanEditRecourseDataTest extends TestCase
     public function recourse_can_be_edited_when_change_all_values()
     {
         $recourse = Recourse::factory()->create();
-
         $this->assertDatabaseCount('recourses', 1);
-
-        $recourseUpdate = array_merge(
-            $recourse->toArray(),
-            [
-                'name' => 'Mi Recurso Actualizado',
-                'source' => 'https://www.notion.so/Laravel-f5419942aac64e65a8b2593fd2ab4e29',
-                'author' => null,
-                'editorial' => 'NO tiene editorial',
-                'type_id' => Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-                'total_pages' => null,
-                'total_chapters' => null,
-                'total_videos' => 28,
-                'total_hours' => '05:30:00',
-            ]
-        );
+        $recourseUpdate = $this->recourseValidData([ "nombre" => 'Mi Recurso Actualizado nuevo' ] );
 
         $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
 
         $response->assertStatus(Response::HTTP_ACCEPTED);
-
         $this->assertDatabaseCount('recourses', 1);
-
         $this->assertDatabaseHas('recourses', [
-            "name" => $recourseUpdate['name'],
-            "source" => $recourseUpdate['source'],
-            "author" => $recourseUpdate['author'],
-            "editorial" => $recourseUpdate['editorial'],
-            "type_id" => $recourseUpdate['type_id'],
-            "total_pages" => $recourseUpdate['total_pages'],
-            "total_chapters" => $recourseUpdate['total_chapters'],
-            "total_videos" => $recourseUpdate['total_videos'],
-            "total_hours" => $recourseUpdate['total_hours']
+            "name" => $recourseUpdate["nombre"],
+            "source" => $recourseUpdate["ruta"],
+            "author" => $recourseUpdate["autor"],
+            "editorial" => $recourseUpdate["editorial"],
+            "type_id" => $recourseUpdate["tipoId"],
+            "total_pages" => $recourseUpdate["totalPaginas"],
+            "total_chapters" => $recourseUpdate["totalCapitulos"],
+            "total_videos" => $recourseUpdate["totalVideos"],
+            "total_hours" => $recourseUpdate["totalHoras"]
         ]);
     }
 
@@ -123,19 +109,14 @@ class CanEditRecourseDataTest extends TestCase
 
         $this->assertDatabaseCount('recourses', 1);
 
-        $recourseUpdate = array_merge(
-            $recourse->toArray(),
-            [
-                'name' => null,
-                'source' => null,
-                'editorial' => null,
-                'type_id' => null,
-                'total_pages' => null,
-                'total_chapters' => null,
-                'total_videos' => null,
-                'total_hours' => null
-            ]
-        );
+        $recourseUpdate = $this->recourseValidData([
+            "nombre" => null,
+            "autor" => null,
+            "tipoId" => null,
+            "totalPaginas" => null,
+            "totalCapitulos" => null,
+            "totalVideos" => null
+        ]);
 
         $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
 
