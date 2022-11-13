@@ -25,7 +25,8 @@ class RecourseResource extends JsonResource
             "totalPaginas" => $this->total_pages,
             "totalCapitulos" => $this->total_chapters,
             "totalVideos" => $this->total_videos,
-            "totalHoras" => $this-> total_hours
+            "totalHoras" => $this-> total_hours,
+            "tags" => RecourseResource::collection($this->whenLoaded('tags')),
         ];
     }
 
@@ -41,7 +42,8 @@ class RecourseResource extends JsonResource
             "totalPaginas" =>"total_pages",
             "totalCapitulos" =>"total_chapters",
             "totalVideos" =>"total_videos",
-            "totalHoras" =>"total_hours"
+            "totalHoras" =>"total_hours",
+            "tags" =>"tags"
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -60,6 +62,7 @@ class RecourseResource extends JsonResource
             "total_chapters" => "totalCapitulos",
             "total_videos" => "totalVideos",
             "total_hours" => "totalHoras",
+            "tags" => "tags",
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

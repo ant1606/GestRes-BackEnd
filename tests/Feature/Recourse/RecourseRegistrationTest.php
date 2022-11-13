@@ -26,7 +26,7 @@ class RecourseRegistrationTest extends TestCase
 
         /* Given */
         $recourse = $this->recourseValidData([
-            'author' => null,
+            'autor' => null,
             'editorial' => null,
         ]);
 
@@ -34,23 +34,24 @@ class RecourseRegistrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+//        dd($response->getContent());
         $this->assertDatabaseHas('recourses', [
-            "name" => $recourse['name'],
-            "source" => $recourse['source'],
-            "author" => $recourse['author'],
+            "name" => $recourse['nombre'],
+            "source" => $recourse['ruta'],
+            "author" => $recourse['autor'],
             "editorial" => $recourse['editorial'],
-            "type_id" => $recourse['type_id'],
-            "total_pages" => $recourse['total_pages'],
-            "total_chapters" => $recourse['total_chapters'],
-            "total_videos" => $recourse['total_videos'],
-            "total_hours" => $recourse['total_hours'],
+            "type_id" => $recourse['tipoId'],
+            "total_pages" => $recourse['totalPaginas'],
+            "total_chapters" => $recourse['totalCapitulos'],
+            "total_videos" => $recourse['totalVideos'],
+            "total_hours" => $recourse['totalHoras'],
         ]);
 
         $this->assertDatabaseHas('progress_histories', [
             "recourse_id" => 1,
             "done" => 0,
-            "pending" => Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?
-                $recourse['total_pages'] : $recourse['total_videos'],
+            "pending" => Settings::getKeyfromId($recourse['tipoId']) === TypeRecourseEnum::TYPE_LIBRO->name ?
+                $recourse['totalPaginas'] : $recourse['totalVideos'],
             // "date" => Carbon::now(),
             "comment" => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA",
         ]);
@@ -64,15 +65,15 @@ class RecourseRegistrationTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                "name" => $recourse['name'],
-                "source" => $recourse['source'],
-                "author" => $recourse['author'],
+                "nombre" => $recourse['nombre'],
+                "ruta" => $recourse['ruta'],
+                "autor" => $recourse['autor'],
                 "editorial" => $recourse['editorial'],
-                "type_id" => $recourse['type_id'],
-                "total_pages" => $recourse['total_pages'],
-                "total_chapters" => $recourse['total_chapters'],
-                "total_videos" => $recourse['total_videos'],
-                "total_hours" => $recourse['total_hours'],
+                "tipoId" => $recourse['tipoId'],
+                "totalPaginas" => $recourse['totalPaginas'],
+                "totalCapitulos" => $recourse['totalCapitulos'],
+                "totalVideos" => $recourse['totalVideos'],
+                "totalHoras" => $recourse['totalHoras'],
                 // "id" => $recourse->id
             ]
         ]);
@@ -91,22 +92,22 @@ class RecourseRegistrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('recourses', [
-            "name" => $recourse['name'],
-            "source" => $recourse['source'],
-            "author" => $recourse['author'],
+            "name" => $recourse['nombre'],
+            "source" => $recourse['ruta'],
+            "author" => $recourse['autor'],
             "editorial" => $recourse['editorial'],
-            "type_id" => $recourse['type_id'],
-            "total_pages" => $recourse['total_pages'],
-            "total_chapters" => $recourse['total_chapters'],
-            "total_videos" => $recourse['total_videos'],
-            "total_hours" => $recourse['total_hours'],
+            "type_id" => $recourse['tipoId'],
+            "total_pages" => $recourse['totalPaginas'],
+            "total_chapters" => $recourse['totalCapitulos'],
+            "total_videos" => $recourse['totalVideos'],
+            "total_hours" => $recourse['totalHoras'],
         ]);
 
         $this->assertDatabaseHas('progress_histories', [
             "Recourse_id" => 1,
             "done" => 0,
-            "pending" => Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?
-                $recourse['total_pages'] : $recourse['total_videos'],
+            "pending" => Settings::getKeyfromId($recourse['tipoId']) === TypeRecourseEnum::TYPE_LIBRO->name ?
+                $recourse['totalPaginas'] : $recourse['totalVideos'],
             // "date" => Carbon::now(),
             "comment" => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA",
         ]);
@@ -128,15 +129,15 @@ class RecourseRegistrationTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                "name" => $recourse['name'],
-                "source" => $recourse['source'],
-                "author" => $recourse['author'],
+                "nombre" => $recourse['nombre'],
+                "ruta" => $recourse['ruta'],
+                "autor" => $recourse['autor'],
                 "editorial" => $recourse['editorial'],
-                "type_id" => $recourse['type_id'],
-                "total_pages" => $recourse['total_pages'],
-                "total_chapters" => $recourse['total_chapters'],
-                "total_videos" => $recourse['total_videos'],
-                "total_hours" => $recourse['total_hours'],
+                "tipoId" => $recourse['tipoId'],
+                "totalPaginas" => $recourse['totalPaginas'],
+                "totalCapitulos" => $recourse['totalCapitulos'],
+                "totalVideos" => $recourse['totalVideos'],
+                "totalHoras" => $recourse['totalHoras'],
             ]
         ]);
     }
@@ -151,9 +152,9 @@ class RecourseRegistrationTest extends TestCase
 
         $selectedTags = $tags->pluck('id')->random(3);
         $recourse = $this->recourseValidData([
-            "name" => null,
-            "source" => null,
-            "type_id" => null,
+            "nombre" => null,
+            "ruta" => null,
+            "tipoId" => null,
             "tags" => $selectedTags,
         ]);
 
@@ -170,8 +171,9 @@ class RecourseRegistrationTest extends TestCase
 
         // dd($response->getContent());
         $response->assertJsonStructure([
-            'error',
-            'code'
+            "error"=> [
+                ["status", "detail"]
+            ]
         ]);
     }
 
@@ -179,7 +181,8 @@ class RecourseRegistrationTest extends TestCase
     public function recourses_can_not_be_register_when_an_error_occurs_in_transaction()
     {
         $tags = Tag::factory(5)->create();
-        //Enviamos incorrectamente la data de los tags, para ocasionar un error en la transaccion
+        // Enviamos incorrectamente la data de los tags, para ocasionar un error en la transaccion
+        // Solo enviamos los nombres de las etiquetas y no los ids que necesita la operacion
         $selectedTags = $tags->pluck('name')->random(3);
 
         $recourse = $this->recourseValidData([
@@ -194,8 +197,11 @@ class RecourseRegistrationTest extends TestCase
         $this->assertDatabaseCount('status_histories', 0);
         $this->assertDatabaseCount('taggables', 0);
         $response->assertJsonStructure([
-            'error',
-            'code'
+            "error" => [
+                [
+                    "status", "detail"
+                ]
+            ]
         ]);
     }
 }

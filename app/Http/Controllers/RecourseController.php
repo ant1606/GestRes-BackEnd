@@ -32,6 +32,7 @@ class RecourseController extends ApiController
         $dateHistoryCreation = Carbon::now()->toDateString();
         $commentAutogenerate = "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA";
 
+
         try {
             DB::beginTransaction();
 
@@ -54,15 +55,17 @@ class RecourseController extends ApiController
                 "comment" => $commentAutogenerate
             ]);
 
+
             $recourse->tags()->syncWithoutDetaching($request->tags);
 
             DB::commit();
 
             // dd($recourse);
-            return $this->showOne($recourse, Response::HTTP_CREATED);
+            return $this->showOne(new RecourseResource($recourse), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->errorResponse($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            // TODO Escribir los mensajes de error en un log $e->getMessage()
+            return $this->errorResponse("Ocurrió un error al registrar el recurso, hable con el administrador", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
