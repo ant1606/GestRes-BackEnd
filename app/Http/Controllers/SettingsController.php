@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\StatusRecourseEnum;
 use App\Enums\TypeRecourseEnum;
+use App\Enums\TypeSettingsEnum;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,59 +13,29 @@ use function PHPSTORM_META\map;
 
 class SettingsController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Settings  $settings
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
+    public function show($value)
     {
-        // dd(Settings::getData("TYPE_LIBRO"));
-        // dd(collect(TypeRecourseEnum::cases()));
+        $typeEnum = null;
 
-        // dd($value);
-        // dd($request->value);
-        $value = $request->value;
-        // $value = "type";
-        switch ($value) {
-            case 'type':
-                $typeEnum = TypeRecourseEnum::class;
+        foreach (TypeSettingsEnum::cases() as $type){
+            if($type->name === $value){
+                $typeEnum = $type->value;
                 break;
-            case 'status':
-                $typeEnum = StatusRecourseEnum::class;
-                break;
-            default:
-                $typeEnum = null;
-                break;
+            }
         }
 
         if ($typeEnum) {
-            // dd(Settings::getData("TYPE_LIBRO"));
-            // dd($typeEnum::cases());
-
-            // dd($res);
             $res = collect($typeEnum::cases())->map(function ($case) {
                 return Settings::getData($case->name);
             });
@@ -75,24 +46,12 @@ class SettingsController extends ApiController
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Settings  $settings
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Settings $settings)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Settings  $settings
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Settings $settings)
     {
         //

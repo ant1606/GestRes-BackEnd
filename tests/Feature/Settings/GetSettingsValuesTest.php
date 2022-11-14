@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Settings;
 
+use App\Enums\TypeSettingsEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,19 +12,18 @@ class GetSettingsValuesTest extends TestCase
 {
     use RefreshDatabase;
 
+    // TODO Crear el APIResource para los settings
     /** @test */
     public function get_data_from_settings_when_sending_an_acceptable_value()
     {
-        $this->withoutExceptionHandling();
+        $typeName = array_rand([
+            TypeSettingsEnum::SETTINGS_TYPE->name => 1,
+            TypeSettingsEnum::SETTINGS_STATUS->name => 1
+        ]);
 
-        //TODO Colocar como enum los tipos de valor a enviar ["type", "status"] para obtener los datos de settigns
-        $value = ["type"];
-
-        $response = $this->getJson(route('settings.show'), $value);
+        $response = $this->getJson(route('settings.show',$typeName));
 
         $response->assertStatus(Response::HTTP_OK);
-
-        // dd($response);
         $response->assertJsonStructure([
             "data" => [
                 [
@@ -37,16 +37,11 @@ class GetSettingsValuesTest extends TestCase
     /** @test */
     public function get_error_from_settings_when_sending_an_unacceptable_value()
     {
-        $this->withoutExceptionHandling();
-
-        //TODO Colocar como enum los tipos de valor a enviar ["type", "status"] para obtener los datos de settigns
         $value = "valorNoExistente";
 
         $response = $this->getJson(route('settings.show', $value));
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        // dd($response);
         $response->assertJsonStructure([
             "error"
         ]);
