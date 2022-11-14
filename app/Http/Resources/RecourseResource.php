@@ -14,11 +14,6 @@ class RecourseResource extends JsonResource
      */
     public function toArray($request)
     {
-        //  return parent::toArray($request);
-        // TODO Generar el TagResource, ProgressResource y StatusResource y cambiarlo en
-        // "tags" => RecourseResource::collection($this->whenLoaded('tags')),
-        // "status" => RecourseResource::collection($this->whenLoaded('status')),
-        // "progress" => RecourseResource::collection($this->whenLoaded('progress')),
         return [
             "identificador" => $this->id,
             "nombre" => $this->name,
@@ -30,8 +25,8 @@ class RecourseResource extends JsonResource
             "totalCapitulos" => $this->total_chapters,
             "totalVideos" => $this->total_videos,
             "totalHoras" => $this-> total_hours,
-            "tags" => RecourseResource::collection($this->whenLoaded('tags')),
-            "status" => RecourseResource::collection($this->whenLoaded('status')),
+            "tags" => TagResource::collection($this->whenLoaded('tags')),
+            "status" => StatusResource::collection($this->whenLoaded('status')),
             "progress" => ProgressResource::collection($this->whenLoaded('progress')),
         ];
     }
