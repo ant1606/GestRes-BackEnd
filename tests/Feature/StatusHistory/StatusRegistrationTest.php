@@ -23,9 +23,9 @@ class StatusRegistrationTest extends TestCase
 
         $date = Carbon::now()->toDateString();
         $status = [
-            'status_id' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
-            'date' => $date,
-            'comment' => 'Curso a punto de empezar'
+            'estadoId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+            'fecha' => $date,
+            'comentario' => 'Curso a punto de empezar'
         ];
 
         $response = $this->postJson(route('status.store', $recourse->id), $status);
@@ -50,9 +50,9 @@ class StatusRegistrationTest extends TestCase
 
         $date = Carbon::now()->subDays(15);
         $status = [
-            'status_id' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
-            'date' => $date,
-            'comment' => 'Curso a punto de empezar'
+            'estadoId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+            'fecha' => $date,
+            'comentario' => 'Curso a punto de empezar'
         ];
 
         $response = $this->postJson(route('status.store', $recourse->id), $status);
