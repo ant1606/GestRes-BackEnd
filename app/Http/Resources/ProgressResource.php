@@ -15,10 +15,11 @@ class ProgressResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "realizado"=> $this->done,
-            "pendiente" => $this->pending,
-            "fecha" =>$this->date,
-            "comentario" =>$this->comment
+          "identificador" => $this->id,
+          "realizado"=> $this->done,
+          "pendiente" => $this->pending,
+          "fecha" =>$this->date,
+          "comentario" =>$this->comment
         ];
     }
 

@@ -57,6 +57,21 @@ class ProgressHistoryController extends ApiController
 
     public function destroy(ProgressHistory $progressHistory)
     {
-        //
+      $recourse = $progressHistory->recourse;
+
+      if($progressHistory->comment === "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA" && $progressHistory->id === $recourse->progress->first()->id){
+        return $this->errorResponse(
+          "No se puede eliminar el registro generado por el sistema",
+          Response::HTTP_UNPROCESSABLE_ENTITY);
+      }
+
+      if($progressHistory->id !== $recourse->progress->last()->id){
+        return $this->errorResponse(
+          "No se puede eliminar el registro, sólo puede eliminarse el ultimo registro del recurso",
+          Response::HTTP_UNPROCESSABLE_ENTITY);
+      }
+
+      $progressHistory->delete();
+      return $this->showOne(new ProgressResource($progressHistory), Response::HTTP_ACCEPTED);
     }
 }

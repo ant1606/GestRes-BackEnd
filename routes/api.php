@@ -33,8 +33,10 @@ Route::middleware(['cors'])->group(function () {
   Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
   Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
 
-  // StatusHistory Routes
+  // StatusHistory Route
   Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
+  //ProgressHistory Route
+  Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
 
   Route::post('settings', [SettingsController::class, 'show'])->name('settings.show');
 
