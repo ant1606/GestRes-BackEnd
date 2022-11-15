@@ -86,7 +86,6 @@ class RecourseController extends ApiController
 
     public function update(Recourse $recourse, RecourseUpdateRequest $request)
     {
-
         $recourse->fill($request->only([
             'name',
             'source',
@@ -98,8 +97,6 @@ class RecourseController extends ApiController
             'total_videos',
             'total_hours',
         ]));
-
-
 
         if ($recourse->isClean()) {
             return $this->errorResponse(

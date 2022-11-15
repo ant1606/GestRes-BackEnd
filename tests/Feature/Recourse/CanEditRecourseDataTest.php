@@ -19,6 +19,7 @@ class CanEditRecourseDataTest extends TestCase
     /** @test */
     public function recourse_can_be_edited_when_change_only_required_values()
     {
+//        dd(Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name,"id"));
         $recourse = Recourse::factory()->create();
 
         $this->assertDatabaseCount('recourses', 1);
@@ -26,31 +27,27 @@ class CanEditRecourseDataTest extends TestCase
         $recourseUpdate = [
             "nombre" => "Recurso Actualizado",
             "ruta" => $recourse['source'],
-            "autor" => $recourse['author'],
-            "editorial" => $recourse['editorial'],
-            "tipoId" => $recourse['type_id'],
-            "totalPaginas" => $recourse['total_pages'],
-            "totalCapitulos" => $recourse['total_chapters'],
-            "totalVideos" => $recourse['total_videos'],
-            "totalHoras" => $recourse['total_hours'],
+            "tipoId" => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name,"id"),
+            "totalPaginas" => 257,
+            "totalCapitulos" => 13,
         ];
 
         $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
-
+//        dd($response->getContent());
         $response->assertStatus(Response::HTTP_ACCEPTED);
 
         $this->assertDatabaseCount('recourses', 1);
 
         $this->assertDatabaseHas('recourses', [
             "name" => $recourseUpdate["nombre"],
-            "source" => $recourseUpdate["ruta"],
-            "author" => $recourseUpdate["autor"],
-            "editorial" => $recourseUpdate["editorial"],
+            "source" => $recourse["source"],
+            "author" => $recourse["author"],
+            "editorial" => $recourse["editorial"],
             "type_id" => $recourseUpdate["tipoId"],
             "total_pages" => $recourseUpdate["totalPaginas"],
             "total_chapters" => $recourseUpdate["totalCapitulos"],
-            "total_videos" => $recourseUpdate["totalVideos"],
-            "total_hours" => $recourseUpdate["totalHoras"]
+            "total_videos" => $recourse["total_videos"],
+            "total_hours" => $recourse["total_hours"]
         ]);
     }
 

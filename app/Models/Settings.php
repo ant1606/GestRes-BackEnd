@@ -12,10 +12,13 @@ class Settings extends Model
     use HasFactory;
 
 
+    /***
+     * @param $key String  // is name of type settings
+     * @param $subKey String // ['value', 'id'] choose one option
+     * @return mixed|null
+     */
     public static function getData($key, $subKey = null)
     {
-        //$subKey => ['value' o 'id']
-        // dd("Hola");
         if (!Cache::has('settings'))
             self::reload_data_settings_to_cache();
 
