@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StatusCollection;
 use App\Http\Resources\StatusResource;
 use App\Models\Recourse;
 use Illuminate\Http\Request;
@@ -16,9 +17,11 @@ class StatusHistoryController extends ApiController
         $this->middleware('transform.input:' . StatusResource::class);
     }
 
-    public function index()
+    public function index(Recourse $recourse)
     {
-        //
+      $statusHistories = $recourse->status;
+
+      return $this->showAllResource(new StatusCollection($statusHistories), Response::HTTP_OK);
     }
 
     public function store(Recourse $recourse, Request $request)
