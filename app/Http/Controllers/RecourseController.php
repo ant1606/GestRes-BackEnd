@@ -108,4 +108,12 @@ class RecourseController extends ApiController
         $recourse->save();
         return $this->showOne(new RecourseResource($recourse), Response::HTTP_ACCEPTED);
     }
+
+    public function destroy(Recourse $recourse){
+      $recourse->status()->forceDelete();
+      $recourse->progress()->forceDelete();
+      $recourse->delete();
+
+      return $this->showOne(new RecourseResource($recourse), Response::HTTP_ACCEPTED);
+    }
 }
