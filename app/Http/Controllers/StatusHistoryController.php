@@ -57,6 +57,12 @@ class StatusHistoryController extends ApiController
     {
         $recourse = $statusHistory->recourse;
 
+        if($statusHistory->comment === "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA" && $statusHistory->id === $recourse->status->first()->id){
+          return $this->errorResponse(
+            "No se puede eliminar el registro generado por el sistema",
+            Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         if($statusHistory->id !== $recourse->status->last()->id){
             return $this->errorResponse(
                 "No se puede eliminar el registro, sólo puede eliminarse el ultimo registro del recurso",

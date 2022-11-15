@@ -72,4 +72,29 @@ class StatusDeleteTest extends TestCase
             ]
         ]);
     }
+
+
+  /** @test **/
+  public function a_status_can_not_be_deleted_if_is_generated_by_system()
+  {
+    $this->withoutExceptionHandling();
+
+    $recourse = Recourse::factory()->create();
+    $statusGenerated = $recourse->status->first();
+
+    $this->assertDatabaseCount("status_histories", 1);
+
+    $response = $this->deleteJson(route('status.destroy',  $statusGenerated));
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $this->assertDatabaseCount("status_histories", 1);
+    $response->assertJsonStructure([
+      "error" => [
+        [
+          "status",
+          "detail"
+        ]
+      ]
+    ]);
+  }
 }
