@@ -69,7 +69,7 @@ trait ApiResponser
 
     $collection = $this->paginate($collection);
     $collection = $this->cacheResponse($collection);
-    // dd($collection);
+
     return $this->successResponse($this->responsePaginateJson($collection), $code);
   }
 
@@ -89,7 +89,7 @@ trait ApiResponser
     $page = LengthAwarePaginator::resolveCurrentPage();
 
     // Cantidad de elementos a mostrar por pagina
-    $perPage = 3;
+    $perPage = 10;
     if (request()->has('per_page')) {
       $perPage = (int) request()->per_page;
     }
@@ -103,7 +103,7 @@ trait ApiResponser
       'path' => LengthAwarePaginator::resolveCurrentPath(),
     ]);
 
-    //Rescatamos los queryStrings existentes en la ruta, como filtros u orderBy, y los añadimos a la 
+    //Rescatamos los queryStrings existentes en la ruta, como filtros u orderBy, y los añadimos a la
     // ruta generada por el paginador
     $paginated->appends(request()->all());
 
@@ -121,7 +121,7 @@ trait ApiResponser
     $queryString = http_build_query($queryParams);
     $fullUrl = "{$url}?{$queryString}";
 
-    //15/60 se refiere a 15 segundos, 
+    //15/60 se refiere a 15 segundos,
     //Si se desea minutos, solo basta con colocar el numero, sin la division, si se desea en segundos
     // se debe dividir con 60 segundos
     return Cache::remember($fullUrl, 15 / 60, function () use ($data) {

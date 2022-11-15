@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProgressCollection;
 use App\Http\Resources\ProgressResource;
 use App\Models\Recourse;
 use Illuminate\Http\Request;
@@ -18,9 +19,11 @@ class ProgressHistoryController extends ApiController
         $this->middleware('transform.input:'.ProgressResource::class);
     }
 
-    public function index()
+    public function index(Recourse $recourse)
     {
-        //
+        $progressHistories = $recourse->progress;
+
+        return $this->showAllResource(new ProgressCollection($progressHistories), Response::HTTP_OK);
     }
 
     public function store(Recourse $recourse, ProgressHistoryStoreRequest $request)

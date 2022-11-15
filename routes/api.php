@@ -28,8 +28,10 @@ Route::middleware(['cors'])->group(function () {
   Route::get('recourses/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
   Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
 
-  Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
-  Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
+
+    Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
+    Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
+    Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
 
   // StatusHistory Routes
   Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
