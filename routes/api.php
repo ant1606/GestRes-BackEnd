@@ -31,6 +31,9 @@ Route::middleware(['cors'])->group(function () {
   Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
   Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
 
+  // StatusHistory Routes
+  Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
+
   Route::post('settings', [SettingsController::class, 'show'])->name('settings.show');
 
   Route::post('tag', [TagController::class, 'store'])->name('tag.store');

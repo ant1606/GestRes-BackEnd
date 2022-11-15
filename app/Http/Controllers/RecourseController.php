@@ -32,7 +32,6 @@ class RecourseController extends ApiController
         $dateHistoryCreation = Carbon::now()->toDateString();
         $commentAutogenerate = "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA";
 
-
         try {
             DB::beginTransaction();
 

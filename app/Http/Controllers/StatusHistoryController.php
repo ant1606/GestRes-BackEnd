@@ -52,6 +52,15 @@ class StatusHistoryController extends ApiController
 
     public function destroy(StatusHistory $statusHistory)
     {
-        //
+        $recourse = $statusHistory->recourse;
+
+        if($statusHistory->id !== $recourse->status->last()->id){
+            return $this->errorResponse(
+                "No se puede eliminar el registro, sólo puede eliminarse el ultimo registro del recurso",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $statusHistory->delete();
+        return $this->showOne(new StatusResource($statusHistory), Response::HTTP_ACCEPTED);
     }
 }
