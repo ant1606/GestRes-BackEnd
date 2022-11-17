@@ -11,7 +11,7 @@ class Settings extends Model
 {
     use HasFactory;
 
-
+    protected $hidden = ['created_at', 'updated_at'];
     /***
      * @param $key String  // is name of type settings
      * @param $subKey String // ['value', 'id'] choose one option

@@ -16,20 +16,16 @@ class SettingsController extends ApiController
 
     public function index()
     {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        //
+        $settings = Settings::all();
+        return $this->showAll($settings, Response::HTTP_OK);
     }
 
     public function show($value)
     {
         $typeEnum = null;
 
-        foreach (TypeSettingsEnum::cases() as $type){
-            if($type->name === $value){
+        foreach (TypeSettingsEnum::cases() as $type) {
+            if ($type->name === $value) {
                 $typeEnum = $type->value;
                 break;
             }
@@ -44,16 +40,5 @@ class SettingsController extends ApiController
         } else {
             return $this->errorResponse("Error al procesar la data", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-    }
-
-    public function update(Request $request, Settings $settings)
-    {
-        //
-    }
-
-
-    public function destroy(Settings $settings)
-    {
-        //
     }
 }

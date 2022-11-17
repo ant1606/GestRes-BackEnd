@@ -34,19 +34,13 @@ Route::middleware(['cors'])->group(function () {
   Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
   Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
 
-
   // StatusHistory Route
   Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
   //ProgressHistory Route
   Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
 
-  Route::post('settings', [SettingsController::class, 'show'])->name('settings.show');
-
-  Route::post('tag', [TagController::class, 'store'])->name('tag.store');
-  Route::get('tag/{tag}', [TagController::class, 'show'])->name('tag.show');
-  Route::get('tag', [TagController::class, 'index'])->name('tag.index');
-  Route::delete('tag/{tag}', [TagController::class, 'destroy'])->name('tag.destroy');
-  Route::put('tag/{tag}', [TagController::class, 'update'])->name('tag.update');
-
+  Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
   Route::get('settings/{value}', [SettingsController::class, 'show'])->name('settings.show');
+
+  Route::resource('tag', TagController::class)->except(['create', 'edit']);
 });
