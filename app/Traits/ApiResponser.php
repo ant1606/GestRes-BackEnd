@@ -81,7 +81,7 @@ trait ApiResponser
     }
 
     $rules = [
-      'per_page' => 'integer|min:2|max:50'
+      'perPage' => 'integer|min:2|max:50'
     ];
     Validator::validate(request()->all(), $rules);
 
@@ -90,9 +90,10 @@ trait ApiResponser
 
     // Cantidad de elementos a mostrar por pagina
     $perPage = 10;
-    if (request()->has('per_page')) {
-      $perPage = (int) request()->per_page;
+    if (request()->has('perPage')) {
+      $perPage = (int) request()->perPage;
     }
+
 
     //Obtenemos los registros segun la pagina actual (0-15, 16-30, 31-45, ....etc)
     $results = $collection->slice(($page - 1) * $perPage, $perPage)->values();
