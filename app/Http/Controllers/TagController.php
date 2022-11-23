@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TagStyleEnum;
 use App\Http\Requests\TagRequest;
 use App\Http\Resources\TagCollection;
 use App\Http\Resources\TagResource;
@@ -11,8 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
-
-use function PHPUnit\Framework\isNull;
 
 class TagController extends ApiController
 {
@@ -48,7 +47,7 @@ class TagController extends ApiController
     {
         $tag = Tag::create([
             "name" => Str::upper($request->name),
-            "style" => $request->style,
+            "style" => $this->randomTagStyle(),
         ]);
 
         return $this->showOne(new TagResource($tag), Response::HTTP_CREATED);
@@ -84,5 +83,25 @@ class TagController extends ApiController
         $tag->delete();
 
         return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
+    }
+
+    private function randomTagStyle()
+    {
+        return array_rand([
+            TagStyleEnum::TAG_STYLE_BLUE->value => 1,
+            TagStyleEnum::TAG_STYLE_EMERALD->value => 1,
+            TagStyleEnum::TAG_STYLE_GREEN->value => 1,
+            TagStyleEnum::TAG_STYLE_INDIGO->value => 1,
+            TagStyleEnum::TAG_STYLE_LIME->value => 1,
+            TagStyleEnum::TAG_STYLE_ORANGE->value => 1,
+            TagStyleEnum::TAG_STYLE_PINK->value => 1,
+            TagStyleEnum::TAG_STYLE_PURPLE->value => 1,
+            TagStyleEnum::TAG_STYLE_RED->value => 1,
+            TagStyleEnum::TAG_STYLE_ROSE->value => 1,
+            TagStyleEnum::TAG_STYLE_SKY->value => 1,
+            TagStyleEnum::TAG_STYLE_TEAL->value => 1,
+            TagStyleEnum::TAG_STYLE_YELLOW->value => 1,
+            TagStyleEnum::TAG_STYLE_GRAY->value => 1
+        ]);
     }
 }
