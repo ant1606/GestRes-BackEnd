@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
 use App\Traits\ApiResponser;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -82,6 +83,11 @@ class Handler extends ExceptionHandler
                 if ($exception instanceof ModelNotFoundException) {
                     return $this->errorResponse("No se encontraron resultados", 404);
                 }
+
+                if ($exception instanceof MethodNotAllowedHttpException) {
+                  return $this->errorResponse("El método no es aceptado", 404);
+                }
+
             }
         });
     }
