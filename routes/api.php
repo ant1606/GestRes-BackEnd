@@ -24,10 +24,14 @@ use App\Models\StatusHistory;
 //     return $request->user();
 // });
 Route::middleware(['cors'])->group(function () {
-  Route::post('recourses', [RecourseController::class, 'store'])->name('recourse.store');
-  Route::get('recourses/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
-  Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
-  Route::delete('recourses/{recourse}', [RecourseController::class, 'destroy'])->name('recourse.destroy');
+
+  // Cuando se usa la ruta get definida como abajo y en postman se coloca queryString para filtrar datos, el controlador no los recibe
+  // En cambio cuando se usa Route::resource y se hace la misma operacion, el controlador si recibe los queryString, verificar porque
+  //  Route::get('recourses', [RecourseController::class, 'index'])->name('recourse.index');
+  //  Route::post('recourses', [RecourseController::class, 'store'])->name('recourse.store');
+  //  Route::get('recourses/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
+  //  Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
+  //  Route::delete('recourses/{recourse}', [RecourseController::class, 'destroy'])->name('recourse.destroy');
 
   Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
   Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
@@ -43,4 +47,5 @@ Route::middleware(['cors'])->group(function () {
   Route::get('settings/{value}', [SettingsController::class, 'show'])->name('settings.show');
 
   Route::resource('tag', TagController::class)->except(['create', 'edit']);
+  Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
 });

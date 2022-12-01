@@ -26,6 +26,9 @@ class RecoursePostRequest extends FormRequest
      */
     public function rules()
     {
+        // Este es el regex usado en JS 
+        //  /(\d+)[:]([0-5]{1}[0-9]{1})[:]([0-5]{1}[0-9]{1})/
+        //Verificarlo en laravel por si las dudas
         return [
             "name" => 'required|max:150',
             "source" => 'required|max:255',

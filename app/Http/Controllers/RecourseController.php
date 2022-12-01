@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecourseCollection;
 use App\Http\Resources\RecourseResource;
 use Carbon\Carbon;
 use App\Models\Recourse;
@@ -24,7 +25,21 @@ class RecourseController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('transform.input:' . RecourseResource::class)->only(['store', 'update','index']);
+        $this->middleware('transform.input:' . RecourseResource::class)->only(['store', 'update']);
+    }
+
+    public function index(Request $request){
+
+      $recourses = Recourse::query();
+
+      if ($request->has('searchNombre') && $request->searchNombre !== null)
+        $recourses = Recourse::where('name', 'like', '%' . $request->searchNombre . '%');
+
+      if ($request->has('searchTipo') && $request->searchTipo !== null)
+        $recourses = Recourse::where('type_id', '=', $request->searchTipo);
+
+      $recourses = $recourses->get();
+      return $this->showAllResource(new RecourseCollection($recourses), Response::HTTP_OK);
     }
 
     public function store(RecoursePostRequest $request)
