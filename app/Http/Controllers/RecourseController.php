@@ -32,11 +32,12 @@ class RecourseController extends ApiController
 
       $recourses = Recourse::query();
 
+//      dd($recourses->get());
       if ($request->has('searchNombre') && $request->searchNombre !== null)
-        $recourses = Recourse::where('name', 'like', '%' . $request->searchNombre . '%');
+        $recourses = $recourses->where('name', 'like', '%' . $request->searchNombre . '%');
 
       if ($request->has('searchTipo') && $request->searchTipo !== null)
-        $recourses = Recourse::where('type_id', '=', $request->searchTipo);
+        $recourses = $recourses->where('type_id', '=', $request->searchTipo);
 
       $recourses = $recourses->get();
       return $this->showAllResource(new RecourseCollection($recourses), Response::HTTP_OK);

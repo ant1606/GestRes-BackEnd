@@ -26,7 +26,7 @@ class TagController extends ApiController
         $tags = Tag::query();
 
         if ($request->has('searchNombre') && $request->searchNombre !== null)
-            $tags = Tag::where('name', 'like', '%' . $request->searchNombre . '%');
+            $tags = $tags->where('name', 'like', '%' . $request->searchNombre . '%');
 
         if (
             $request->has('sortNombre') &&
