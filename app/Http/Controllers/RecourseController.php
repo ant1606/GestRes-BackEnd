@@ -39,6 +39,18 @@ class RecourseController extends ApiController
       if ($request->has('searchTipo') && $request->searchTipo !== null)
         $recourses = $recourses->where('type_id', '=', $request->searchTipo);
 
+      if ($request->has('searchEstado') && $request->searchEstado !== null){
+        $recourses = $recourses->where(function ($query){
+          $query->select('status_id')
+            ->from('status_histories')
+            ->whereColumn('status_histories.recourse_id', 'recourses.id')
+            ->orderByDesc('status_histories.id')
+            ->limit(1);
+        },  $request->searchEstado);
+      }
+
+//      $recourses = $recourses->where('type_id', '=', $request->searchTipo);
+
       $recourses = $recourses->get();
       return $this->showAllResource(new RecourseCollection($recourses), Response::HTTP_OK);
     }
