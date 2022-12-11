@@ -28,13 +28,20 @@ class Recourse extends Model
         'updated_at',
     ];
 
-    protected $appends = ['type_name'];
+    protected $appends = ['type_name', 'current_status_name'];
 
     protected function typeName(): Attribute
     {
         return new Attribute(
             get: fn () => Settings::getData(Settings::getKeyfromId($this->type_id), "value")
         );
+    }
+
+    protected function currentStatusName(): Attribute
+    {
+      return new Attribute(
+        get: fn () => $this->status->last()->status_name
+      );
     }
 
     public function tags()
