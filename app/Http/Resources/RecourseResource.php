@@ -20,7 +20,7 @@ class RecourseResource extends JsonResource
             "ruta" => $this->source,
             "autor" => $this->author,
             "editorial" => $this->editorial,
-            "tipoId" => $this->type_id,
+            "tipoId" => $this->type_id ,
             "tipoNombre" => $this->type_name,
             "nombreEstadoActual" => $this->current_status_name,
             "totalPaginas" => $this->total_pages,

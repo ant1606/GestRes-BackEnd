@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\isNull;
 
 class Recourse extends Model
 {
@@ -39,9 +40,10 @@ class Recourse extends Model
 
     protected function currentStatusName(): Attribute
     {
-      return new Attribute(
-        get: fn () => $this->status->last()->status_name
-      );
+        return new Attribute(
+        // validar que exista la relacion antes de obtener el status
+          get: fn () => !$this->status->isEmpty() ? $this->loadExists('status')->status->last()->status_name : ''
+        );
     }
 
     public function tags()
