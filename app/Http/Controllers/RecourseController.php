@@ -96,19 +96,9 @@ class RecourseController extends ApiController
         }
     }
 
-    public function show($recourse)
+    public function show(Recourse $recourse)
     {
-        // TODO si el recurso no tiene una relacion de Tags, falla la consulta
-        // Method Illuminate\Database\Eloquent\Collection::tags does not exist.
-        // https://stackoverflow.com/questions/35054498/eager-load-relation-when-relation-doesnt-exist
-        // https://laracasts.com/discuss/channels/eloquent/eager-loading-when-relation-does-not-exist
-        // https://laravel.com/docs/9.x/eloquent-relationships#eager-loading
-        $recourse = Recourse::findOrFail($recourse)
-            ->with(['status', 'progress', 'tags'])
-            ->get()
-            // ->take(1)
-            ->first();
-
+        $recourse->load('status', 'progress','tags');
         return $this->showOne(new RecourseResource($recourse), Response::HTTP_OK);
     }
 
