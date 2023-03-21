@@ -23,7 +23,7 @@ class RecourseDeleteTest extends TestCase
     $this->assertDatabaseCount("progress_histories", 1);
     $this->assertDatabaseCount("status_histories", 1);
 
-    $response = $this->deleteJson(route('recourse.destroy', $recourseDelete));
+    $response = $this->deleteJson(route('recourses.destroy', $recourseDelete));
 
     $response->assertStatus(Response::HTTP_ACCEPTED);
     $this->assertDatabaseCount("recourses", 0);

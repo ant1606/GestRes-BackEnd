@@ -23,7 +23,7 @@ class CanSeeDetailDataOfRecurseTest extends TestCase
         $tags = Tag::factory(5)->create();
         $recourse->tags()->syncWithoutDetaching($tags->pluck('id'));
 
-        $response = $this->getJson(route('recourse.show', $recourse->id));
+        $response = $this->getJson(route('recourses.show', $recourse->id));
         // dd($response->getContent());
 
         $response->assertStatus(Response::HTTP_OK);
@@ -53,7 +53,7 @@ class CanSeeDetailDataOfRecurseTest extends TestCase
 
         $recourse = Recourse::factory()->create();
 
-        $response = $this->getJson(route('recourse.show', $recourse->id));
+        $response = $this->getJson(route('recourses.show', $recourse->id));
 
         $response->assertStatus(Response::HTTP_OK);
 

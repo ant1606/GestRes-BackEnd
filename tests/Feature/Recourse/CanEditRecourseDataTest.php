@@ -16,6 +16,7 @@ class CanEditRecourseDataTest extends TestCase
     use RecourseDataTrait;
 
     //TODO GEnerar los test unitarios para el StoreUpdateRequest
+    //TODO Generar los test para el siguiente caso :  Al momento de editar un recurso y si se modifica el tipo y los totales, mandar un mensaje de confirmacion indicando que se borraran los avances registrados de estado y avance del recurso
     /** @test */
     public function recourse_can_be_edited_when_change_only_required_values()
     {
@@ -32,7 +33,7 @@ class CanEditRecourseDataTest extends TestCase
             "totalCapitulos" => 13,
         ];
 
-        $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
+        $response = $this->putJson(route('recourses.update', $recourse), $recourseUpdate);
 //        dd($response->getContent());
         $response->assertStatus(Response::HTTP_ACCEPTED);
 
@@ -60,7 +61,7 @@ class CanEditRecourseDataTest extends TestCase
 
         $recourseUpdate = $this->recourseValidData([ "nombre" => 'Mi Recurso Actualizado nuevo' ] );
 
-        $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
+        $response = $this->putJson(route('recourses.update', $recourse), $recourseUpdate);
 
         $response->assertStatus(Response::HTTP_ACCEPTED);
         $this->assertDatabaseCount('recourses', 1);
@@ -84,7 +85,7 @@ class CanEditRecourseDataTest extends TestCase
 
         $this->assertDatabaseCount('recourses', 1);
 
-        $response = $this->putJson(route('recourse.update', $recourse), $recourse->toArray());
+        $response = $this->putJson(route('recourses.update', $recourse), $recourse->toArray());
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -117,7 +118,7 @@ class CanEditRecourseDataTest extends TestCase
             "totalVideos" => null
         ]);
 
-        $response = $this->putJson(route('recourse.update', $recourse), $recourseUpdate);
+        $response = $this->putJson(route('recourses.update', $recourse), $recourseUpdate);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 

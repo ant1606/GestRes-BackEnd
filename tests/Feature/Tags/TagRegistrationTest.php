@@ -19,8 +19,7 @@ class TagRegistrationTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $tag = [
-            "nombre" => "Etiqueta de prueba",
-            "estilos" => "bg-gray-700",
+            "nombre" => "Etiqueta de prueba"
         ];
 
         $response = $this->postJson(route("tag.store"), $tag);
@@ -30,7 +29,6 @@ class TagRegistrationTest extends TestCase
         $this->assertDatabaseCount("tags", 1);
         $this->assertDatabaseHas("tags", [
             "name" => Str::upper($tag['nombre']),
-            "style" => $tag['estilos']
         ]);
     }
 

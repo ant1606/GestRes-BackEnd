@@ -30,7 +30,7 @@ class RecourseRegistrationTest extends TestCase
             'editorial' => null,
         ]);
 
-        $response = $this->postJson(route('recourse.store'), $recourse);
+        $response = $this->postJson(route('recourses.store'), $recourse);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -88,7 +88,7 @@ class RecourseRegistrationTest extends TestCase
         $selectedTags = $tags->pluck('id')->random(3);
         $recourse = $this->recourseValidData(["tags" => $selectedTags,]);
 
-        $response = $this->postJson(route('recourse.store'), $recourse);
+        $response = $this->postJson(route('recourses.store'), $recourse);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('recourses', [
@@ -158,7 +158,7 @@ class RecourseRegistrationTest extends TestCase
             "tags" => $selectedTags,
         ]);
 
-        $response = $this->postJson(route('recourse.store'), $recourse);
+        $response = $this->postJson(route('recourses.store'), $recourse);
         // dd($response->exception->getMessage());
         // dd($response->exception->getCode());
         // dd(gettype($response->exception));
@@ -189,7 +189,7 @@ class RecourseRegistrationTest extends TestCase
             "tags" => $selectedTags,
         ]);
 
-        $response = $this->postJson(route('recourse.store'), $recourse);
+        $response = $this->postJson(route('recourses.store'), $recourse);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertDatabaseCount('recourses', 0);
