@@ -45,6 +45,7 @@ Route::middleware(['cors'])->group(function () {
   //  Route::delete('recourses/{recourse}', [RecourseController::class, 'destroy'])->name('recourse.destroy');
 
   Route::post('login', [AuthenticationController::class,'login'])->name('login');
+  Route::post('remember', [AuthenticationController::class,'check_remember'])->name('remember');
 
   Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
   Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
