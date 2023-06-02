@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ProgressHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,9 +21,19 @@ use App\Models\StatusHistory;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+     return $request->user();
+ });
+
+
+
+//
+//Route::post('/tokens/create', function (Request $request) {
+//  $token = $request->user()->createToken($request->token_name);
+//
+//  return ['token' => $token->plainTextToken];
+//});
+
 Route::middleware(['cors'])->group(function () {
 
   // Cuando se usa la ruta get definida como abajo y en postman se coloca queryString para filtrar datos, el controlador no los recibe
@@ -32,6 +43,8 @@ Route::middleware(['cors'])->group(function () {
   //  Route::get('recourses/{recourse}', [RecourseController::class, 'show'])->name('recourse.show');
   //  Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
   //  Route::delete('recourses/{recourse}', [RecourseController::class, 'destroy'])->name('recourse.destroy');
+
+  Route::post('login', [AuthenticationController::class,'login'])->name('login');
 
   Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
   Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
