@@ -72,4 +72,21 @@ class AuthenticationController extends ApiController
 
       return  $this->errorResponse("Usuario no autentificado", Response::HTTP_NOT_FOUND );
     }
+
+    public function logout(Request $request){
+      $request->validate([
+        'remember_me' => ['required'],
+      ]);
+
+      $usuario = User::where("remember_token", $request->get("remember_me"))->first();
+
+      if($usuario){
+        $usuario->remember_token = null;
+        $usuario->save();
+
+        return $this->showMessage("Se cerro la sesión correctamente", Response::HTTP_OK);
+      }
+
+      return  $this->errorResponse("Ocurrio un problema", Response::HTTP_NOT_FOUND );
+    }
 }

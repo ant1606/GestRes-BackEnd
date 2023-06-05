@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ProgressHistoryController;
+use App\Http\Controllers\UserController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecourseController;
@@ -46,6 +49,13 @@ Route::middleware(['cors'])->group(function () {
 
   Route::post('login', [AuthenticationController::class,'login'])->name('login');
   Route::post('remember', [AuthenticationController::class,'check_remember'])->name('remember');
+  Route::post('register', [UserController::class, 'store'])->name('register');
+
+  //Rutas con autentificación
+  Route::post('logout', [AuthenticationController::class,'logout'])->name('logout');
+  Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->middleware('auth:sanctum')->name('verification.notice');
+  Route::get('/email/verify/{id}/{hash}',[EmailVerificationController::class, 'verify'])->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+  Route::post('/email/verification-notification',[EmailVerificationController::class, 'resendLinkVerification'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
   Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
   Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');

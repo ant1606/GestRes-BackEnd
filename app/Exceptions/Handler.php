@@ -63,7 +63,7 @@ class Handler extends ExceptionHandler
 
             // dd($request->is('api/*'));
             // dd($exception instanceof NotFoundHttpException);
-
+//            dd($exception);
             if ($request->is('api/*')) {
 
                 // dd(get_class($exception));
