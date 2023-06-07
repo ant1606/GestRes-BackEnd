@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProgressHistoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -50,6 +51,10 @@ Route::middleware(['cors'])->group(function () {
   Route::post('login', [AuthenticationController::class,'login'])->name('login');
   Route::post('remember', [AuthenticationController::class,'check_remember'])->name('remember');
   Route::post('register', [UserController::class, 'store'])->name('register');
+
+
+  Route::post('forgot-password',[PasswordResetController::class, 'forgotPassword'])->name('password.email');
+  Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 
   //Rutas con autentificación
   Route::post('logout', [AuthenticationController::class,'logout'])->name('logout');
