@@ -29,25 +29,13 @@ class AuthenticationController extends ApiController
           "user" => [
             "name" => $usuario->name,
             "email" => $usuario->email,
-            "remember_token" =>$usuario->getRememberToken()
+            "remember_token" =>$usuario->getRememberToken(),
+            "is_verified" =>  $usuario->hasVerifiedEmail()
           ]
         ], Response::HTTP_OK);
       }
 
       return  $this->errorResponse("Usuario no autentificado", Response::HTTP_NOT_FOUND );
-//
-//      return back()->withErrors([
-//        'email' => 'The provided credentials do not match our records.',
-//      ])->onlyInput('email');
-
-//
-//      dd($request->only(['email', 'password']));
-//
-//      if(Auth::attempt($request->only(['email','password']))){
-//        $usuario = User::where('email',$request->get('email'))->first();
-//        return $this->showOne($usuario, Response::HTTP_OK);
-//      }
-//      return  $this->errorResponse(Response::HTTP_NOT_FOUND, "Usuario no existe");
     }
 
     public function check_remember(Request $request){

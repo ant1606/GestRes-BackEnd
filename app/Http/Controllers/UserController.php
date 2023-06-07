@@ -10,22 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
       //TODO ENcerrar en un trycatch
@@ -43,6 +27,7 @@ class UserController extends ApiController
 
       event(new Registered($user));
 
+      //TODO ya no enviar el beareToekn ya que se verificar la validacion del correo al hacer login
       $token_expiring_date = date_create("now")->add(new \DateInterval('PT6H'));
       $token = $user->createToken("API-TOKEN",['*'], $token_expiring_date);
 
@@ -54,39 +39,5 @@ class UserController extends ApiController
           "email" => $user->email,
         ]
       ], Response::HTTP_OK);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
