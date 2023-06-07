@@ -27,6 +27,7 @@ class AuthenticationController extends ApiController
           "bearer_token"=>$token->plainTextToken,
           "bearer_expire"=>$token_expiring_date->format(\DateTimeInterface::RFC7231),
           "user" => [
+            "id" => $usuario->id,
             "name" => $usuario->name,
             "email" => $usuario->email,
             "remember_token" =>$usuario->getRememberToken(),
