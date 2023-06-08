@@ -17,12 +17,10 @@ class AuthenticationController extends ApiController
       ]);
 
       if (Auth::attempt($credentials, $request->get("remember_me"))) {
-//        $request->session()->regenerate();
 
         $usuario = Auth::user();
         $token_expiring_date = date_create("now")->add(new \DateInterval('PT6H'));
         $token = $usuario->createToken("API-TOKEN",['*'], $token_expiring_date);
-
         return $this->showOne([
           "bearer_token"=>$token->plainTextToken,
           "bearer_expire"=>$token_expiring_date->format(\DateTimeInterface::RFC7231),
@@ -30,13 +28,13 @@ class AuthenticationController extends ApiController
             "id" => $usuario->id,
             "name" => $usuario->name,
             "email" => $usuario->email,
-            "remember_token" =>$usuario->getRememberToken(),
+            "remember_token" =>$usuario->remember_token,
             "is_verified" =>  $usuario->hasVerifiedEmail()
           ]
         ], Response::HTTP_OK);
       }
 
-      return  $this->errorResponse("Usuario no autentificado", Response::HTTP_NOT_FOUND );
+      return  $this->errorResponse(["api_response"=>["Usuario no autentificado"]], Response::HTTP_UNAUTHORIZED);
     }
 
     public function check_remember(Request $request){
