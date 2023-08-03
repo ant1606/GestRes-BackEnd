@@ -14,35 +14,34 @@ use Illuminate\Support\Facades\URL;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-    ];
+  /**
+   * The model to policy mappings for the application.
+   *
+   * @var array<class-string, class-string>
+   */
+  protected $policies = [
+    // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+  ];
 
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->registerPolicies();
+  /**
+   * Register any authentication / authorization services.
+   *
+   * @return void
+   */
+  public function boot()
+  {
+    $this->registerPolicies();
 
-        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-          $domainSPA = "http://172.18.0.4:5173/verifyEmail/".$notifiable->getKey()."/".sha1($notifiable->getEmailForVerification());
-          return (new MailMessage)
-            ->subject('Verify Email Address')
-            ->line('Click the button below to verify your email address.')
-            ->action('Verify Email Address', $domainSPA);
-        });
+    VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+      $domainSPA = "http://172.18.0.4:5173/verifyEmail/" . $notifiable->getKey() . "/" . sha1($notifiable->getEmailForVerification());
+      return (new MailMessage)
+        ->subject('Verify Email Address')
+        ->line('Click the button below to verify your email address.')
+        ->action('Verify Email Address', $domainSPA);
+    });
 
-        ResetPassword::createUrlUsing(function (User $user, string $token) {
-          return 'http://172.18.0.4:5173/reset-password?token='.$token;
-        });
-
-    }
+    ResetPassword::createUrlUsing(function (User $user, string $token) {
+      return 'http://172.18.0.4:5173/reset-password?token=' . $token;
+    });
+  }
 }

@@ -10,34 +10,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends ApiController
 {
-    public function store(Request $request)
-    {
-      //TODO ENcerrar en un trycatch
-      $validated = $request->validate([
-        'name' => 'required',
-        'email' => 'required|unique:users',
-        'password'=> 'required|confirmed',
-      ]);
+  public function store(Request $request)
+  {
+    //TODO ENcerrar en un trycatch
+    $validated = $request->validate([
+      'name' => 'required',
+      'email' => 'required|unique:users',
+      'password' => 'required|confirmed',
+    ]);
 
-      $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password'=> Hash::make($request->password),
-      ]);
+    $user = User::create([
+      'name' => $request->name,
+      'email' => $request->email,
+      'password' => Hash::make($request->password),
+    ]);
 
-      event(new Registered($user));
+    event(new Registered($user));
 
-      //TODO ya no enviar el beareToekn ya que se verificar la validacion del correo al hacer login
-      $token_expiring_date = date_create("now")->add(new \DateInterval('PT6H'));
-      $token = $user->createToken("API-TOKEN",['*'], $token_expiring_date);
+    //TODO ya no enviar el beareToekn ya que se verificar la validacion del correo al hacer login
+    $token_expiring_date = date_create("now")->add(new \DateInterval('PT6H'));
+    $token = $user->createToken("API-TOKEN", ['*'], $token_expiring_date);
 
-      return $this->showOne([
-        "bearer_token"=>$token->plainTextToken,
-        "bearer_expire"=>$token_expiring_date->format(\DateTimeInterface::RFC7231),
-        "user" => [
-          "name" => $user->name,
-          "email" => $user->email,
-        ]
-      ], Response::HTTP_OK);
-    }
+    return $this->showOne([
+      "message" => "Registro satisfactorio"
+    ], Response::HTTP_OK);
+  }
 }

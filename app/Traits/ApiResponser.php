@@ -29,12 +29,12 @@ trait ApiResponser
     return response()->json(
       [
         "error" =>  [
-          [
-            "status" => $code,
-            // "title" => $title,
-            "detail" => $message
-            // "source": { "pointer": "/data/attributes/firstName" },]
-          ]
+
+          "status" => $code,
+          // "title" => $title,
+          "detail" => $message
+          // "source": { "pointer": "/data/attributes/firstName" },]
+
         ]
       ],
       $code
@@ -107,6 +107,7 @@ trait ApiResponser
     //Rescatamos los queryStrings existentes en la ruta, como filtros u orderBy, y los añadimos a la
     // ruta generada por el paginador
     $paginated->appends(request()->all());
+    // $paginated->withQueryString();
 
     return $paginated;
   }

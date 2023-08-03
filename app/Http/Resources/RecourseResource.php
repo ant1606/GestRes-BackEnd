@@ -6,79 +6,79 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class RecourseResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
-    public function toArray($request)
-    {
-        return [
-            "identificador" => $this->id,
-            "nombre" => $this->name,
-            "ruta" => $this->source,
-            "autor" => $this->author,
-            "editorial" => $this->editorial,
-            "tipoId" => $this->type_id ,
-            "tipoNombre" => $this->type_name,
-            "nombreEstadoActual" => $this->current_status_name,
-            "totalPaginas" => $this->total_pages,
-            "totalCapitulos" => $this->total_chapters,
-            "totalVideos" => $this->total_videos,
-            "totalHoras" => $this-> total_hours,
-            "status" => StatusResource::collection($this->status),
-            "tags" => TagResource::collection($this->tags),
-            "progress" => ProgressResource::collection($this->progress),
-//            "tags" => TagResource::collection($this->whenLoaded('tags')),
-//            "status" => StatusResource::collection($this->whenLoaded('status')),
-//            "progress" => ProgressResource::collection($this->whenLoaded('progress')),
-        ];
-    }
+  /**
+   * Transform the resource into an array.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+   */
+  public function toArray($request)
+  {
+    return [
+      "identificador" => $this->id,
+      "nombre" => $this->name,
+      "ruta" => $this->source,
+      "autor" => $this->author,
+      "editorial" => $this->editorial,
+      "tipoId" => $this->type_id,
+      "tipoNombre" => $this->type_name,
+      "nombreEstadoActual" => $this->current_status_name,
+      "totalPaginas" => $this->total_pages,
+      "totalCapitulos" => $this->total_chapters,
+      "totalVideos" => $this->total_videos,
+      "totalHoras" => $this->total_hours,
+      "status" => StatusResource::collection($this->status),
+      "tags" => TagResource::collection($this->tags),
+      "progress" => ProgressResource::collection($this->progress),
+      //            "tags" => TagResource::collection($this->whenLoaded('tags')),
+      //            "status" => StatusResource::collection($this->whenLoaded('status')),
+      //            "progress" => ProgressResource::collection($this->whenLoaded('progress')),
+    ];
+  }
 
-    public static function originalAttribute($index)
-    {
-        $attributes = [
-            "identificador" =>"id",
-            "nombre" =>"name",
-            "ruta" =>"source",
-            "autor" =>"author",
-            "editorial" =>"editorial",
-            "tipoId" =>"type_id",
-            "tipoNombre" =>"type_name",
-            "nombreEstadoActual" => "current_status_name",
-            "totalPaginas" =>"total_pages",
-            "totalCapitulos" =>"total_chapters",
-            "totalVideos" =>"total_videos",
-            "totalHoras" =>"total_hours",
-            "tags" =>"tags",
-            "status" =>"status",
-            "progress" =>"progress",
-        ];
+  public static function originalAttribute($index)
+  {
+    $attributes = [
+      "identificador" => "id",
+      "nombre" => "name",
+      "ruta" => "source",
+      "autor" => "author",
+      "editorial" => "editorial",
+      "tipoId" => "type_id",
+      "tipoNombre" => "type_name",
+      "nombreEstadoActual" => "current_status_name",
+      "totalPaginas" => "total_pages",
+      "totalCapitulos" => "total_chapters",
+      "totalVideos" => "total_videos",
+      "totalHoras" => "total_hours",
+      "tags" => "tags",
+      "status" => "status",
+      "progress" => "progress",
+    ];
 
-        return isset($attributes[$index]) ? $attributes[$index] : null;
-    }
+    return isset($attributes[$index]) ? $attributes[$index] : null;
+  }
 
-    public static function transformedAttribute($index)
-    {
-        $attributes = [
-            "id" => "identificador",
-            "name" => "nombre",
-            "source" => "ruta",
-            "author" => "autor",
-            "editorial" => "editorial",
-            "type_id" => "tipoId",
-            "type_name" =>"tipoNombre",
-            "current_status_name" => "nombreEstadoActual",
-            "total_pages" => "totalPaginas",
-            "total_chapters" => "totalCapitulos",
-            "total_videos" => "totalVideos",
-            "total_hours" => "totalHoras",
-            "tags" => "tags",
-            "status" =>"status",
-            "progress" =>"progress",
-        ];
+  public static function transformedAttribute($index)
+  {
+    $attributes = [
+      "id" => "identificador",
+      "name" => "nombre",
+      "source" => "ruta",
+      "author" => "autor",
+      "editorial" => "editorial",
+      "type_id" => "tipoId",
+      "type_name" => "tipoNombre",
+      "current_status_name" => "nombreEstadoActual",
+      "total_pages" => "totalPaginas",
+      "total_chapters" => "totalCapitulos",
+      "total_videos" => "totalVideos",
+      "total_hours" => "totalHoras",
+      "tags" => "tags",
+      "status" => "status",
+      "progress" => "progress",
+    ];
 
-        return isset($attributes[$index]) ? $attributes[$index] : null;
-    }
+    return isset($attributes[$index]) ? $attributes[$index] : null;
+  }
 }

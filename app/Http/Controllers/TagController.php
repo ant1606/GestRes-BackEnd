@@ -16,92 +16,92 @@ use Illuminate\Support\Str;
 class TagController extends ApiController
 {
 
-    public function __construct()
-    {
-        $this->middleware('transform.input:' . TagResource::class)->only(['store', 'update']);
+  public function __construct()
+  {
+    // $this->middleware('transform.input:' . TagResource::class)->only(['store', 'update']);
+  }
+
+  public function index(Request $request)
+  {
+    $tags = Tag::query();
+
+    if ($request->has('searchNombre') && $request->searchNombre !== null)
+      $tags = $tags->where('name', 'like', '%' . $request->searchNombre . '%');
+
+    if (
+      $request->has('sortNombre') &&
+      $request->sortNombre !== null &&
+      (Str::lower($request->sortNombre) === 'desc' || Str::lower($request->sortNombre) === 'asc')
+    ) {
+      $tags = $tags->orderBy('name', $request->sortNombre);
+    } else {
+      $tags = $tags->latest();
     }
 
-    public function index(Request $request)
-    {
-        $tags = Tag::query();
+    $tags = $tags->get();
 
-        if ($request->has('searchNombre') && $request->searchNombre !== null)
-            $tags = $tags->where('name', 'like', '%' . $request->searchNombre . '%');
+    return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
+  }
 
-        if (
-            $request->has('sortNombre') &&
-            $request->sortNombre !== null &&
-            (Str::lower($request->sortNombre) === 'desc' || Str::lower($request->sortNombre) === 'asc')
-        ) {
-            $tags = $tags->orderBy('name', $request->sortNombre);
-        } else {
-            $tags = $tags->latest();
-        }
+  public function store(TagRequest $request)
+  {
+    $tag = Tag::create([
+      "name" => Str::upper($request->name),
+      "style" => $this->randomTagStyle(),
+    ]);
 
-        $tags = $tags->get();
+    return $this->showOne(new TagResource($tag), Response::HTTP_CREATED);
+  }
 
-        return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
+  public function show(Tag $tag)
+  {
+    return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
+  }
+
+  public function update(TagRequest $request, Tag $tag)
+  {
+    // dd($request->name);
+    $tag->fill($request->only([
+      "name"
+    ]));
+
+    if ($tag->isClean()) {
+      return $this->errorResponse(
+        ["api_response" => ["No se realizó ninguna modificacion de la etiqueta. Se cancelo la operación"]],
+        Response::HTTP_UNPROCESSABLE_ENTITY
+      );
     }
 
-    public function store(TagRequest $request)
-    {
-        $tag = Tag::create([
-            "name" => Str::upper($request->name),
-            "style" => $this->randomTagStyle(),
-        ]);
+    $tag->save();
 
-        return $this->showOne(new TagResource($tag), Response::HTTP_CREATED);
-    }
+    return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
+    // dd($tag->name);
+  }
 
-    public function show(Tag $tag)
-    {
-        return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
-    }
+  public function destroy(Tag $tag)
+  {
+    $tag->delete();
 
-    public function update(TagRequest $request, Tag $tag)
-    {
-        // dd($request->name);
-        $tag->fill($request->only([
-            "name"
-        ]));
+    return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
+  }
 
-        if ($tag->isClean()) {
-            return $this->errorResponse(
-                "No se realizó ninguna modificacion de la etiqueta. Se cancelo la operación",
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
-        $tag->save();
-
-        return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
-        // dd($tag->name);
-    }
-
-    public function destroy(Tag $tag)
-    {
-        $tag->delete();
-
-        return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
-    }
-
-    private function randomTagStyle()
-    {
-        return array_rand([
-            TagStyleEnum::TAG_STYLE_BLUE->value => 1,
-            TagStyleEnum::TAG_STYLE_EMERALD->value => 1,
-            TagStyleEnum::TAG_STYLE_GREEN->value => 1,
-            TagStyleEnum::TAG_STYLE_INDIGO->value => 1,
-            TagStyleEnum::TAG_STYLE_LIME->value => 1,
-            TagStyleEnum::TAG_STYLE_ORANGE->value => 1,
-            TagStyleEnum::TAG_STYLE_PINK->value => 1,
-            TagStyleEnum::TAG_STYLE_PURPLE->value => 1,
-            TagStyleEnum::TAG_STYLE_RED->value => 1,
-            TagStyleEnum::TAG_STYLE_ROSE->value => 1,
-            TagStyleEnum::TAG_STYLE_SKY->value => 1,
-            TagStyleEnum::TAG_STYLE_TEAL->value => 1,
-            TagStyleEnum::TAG_STYLE_YELLOW->value => 1,
-            TagStyleEnum::TAG_STYLE_GRAY->value => 1
-        ]);
-    }
+  private function randomTagStyle()
+  {
+    return array_rand([
+      TagStyleEnum::TAG_STYLE_BLUE->value => 1,
+      TagStyleEnum::TAG_STYLE_EMERALD->value => 1,
+      TagStyleEnum::TAG_STYLE_GREEN->value => 1,
+      TagStyleEnum::TAG_STYLE_INDIGO->value => 1,
+      TagStyleEnum::TAG_STYLE_LIME->value => 1,
+      TagStyleEnum::TAG_STYLE_ORANGE->value => 1,
+      TagStyleEnum::TAG_STYLE_PINK->value => 1,
+      TagStyleEnum::TAG_STYLE_PURPLE->value => 1,
+      TagStyleEnum::TAG_STYLE_RED->value => 1,
+      TagStyleEnum::TAG_STYLE_ROSE->value => 1,
+      TagStyleEnum::TAG_STYLE_SKY->value => 1,
+      TagStyleEnum::TAG_STYLE_TEAL->value => 1,
+      TagStyleEnum::TAG_STYLE_YELLOW->value => 1,
+      TagStyleEnum::TAG_STYLE_GRAY->value => 1
+    ]);
+  }
 }
