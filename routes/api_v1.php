@@ -25,9 +25,9 @@ use App\Models\StatusHistory;
 |
 */
 
- Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-     return $request->user();
- });
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+  return $request->user();
+});
 
 
 
@@ -48,20 +48,25 @@ Route::middleware(['cors'])->group(function () {
   //  Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
   //  Route::delete('recourses/{recourse}', [RecourseController::class, 'destroy'])->name('recourse.destroy');
 
-  Route::post('login', [AuthenticationController::class,'login'])->name('login');
-  Route::post('remember', [AuthenticationController::class,'check_remember'])->name('remember');
+  Route::post('login', [AuthenticationController::class, 'login'])->name('login');
+  Route::post('remember', [AuthenticationController::class, 'check_remember'])->name('remember');
   Route::post('register', [UserController::class, 'store'])->name('register');
 
 
-  Route::post('forgot-password',[PasswordResetController::class, 'forgotPassword'])->name('password.email');
+  Route::post('forgot-password', [PasswordResetController::class, 'forgotPassword'])->name('password.email');
   Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 
-  //Rutas con autentificación
-  Route::post('logout', [AuthenticationController::class,'logout'])->name('logout');
-  Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->middleware('auth:sanctum')->name('verification.notice');
-  Route::get('/email/verify/{id}/{hash}',[EmailVerificationController::class, 'verify'])->name('verification.verify');
+  //Rutas con autentificación  
+  Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function () {
+    Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resendLinkVerification'])->name('verification.send');
+  });
 
-  Route::post('/email/verification-notification',[EmailVerificationController::class, 'resendLinkVerification'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+  Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->middleware('auth:sanctum')->name('verification.notice');
+  Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
+
+
 
   Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
   Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
