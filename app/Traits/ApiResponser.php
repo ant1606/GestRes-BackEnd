@@ -59,7 +59,7 @@ trait ApiResponser
   }
 
   //TODO Cambiar el contenido de showAll por showAllResource en los controladores
-  protected function showAllResource(ResourceCollection $collection, $code)
+  protected function showAllResource(ResourceCollection $collection, $code, $make_pagination = true)
   {
     if ($collection->count() === 0)
       return $this->successResponse(
@@ -67,10 +67,13 @@ trait ApiResponser
         Response::HTTP_OK
       );
 
-    $collection = $this->paginate($collection);
+    // dd($collection);
+    if ($make_pagination) $collection = $this->paginate($collection);
+
     $collection = $this->cacheResponse($collection);
 
-    return $this->successResponse($this->responsePaginateJson($collection), $code);
+    $response = $make_pagination ? $this->responsePaginateJson($collection) : $collection;
+    return $this->successResponse($response, $code);
   }
 
   protected function paginate(ResourceCollection $collection)
