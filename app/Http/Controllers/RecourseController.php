@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\RecoursePostRequest;
 use App\Http\Requests\RecourseUpdateRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Symfony\Component\HttpFoundation\Response;
 
 class RecourseController extends ApiController
@@ -33,7 +34,12 @@ class RecourseController extends ApiController
 
     $recourses = Recourse::query();
 
-    //      dd($recourses->get());
+
+    if ($request->has('searchTags') && $request->searchTags !== null && $request->searchTags !== []) {
+      $recourses = $recourses->whereHas('tags', function ($query) use ($request) {
+        $query->whereIn('tag_id', $request->searchTags);
+      });
+    }
     if ($request->has('searchNombre') && $request->searchNombre !== null)
       $recourses = $recourses->where('name', 'like', '%' . $request->searchNombre . '%');
 
@@ -49,8 +55,6 @@ class RecourseController extends ApiController
           ->limit(1);
       },  $request->searchEstado);
     }
-
-    //      $recourses = $recourses->where('type_id', '=', $request->searchTipo);
 
     $recourses = $recourses->latest()->get();
     return $this->showAllResource(new RecourseCollection($recourses), Response::HTTP_OK);
