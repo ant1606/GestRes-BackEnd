@@ -84,6 +84,14 @@ class TagController extends ApiController
   public function destroy(Tag $tag)
   {
     $tag->delete();
+    $tag->recourses()->detach();
+    //TODO Se sugiere que al momento de eliminar, se lance un evento para eliminar las relaciones de Tag
+    //   static::deleting(function ($tag) {
+    //     // Eliminar las relaciones con recursos, canales y páginas web
+    //     $tag->recourses()->detach();
+    //     $tag->channels()->detach();
+    //     $tag->webPages()->detach();
+    // });
 
     return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
   }
