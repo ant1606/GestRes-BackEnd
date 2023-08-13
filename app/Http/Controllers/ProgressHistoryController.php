@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusRecourseEnum;
 use App\Http\Resources\ProgressCollection;
 use App\Http\Resources\ProgressResource;
 use App\Models\Recourse;
@@ -9,6 +10,8 @@ use Illuminate\Http\Request;
 use App\Models\ProgressHistory;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\ProgressHistoryStoreRequest;
+use App\Models\Settings;
+use App\Models\StatusHistory;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProgressHistoryController extends ApiController
@@ -33,15 +36,27 @@ class ProgressHistoryController extends ApiController
     if ($request->date < $lastProgress->date)
       return $this->errorResponse(["api_response" => ["La fecha ingresada es menor al último registro existente."]], Response::HTTP_UNPROCESSABLE_ENTITY);
 
+    $pending = $lastProgress->pending - $request->done;
+    if ($pending < 0)
+      return $this->errorResponse(["api_response" => ["La cantidad de avance no puede ser mayor a la cantidad pendiente."]], Response::HTTP_UNPROCESSABLE_ENTITY);
+
     $progress = ProgressHistory::create([
       'recourse_id' => $recourse->id,
       'done' => $request->done,
-      'pending' => $request->pending,
+      'pending' => $pending,
       'date' => $request->date,
       'comment' => $request->comment,
     ]);
 
-    //TODO Hacer que cuando la cantidad pendiente sea 0, el recurso cambie a estado CONCLUIDO
+    if ($pending === 0) {
+      $commentAutogenerate = "REGISTRO GENERADO POR EL SISTEMA POR FINALIZACIÓN DEL RECURSO";
+      StatusHistory::create([
+        "recourse_id" => $recourse->id,
+        "status_id" => Settings::getData(StatusRecourseEnum::STATUS_CULMINADO->name, "id"),
+        "date" => $request->date,
+        "comment" => $commentAutogenerate
+      ]);
+    }
 
     return $this->showOne($progress, Response::HTTP_CREATED);
   }
