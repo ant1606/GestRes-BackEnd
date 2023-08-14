@@ -28,7 +28,7 @@ class RecourseResource extends JsonResource
       "totalCapitulos" => $this->total_chapters,
       "totalVideos" => $this->total_videos,
       "totalHoras" => $this->total_hours,
-      "status" => StatusResource::collection($this->status),
+      "status" => new StatusResource($this->status()->latest()->first()),
       "tags" => TagResource::collection($this->tags),
       "progress" => new ProgressResource($this->progress()->latest()->first()),
       //            "tags" => TagResource::collection($this->whenLoaded('tags')),
