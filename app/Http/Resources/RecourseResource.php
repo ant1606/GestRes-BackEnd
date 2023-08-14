@@ -14,6 +14,7 @@ class RecourseResource extends JsonResource
    */
   public function toArray($request)
   {
+    // dd($this->progress()->latest()->first());
     return [
       "identificador" => $this->id,
       "nombre" => $this->name,
@@ -29,7 +30,7 @@ class RecourseResource extends JsonResource
       "totalHoras" => $this->total_hours,
       "status" => StatusResource::collection($this->status),
       "tags" => TagResource::collection($this->tags),
-      "progress" => ProgressResource::collection($this->progress),
+      "progress" => new ProgressResource($this->progress()->latest()->first()),
       //            "tags" => TagResource::collection($this->whenLoaded('tags')),
       //            "status" => StatusResource::collection($this->whenLoaded('status')),
       //            "progress" => ProgressResource::collection($this->whenLoaded('progress')),
