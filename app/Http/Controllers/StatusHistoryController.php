@@ -19,7 +19,7 @@ class StatusHistoryController extends ApiController
 
   public function index(Recourse $recourse)
   {
-    $statusHistories = $recourse->status;
+    $statusHistories = $recourse->status()->latest()->get();
 
     return $this->showAllResource(new StatusCollection($statusHistories), Response::HTTP_OK);
   }

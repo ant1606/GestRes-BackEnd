@@ -24,7 +24,7 @@ class ProgressHistoryController extends ApiController
 
   public function index(Recourse $recourse)
   {
-    $progressHistories = $recourse->progress;
+    $progressHistories = $recourse->progress()->latest()->get();
 
     return $this->showAllResource(new ProgressCollection($progressHistories), Response::HTTP_OK);
   }
