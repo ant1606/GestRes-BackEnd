@@ -21,7 +21,7 @@ class StatusHistoryController extends ApiController
   {
     $statusHistories = $recourse->status;
 
-    return $this->showAllResource(new StatusCollection($statusHistories), Response::HTTP_OK, false);
+    return $this->showAllResource(new StatusCollection($statusHistories), Response::HTTP_OK);
   }
 
   public function store(Recourse $recourse, Request $request)

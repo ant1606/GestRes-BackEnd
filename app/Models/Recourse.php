@@ -45,6 +45,7 @@ class Recourse extends Model
       get: fn () => !$this->status->isEmpty() ? $this->loadExists('status')->status->last()->status_name : ''
     );
   }
+  //TODO Añadir atributo que indique el % total avanzado del progreso del recurso
 
   public function tags()
   {
