@@ -116,6 +116,11 @@ class RecourseController extends ApiController
     $old_type_id = $recourse->type_id;
     $new_type_id = $request->type_id;
 
+    $differenceBetweenTotals = Settings::getKeyfromId($request->type_id) === TypeRecourseEnum::TYPE_LIBRO->name
+      ? $request->total_pages - $recourse->total_pages
+      : $request->total_videos - $recourse->total_videos;
+    // dd($differenceBetweenTotals, Settings::getKeyfromId($request->type_id), $request->total_pages, $recourse->total_pages);
+
     $recourse->fill($request->only([
       'name',
       'source',
@@ -139,6 +144,7 @@ class RecourseController extends ApiController
     $dateHistoryCreation = Carbon::now()->toDateString();
     $commentAutogenerate = "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA";
 
+
     try {
       DB::beginTransaction();
 
@@ -146,8 +152,6 @@ class RecourseController extends ApiController
       $recourse->tags()->sync($request->tags);
 
       if ($new_type_id !== $old_type_id) {
-
-        $recourse->status()->forceDelete();
         $recourse->progress()->forceDelete();
 
         ProgressHistory::create([
@@ -159,20 +163,22 @@ class RecourseController extends ApiController
           "date" => $dateHistoryCreation,
           "comment" => $commentAutogenerate
         ]);
-
-        StatusHistory::create([
-          "recourse_id" => $recourse->id,
-          "status_id" => Settings::getData(StatusRecourseEnum::STATUS_REGISTRADO->name, "id"),
-          "date" => $dateHistoryCreation,
-          "comment" => $commentAutogenerate
-        ]);
       }
+
+      if ($differenceBetweenTotals !== 0) {
+        foreach ($recourse->progress as $progress) {
+          $progress->pending += $differenceBetweenTotals;
+          $progress->pending < 0 ? $progress->delete() : $progress->save();
+        }
+      }
+
       DB::commit();
       return $this->showOne(new RecourseResource($recourse), Response::HTTP_ACCEPTED);
     } catch (\Throwable $th) {
       DB::rollBack();
       // TODO Escribir los mensajes de error en un log $e->getMessage()
       //TODO Envolver los mensajes de error en la nomenclatura usada [api_response => []]
+      dd($th);
       return $this->errorResponse(
         ["api_response" => ["Ocurrió un error al actualizar el recurso, hable con el administrador"]],
         Response::HTTP_UNPROCESSABLE_ENTITY
