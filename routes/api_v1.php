@@ -48,39 +48,37 @@ Route::middleware(['cors'])->group(function () {
   //  Route::put('recourses/{recourse}', [RecourseController::class, 'update'])->name('recourse.update');
   //  Route::delete('recourses/{recourse}', [RecourseController::class, 'destroy'])->name('recourse.destroy');
 
-  Route::post('login', [AuthenticationController::class, 'login'])->name('login');
-  Route::post('remember', [AuthenticationController::class, 'check_remember'])->name('remember');
   Route::post('register', [UserController::class, 'store'])->name('register');
 
+  Route::post('login', [AuthenticationController::class, 'login'])->name('login');
+  Route::post('remember', [AuthenticationController::class, 'check_remember'])->name('remember');
 
   Route::post('forgot-password', [PasswordResetController::class, 'forgotPassword'])->name('password.email');
   Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 
-  //Rutas con autentificación  
-  Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function () {
-    Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
-    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resendLinkVerification'])->name('verification.send');
-  });
-
-
-  Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->middleware('auth:sanctum')->name('verification.notice');
   Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 
-
-
-  Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
-  Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
-  Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
-  Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
-
-  // StatusHistory Route
-  Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
-  //ProgressHistory Route
-  Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
-
+  // TODO Verificar si es mejor ponerle autentificacion a estas 2 rutas de settings
   Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
   Route::get('settings/{value}', [SettingsController::class, 'show'])->name('settings.show');
 
-  Route::resource('tag', TagController::class)->except(['create', 'edit']);
-  Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
+  //Rutas con autentificación  
+  Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function () {
+    Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
+
+    Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->name('verification.notice');
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resendLinkVerification'])->name('verification.send');
+
+    Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
+    Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
+    Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
+    Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
+
+    Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
+
+    Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
+
+    Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
+    Route::resource('tag', TagController::class)->except(['create', 'edit']);
+  });
 });
