@@ -63,11 +63,11 @@ Route::middleware(['cors'])->group(function () {
   Route::get('settings/{value}', [SettingsController::class, 'show'])->name('settings.show');
 
   //Rutas con autentificación  
-  Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function () {
+  Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
 
     Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->name('verification.notice');
-    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resendLinkVerification'])->name('verification.send');
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resendLinkVerification'])->middleware(['throttle:6,1'])->name('verification.send');
 
     Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
     Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
