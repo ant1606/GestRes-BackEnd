@@ -47,6 +47,14 @@ class Recourse extends Model
   }
   //TODO Añadir atributo que indique el % total avanzado del progreso del recurso
 
+  protected function totalProgressPercentage(): Attribute
+  {
+    return new Attribute(
+      // validar que exista la relacion antes de obtener el status
+      get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
+    );
+  }
+  // $recourse->progress->pluck('done')->sum()
   public function tags()
   {
     return $this->morphToMany(Tag::class, 'taggable');
