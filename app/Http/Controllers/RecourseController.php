@@ -34,6 +34,7 @@ class RecourseController extends ApiController
 
     $recourses = Recourse::query();
 
+    $recourses = $recourses->where('user_id', auth()->user()->id);
 
     if ($request->has('searchTags') && $request->searchTags !== null && $request->searchTags !== []) {
       $recourses = $recourses->whereHas('tags', function ($query) use ($request) {
