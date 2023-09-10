@@ -20,6 +20,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\RecoursePostRequest;
 use App\Http\Requests\RecourseUpdateRequest;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RecourseController extends ApiController
@@ -68,7 +69,7 @@ class RecourseController extends ApiController
 
     try {
       DB::beginTransaction();
-
+      $request->merge(["user_id" => Auth::user()->id]);
       $recourse = Recourse::create($request->all());
 
       ProgressHistory::create([
@@ -189,6 +190,7 @@ class RecourseController extends ApiController
 
   public function destroy(Recourse $recourse)
   {
+    //TODO Insertar autorizacion para eliminar recurso sólo al usuario que lo creo
     $recourse->status()->forceDelete();
     $recourse->progress()->forceDelete();
     $recourse->tags()->detach();

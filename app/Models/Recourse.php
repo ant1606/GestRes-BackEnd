@@ -22,6 +22,7 @@ class Recourse extends Model
     'total_chapters',
     'total_vides',
     'total_hours',
+    'user_id'
   ];
 
   protected $hidden = [
