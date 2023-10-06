@@ -32,8 +32,10 @@ class AuthServiceProvider extends ServiceProvider
   {
     $this->registerPolicies();
 
+
     VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-      $domainSPA = "http://172.18.0.4:5173/verifyEmail/" . $notifiable->getKey() . "/" . sha1($notifiable->getEmailForVerification());
+      $spaUrl = env('SPA_URL');
+      $domainSPA = "{$spaUrl}/#/verifyEmail/" . $notifiable->getKey() . "/" . sha1($notifiable->getEmailForVerification());
       return (new MailMessage)
         ->subject('Verify Email Address')
         ->line('Click the button below to verify your email address.')
@@ -41,7 +43,8 @@ class AuthServiceProvider extends ServiceProvider
     });
 
     ResetPassword::createUrlUsing(function (User $user, string $token) {
-      return 'http://172.18.0.4:5173/reset-password?token=' . $token;
+      $spaUrl = env('SPA_URL');
+      return "{$spaUrl}/#/reset-password?token=" . $token;
     });
   }
 }
