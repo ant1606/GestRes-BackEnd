@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProgressHistoryController;
@@ -77,6 +78,8 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
 
     Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
+
+    Route::get('dashboard/getTop5Recourses', [DashboardController::class, 'getTop5Recourses'])->name('dashboard.getTop5Recourses');
 
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
