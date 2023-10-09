@@ -80,6 +80,7 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
 
     Route::get('dashboard/getTop5Recourses', [DashboardController::class, 'getTop5Recourses'])->name('dashboard.getTop5Recourses');
+    Route::get('dashboard/getAmountByState', [DashboardController::class, 'getAmountByState'])->name('dashboard.getAmountByState');
 
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
