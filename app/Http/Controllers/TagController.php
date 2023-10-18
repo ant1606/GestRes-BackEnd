@@ -96,6 +96,13 @@ class TagController extends ApiController
     return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
   }
 
+  public function getTagsForTagSelector()
+  {
+    //TODO Ver como estandarizar esta respuesta y hacer el cambio con el frontend
+    $tags = Tag::all();
+    return $this->showAll($tags, Response::HTTP_ACCEPTED);
+  }
+
   private function randomTagStyle()
   {
     return array_rand([

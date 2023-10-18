@@ -82,6 +82,7 @@ Route::middleware(['cors'])->group(function () {
     Route::get('dashboard/getTop5Recourses', [DashboardController::class, 'getTop5Recourses'])->name('dashboard.getTop5Recourses');
     Route::get('dashboard/getAmountByState', [DashboardController::class, 'getAmountByState'])->name('dashboard.getAmountByState');
 
+    Route::get('tag/getTagsForTagSelector', [TagController::class, 'getTagsForTagSelector'])->name('tag.getTagForTagSelector');
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
   });
