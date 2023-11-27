@@ -30,15 +30,15 @@ trait RecourseDataTrait
     }
 
     return array_merge([
-      "nombre" => 'Nombre de mi recurso',
-      "ruta" => 'D://micarpeta/misvideos/micurso',
-      "autor" => "Pepe LUna",
+      "name" => 'Nombre de mi recurso',
+      "source" => 'D://micarpeta/misvideos/micurso',
+      "author" => "Pepe LUna",
       "editorial" => "Mi editorial de Ejemplo",
-      "tipoId" => Settings::getData($typeName, "id"),
-      "totalPaginas" => $total_pages,
-      "totalCapitulos" => $total_chapters,
-      "totalVideos" => $total_videos,
-      "totalHoras" => $total_hours,
+      "type_id" => Settings::getData($typeName, "id"),
+      "total_pages" => $total_pages,
+      "total_chapters" => $total_chapters,
+      "total_videos" => $total_videos,
+      "total_hours" => $total_hours,
     ], $overrides);
   }
 }
