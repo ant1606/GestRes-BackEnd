@@ -22,11 +22,12 @@ class LoginTest extends TestCase
     $response = $this->postJson(route('login'), ['password' => 'password', 'email' => 'admin@mail.com', 'remember_me' => false]);
 
     $response->assertStatus(Response::HTTP_OK);
-    $response->assertJson(fn(AssertableJson $json) => $json->whereAllType([
-      'data.bearer_token' => 'string',
-      'data.bearer_expire' => 'string',
-      'data.user.remember_token' => 'null'
-    ])
+    $response->assertJson(
+      fn (AssertableJson $json) => $json->whereAllType([
+        'data.bearer_token' => 'string',
+        'data.bearer_expire' => 'string',
+        'data.user.remember_token' => 'null'
+      ])
     );
   }
 
@@ -38,7 +39,8 @@ class LoginTest extends TestCase
     $response = $this->postJson(route('login'), ['password' => 'password', 'email' => 'admin@mail.com', 'remember_me' => true]);
 
     $response->assertStatus(Response::HTTP_OK);
-    $response->assertJson(fn(AssertableJson $json) => $json->whereType('data.user.remember_token', 'string')
+    $response->assertJson(
+      fn (AssertableJson $json) => $json->whereType('data.user.remember_token', 'string')
     );
   }
 
@@ -50,13 +52,11 @@ class LoginTest extends TestCase
     $response = $this->postJson(route('login'), ['password' => 'password', 'email' => '', 'remember_me' => true]);
 
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-//    dd($response->getContent());
+    // dd($response->getContent());
     $response->assertJsonStructure([
       'error' => [
-        [
-          'status',
-          'detail' => ['email']
-        ]
+        'status',
+        'detail' => ['email']
       ]
     ]);
   }
@@ -71,10 +71,8 @@ class LoginTest extends TestCase
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $response->assertJsonStructure([
       'error' => [
-        [
-          'status',
-          'detail' => ['password']
-        ]
+        'status',
+        'detail' => ['password']
       ]
     ]);
   }
@@ -89,10 +87,8 @@ class LoginTest extends TestCase
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $response->assertJsonStructure([
       'error' => [
-        [
-          'status',
-          'detail' => ['password', 'email']
-        ]
+        'status',
+        'detail' => ['password', 'email']
       ]
     ]);
   }
@@ -106,18 +102,12 @@ class LoginTest extends TestCase
     $response = $this->postJson(route('login'), ['password' => 'falsypassword', 'email' => 'falsyemail@mail.com', 'remember_me' => false]);
 
     $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-//    dd($response->getContent());
+    //    dd($response->getContent());
     $response->assertJsonStructure([
       'error' => [
-        [
-          'status',
-          'detail' => ['api_response']
-        ]
+        'status',
+        'detail' => ['api_response']
       ]
     ]);
-
-
   }
-
-
 }
