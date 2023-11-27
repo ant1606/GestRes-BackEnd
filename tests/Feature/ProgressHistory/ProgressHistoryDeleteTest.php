@@ -4,6 +4,7 @@ namespace Tests\Feature\ProgressHistory;
 
 use App\Models\ProgressHistory;
 use App\Models\Recourse;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -15,7 +16,8 @@ class ProgressHistoryDeleteTest extends TestCase
   /** @test **/
   public function a_progress_can_be_deleted_if_is_the_last_register()
   {
-    $recourse = Recourse::factory()->create();
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $progress1 = ProgressHistory::factory()->create([
       "recourse_id" => $recourse->id,
       "comment" => "Progress Test Second Delete"
@@ -27,7 +29,7 @@ class ProgressHistoryDeleteTest extends TestCase
 
     $this->assertDatabaseCount("progress_histories", 3);
 
-    $response = $this->deleteJson(route('progress.destroy',  $progress2));
+    $response = $this->actingAs($user)->deleteJson(route('progress.destroy',  $progress2));
 
     $response->assertStatus(Response::HTTP_ACCEPTED);
     $this->assertDatabaseCount("progress_histories", 2);
@@ -45,9 +47,10 @@ class ProgressHistoryDeleteTest extends TestCase
   /** @test **/
   public function a_progress_can_not_be_deleted_if_is_not_the_last_register()
   {
-    $this->withoutExceptionHandling();
+    // $this->withoutExceptionHandling();
+    $user = User::factory()->create();
 
-    $recourse = Recourse::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $progress1 = ProgressHistory::factory()->create([
       "recourse_id" => $recourse->id,
       "comment" => "Progress Test Middle Register"
@@ -59,16 +62,14 @@ class ProgressHistoryDeleteTest extends TestCase
 
     $this->assertDatabaseCount("progress_histories", 3);
 
-    $response = $this->deleteJson(route('progress.destroy',  $progress1));
+    $response = $this->actingAs($user)->deleteJson(route('progress.destroy',  $progress1));
 
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("progress_histories", 3);
     $response->assertJsonStructure([
       "error" => [
-        [
-          "status",
-          "detail"
-        ]
+        "status",
+        "detail"
       ]
     ]);
   }
@@ -76,23 +77,21 @@ class ProgressHistoryDeleteTest extends TestCase
   /** @test **/
   public function a_progress_can_not_be_deleted_if_is_generated_by_system()
   {
-    $this->withoutExceptionHandling();
-
-    $recourse = Recourse::factory()->create();
+    // $this->withoutExceptionHandling();
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $progressGenerated = $recourse->progress->first();
 
     $this->assertDatabaseCount("progress_histories", 1);
 
-    $response = $this->deleteJson(route('progress.destroy',  $progressGenerated));
+    $response = $this->actingAs($user)->deleteJson(route('progress.destroy',  $progressGenerated));
 
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("progress_histories", 1);
     $response->assertJsonStructure([
       "error" => [
-        [
-          "status",
-          "detail"
-        ]
+        "status",
+        "detail"
       ]
     ]);
   }
