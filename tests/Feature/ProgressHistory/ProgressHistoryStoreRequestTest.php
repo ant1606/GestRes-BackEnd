@@ -4,222 +4,276 @@ namespace Tests\Feature\ProgressHistory;
 
 use Tests\TestCase;
 use App\Models\Recourse;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProgressHistoryStoreRequestTest extends TestCase
 {
-    use RefreshDatabase;
-    use ProgressHistoryDataTrait;
+  use RefreshDatabase;
+  use ProgressHistoryDataTrait;
 
-    #region DONE Field
+  #region DONE Field
 
-    /** @test */
-    public function the_done_is_required()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'realizado' => null
-            ])
-        );
+  /** @test */
+  public function the_done_is_required()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData([
+        'done' => null
+      ])
+    );
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "realizado"
-        ]);
-    }
+    $response->assertJsonFragment([
+      "done" => ["The done field is required."],
+    ]);
 
-    /** @test */
-    public function the_done_may_not_be_equals_to_zero()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'realizado' => 0
-            ])
-        );
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "realizado"
-        ]);
-    }
+  /** @test */
+  public function the_done_may_not_be_equals_to_zero()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData([
+        'done' => 0
+      ])
+    );
 
-    /** @test */
-    public function the_done_may_not_be_below_to_zero()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'realizado' => -15
-            ])
-        );
+    $response->assertJsonFragment([
+      "done" => ["The done must be at least 1."],
+    ]);
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "realizado"
-        ]);
-    }
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
 
-    /** @test */
-    public function the_done_must_be_an_integer()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'realizado' => Str::random(10)
-            ])
-        );
+  /** @test */
+  public function the_done_may_not_be_below_to_zero()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData([
+        'done' => -15
+      ])
+    );
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "realizado"
-        ]);
-    }
+    $response->assertJsonFragment([
+      "done" => ["The done must be at least 1."],
+    ]);
 
-    #endregion
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
 
-    #region PENDING Field
+  /** @test */
+  public function the_done_must_be_an_integer()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData([
+        'done' => Str::random(10)
+      ])
+    );
 
-    /** @test */
-    public function the_pending_is_required()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'pendiente' => null
-            ])
-        );
+    $response->assertJsonFragment([
+      "done" => ["The done must be a number."],
+    ]);
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "pendiente"
-        ]);
-    }
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
 
-    /** @test */
-    public function the_pending_may_not_be_below_to_zero()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'pendiente' => -15
-            ])
-        );
+  #endregion
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "pendiente"
-        ]);
-    }
+  #region PENDING Field - Ahora es autogenerado en el Controller
 
-    /** @test */
-    public function the_pending_can_be_be_equals_to_zero()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'pendiente' => 0
-            ])
-        );
+  // /** @test */
+  // public function the_pending_is_required()
+  // {
+  //   $user = User::factory()->create();
+  //   $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+  //   $response = $this->actingAs($user)->postJson(
+  //     route('progress.store', $recourse),
+  //     $this->progressHistoryValidData([
+  //       'pending' => null
+  //     ])
+  //   );
 
-        $response->assertStatus(201);
-    }
+  //   $response->assertJsonFragment([
+  //     "pending" => ["The done must be a number."],
+  //   ]);
 
-    /** @test */
-    public function the_pending_must_be_an_integer()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'pendiente' => Str::random(10)
-            ])
-        );
+  //   $response->assertJsonStructure([
+  //     "error" => [
+  //       "status", "detail"
+  //     ]
+  //   ]);
+  // }
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "pendiente"
-        ]);
-    }
+  // /** @test */
+  // public function the_pending_may_not_be_below_to_zero()
+  // {
+  //   $user = User::factory()->create();
+  //   $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+  //   $response = $this->actingAs($user)->postJson(
+  //     route('progress.store', $recourse),
+  //     $this->progressHistoryValidData([
+  //       'pending' => -15
+  //     ])
+  //   );
 
-    #endregion
+  //   $response->assertJsonFragment([
+  //     "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+  //     "inputName" => "pending"
+  //   ]);
+  // }
 
-    #region DATE Field
+  // /** @test */
+  // public function the_pending_can_be_be_equals_to_zero()
+  // {
+  //   $user = User::factory()->create();
+  //   $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+  //   $response = $this->actingAs($user)->postJson(
+  //     route('progress.store', $recourse),
+  //     $this->progressHistoryValidData([
+  //       'pending' => 0
+  //     ])
+  //   );
 
-    /** @test */
-    public function the_date_is_required()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'fecha' => null
-            ])
-        );
+  //   $response->assertStatus(201);
+  // }
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "fecha"
-        ]);
-    }
+  // /** @test */
+  // public function the_pending_must_be_an_integer()
+  // {
+  //   $user = User::factory()->create();
+  //   $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+  //   $response = $this->actingAs($user)->postJson(
+  //     route('progress.store', $recourse),
+  //     $this->progressHistoryValidData([
+  //       'pending' => Str::random(10)
+  //     ])
+  //   );
 
-    /** @test */
-    public function the_date_must_be_a_date()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData([
-                'fecha' => Str::random(10)
-            ])
-        );
+  //   $response->assertJsonFragment([
+  //     "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
+  //     "inputName" => "pending"
+  //   ]);
+  // }
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "fecha"
-        ]);
-    }
+  #endregion
 
-    #endregion
+  #region DATE Field
 
-    #region COMMENT Field
+  /** @test */
+  public function the_date_is_required()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData([
+        'date' => null
+      ])
+    );
 
-    /** @test */
-    public function the_comment_may_not_be_greater_than_100_characters()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData(['comentario' => Str::random(101)])
-        );
+    $response->assertJsonFragment([
+      "date" => ["The date field is required."],
+    ]);
 
-        $response->assertJsonFragment([
-            "status" => \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY,
-            "inputName" => "comentario"
-        ]);
-    }
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
 
-    /** @test */
-    public function the_comment_can_be_nullable()
-    {
-        $recourse = Recourse::factory()->create();
-        $response = $this->postJson(
-            route('progress.store', $recourse),
-            $this->progressHistoryValidData(['comentario' => null])
-        );
+  /** @test */
+  public function the_date_must_be_a_date()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData([
+        'date' => Str::random(10)
+      ])
+    );
 
-        $response->assertStatus(201);
-    }
+    $response->assertJsonFragment([
+      "date" => ["The date is not a valid date."],
+    ]);
 
-    #endregion
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
+
+  #endregion
+
+  #region COMMENT Field
+
+  /** @test */
+  public function the_comment_may_not_be_greater_than_100_characters()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData(['comment' => Str::random(101)])
+    );
+
+    $response->assertJsonFragment([
+      "comment" => ["The comment must not be greater than 100 characters."],
+    ]);
+
+    $response->assertJsonStructure([
+      "error" => [
+        "status", "detail"
+      ]
+    ]);
+  }
+
+  /** @test */
+  public function the_comment_can_be_nullable()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $response = $this->actingAs($user)->postJson(
+      route('progress.store', $recourse),
+      $this->progressHistoryValidData(['comment' => null])
+    );
+
+    // dd($response->getContent());
+    $response->assertStatus(201);
+  }
+
+  #endregion
 
 }

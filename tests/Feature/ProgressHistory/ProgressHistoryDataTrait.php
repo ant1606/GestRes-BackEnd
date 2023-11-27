@@ -11,10 +11,10 @@ trait ProgressHistoryDataTrait
   {
 
     return array_merge([
-      'realizado' => 5,
-      'pendiente' => 10,
-      'fecha' => Carbon::now()->toDateString(),
-      'comentario' => "Comentario de prueba",
+      'done' => 5,
+      // 'pendiente' => 10,
+      'date' => Carbon::now()->toDateString(),
+      'comment' => "Comentario de prueba",
     ], $overrides);
   }
 }
