@@ -122,6 +122,7 @@ class RecourseController extends ApiController
       ? $request->total_pages - $recourse->total_pages
       : $request->total_videos - $recourse->total_videos;
     // dd($differenceBetweenTotals, Settings::getKeyfromId($request->type_id), $request->total_pages, $recourse->total_pages);
+    // dd($recourse->attributesToArray(), $request->getContent());
 
     $recourse->fill($request->only([
       'name',
@@ -136,7 +137,7 @@ class RecourseController extends ApiController
     ]));
     $existingTags = $recourse->tags()->pluck('taggables.tag_id')->toArray();
 
-    if ($recourse->isClean() && $request->tags === $existingTags) {
+    if ($recourse->isClean() && (isset($request->tags) ? $request->tags : []) === $existingTags) {
       return $this->errorResponse(
         ["api_response" => ["Se debe especificar al menos un valor diferente para actualizar"]],
         Response::HTTP_UNPROCESSABLE_ENTITY
