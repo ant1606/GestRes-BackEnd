@@ -3,6 +3,7 @@
 namespace Tests\Feature\Tags;
 
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,50 +11,49 @@ use Tests\TestCase;
 
 class TagDeleteTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    /** @test */
-    public function can_delete_a_tag()
-    {
-        $tag = Tag::factory()->create();
+  /** @test */
+  public function can_delete_a_tag()
+  {
+    $user = User::factory()->create();
+    $tag = Tag::factory()->create();
 
-        $response = $this->deleteJson(route('tag.destroy', $tag));
+    $response = $this->actingAs($user)->deleteJson(route('tag.destroy', $tag));
 
-        $response->assertStatus(Response::HTTP_ACCEPTED);
+    $response->assertStatus(Response::HTTP_ACCEPTED);
 
-        $this->assertDatabaseCount("tags", 0);
-        $response->assertJsonStructure([
-            "data" => [
-                "identificador",
-                "nombre",
-                "estilos"
-            ]
-        ]);
-        // $this->assertSoftDeleted($tag);
-    }
+    $this->assertDatabaseCount("tags", 0);
+    $response->assertJsonStructure([
+      "data" => [
+        "identificador",
+        "nombre",
+        "estilos"
+      ]
+    ]);
+    // $this->assertSoftDeleted($tag);
+  }
 
-    /** @test */
-    public function can_not_delete_a_tag_has_doesnt_exists()
-    {
+  /** @test */
+  public function can_not_delete_a_tag_has_doesnt_exists()
+  {
+    $user = User::factory()->create();
+    Tag::factory(10)->create();
 
-        Tag::factory(10)->create();
+    $tag = 150;
 
-        $tag = 150;
+    $response = $this->actingAs($user)->deleteJson(route('tag.destroy', $tag));
 
-        $response = $this->deleteJson(route('tag.destroy', $tag));
+    $response->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-
-        // dd($response->getContent());
-        $this->assertDatabaseCount("tags", 10);
-        $response->assertJsonStructure([
-            "error"=>[
-                [
-                    "status",
-                    "detail"
-                ]
-            ]
-        ]);
-        // $this->assertSoftDeleted($tag);
-    }
+    // dd($response->getContent());
+    $this->assertDatabaseCount("tags", 10);
+    $response->assertJsonStructure([
+      "error" => [
+        "status",
+        "detail"
+      ]
+    ]);
+    // $this->assertSoftDeleted($tag);
+  }
 }
