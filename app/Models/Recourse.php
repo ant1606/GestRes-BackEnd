@@ -42,7 +42,7 @@ class Recourse extends Model
   protected function currentStatusName(): Attribute
   {
     return new Attribute(
-      // validar que exista la relacion antes de obtener el status
+      //TODO validar que exista la relacion antes de obtener el status
       get: fn () => !$this->status->isEmpty() ? $this->loadExists('status')->status->last()->status_name : ''
     );
   }
@@ -50,10 +50,15 @@ class Recourse extends Model
 
   protected function totalProgressPercentage(): Attribute
   {
-    return new Attribute(
-      // validar que exista la relacion antes de obtener el status
-      get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
-    );
+    if ($this->progress()->exists()) {
+      return new Attribute(
+        get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
+      );
+    } else {
+      return new Attribute(
+        get: null
+      );
+    }
   }
   // $recourse->progress->pluck('done')->sum()
   public function tags()
