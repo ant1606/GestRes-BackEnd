@@ -5,6 +5,7 @@ namespace Tests\Feature\StatusHistory;
 use App\Enums\StatusRecourseEnum;
 use App\Models\Recourse;
 use App\Models\Settings;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,52 +14,52 @@ use Tests\TestCase;
 
 class StatusRegistrationTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    /** @test */
-    public function a_status_can_be_register()
-    {
-        // $this->withoutExceptionHandling();
-        $recourse = Recourse::factory()->create();
+  /** @test */
+  public function a_status_can_be_register()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user]);
 
-        $date = Carbon::now()->toDateString();
-        $status = [
-            'estadoId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
-            'fecha' => $date,
-            'comentario' => 'Curso a punto de empezar'
-        ];
+    $date = Carbon::now()->toDateString();
+    $status = [
+      'status_id' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+      'date' => $date,
+      'comment' => 'Curso a punto de empezar'
+    ];
 
-        $response = $this->postJson(route('status.store', $recourse->id), $status);
+    $response = $this->actingAs($user)->postJson(route('status.store', $recourse->id), $status);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+    $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->assertDatabaseHas('status_histories', [
-            'recourse_id' => $recourse->id,
-            'status_id' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
-            'date' => $date,
-            'comment' => 'Curso a punto de empezar'
-        ]);
+    $this->assertDatabaseHas('status_histories', [
+      'recourse_id' => $recourse->id,
+      'status_id' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+      'date' => $date,
+      'comment' => 'Curso a punto de empezar'
+    ]);
 
-        $this->assertDatabaseCount('status_histories', 2);
-    }
+    $this->assertDatabaseCount('status_histories', 2);
+  }
 
-    /** @test */
-    public function a_status_can_not_be_register_with_a_invalid_date()
-    {
-        $this->withoutExceptionHandling();
-        $recourse = Recourse::factory()->create();
+  /** @test */
+  public function a_status_can_not_be_register_with_a_invalid_date()
+  {
+    $user = User::factory()->create();
+    $recourse = Recourse::factory()->create(["user_id" => $user]);
 
-        $date = Carbon::now()->subDays(15);
-        $status = [
-            'estadoId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
-            'fecha' => $date,
-            'comentario' => 'Curso a punto de empezar'
-        ];
+    $date = Carbon::now()->subDays(15);
+    $status = [
+      'estadoId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+      'fecha' => $date,
+      'comentario' => 'Curso a punto de empezar'
+    ];
 
-        $response = $this->postJson(route('status.store', $recourse->id), $status);
+    $response = $this->actingAs($user)->postJson(route('status.store', $recourse->id), $status);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertDatabaseCount('status_histories', 1);
-    }
+    $this->assertDatabaseCount('status_histories', 1);
+  }
 }
