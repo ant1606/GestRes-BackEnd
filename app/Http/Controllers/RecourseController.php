@@ -197,7 +197,6 @@ class RecourseController extends ApiController
     $recourse->tags()->detach();
     $recourse->delete();
 
-
     return $this->showOne(new RecourseResource($recourse), Response::HTTP_ACCEPTED);
   }
 }
