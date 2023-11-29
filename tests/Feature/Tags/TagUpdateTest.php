@@ -3,6 +3,7 @@
 namespace Tests\Feature\Tags;
 
 use App\Models\Tag;
+use App\Models\User;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -11,50 +12,51 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TagUpdateTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    /** @test */
-    public function tag_can_be_updated()
-    {
-        $tag = Tag::factory()->create();
+  /** @test */
+  public function tag_can_be_updated()
+  {
+    $user = User::factory()->create();
+    $tag = Tag::factory()->create();
 
-        $updatedTag = [
-            "identificador" => $tag->id,
-            "nombre" => "etiqueta actualizada",
-        ];
+    $updatedTag = [
+      "id" => $tag->id,
+      "name" => "etiqueta actualizada",
+    ];
 
-        $response = $this->putJson(route('tag.update', $updatedTag["identificador"]), $updatedTag);
+    $response = $this->actingAs($user)->putJson(route('tag.update', $updatedTag["id"]), $updatedTag);
 
-        $response->assertStatus(Response::HTTP_ACCEPTED);
+    $response->assertStatus(Response::HTTP_ACCEPTED);
 
-        $this->assertDatabaseCount("tags", 1);
+    $this->assertDatabaseCount("tags", 1);
 
-        $this->assertDatabaseHas("tags", [
-            "name" => Str::upper($updatedTag["nombre"]),
-            "id" => $updatedTag["identificador"],
-        ]);
-    }
+    $this->assertDatabaseHas("tags", [
+      "name" => Str::upper($updatedTag["name"]),
+      "id" => $updatedTag["id"],
+    ]);
+  }
 
-    /** @test */
-    public function tag_can_not_be_updated_if_the_name_doesnt_change()
-    {
-        $tag = Tag::create([
-            "name" => "MI ETIQUETA",
-            "style" => "estilo"
-        ]);
+  /** @test */
+  public function tag_can_not_be_updated_if_the_name_doesnt_change()
+  {
+    $user = User::factory()->create();
 
-        $response = $this->putJson(route('tag.update', $tag["id"]), ["identificador" => $tag->id, "nombre" => $tag->name]);
+    $tag = Tag::create([
+      "name" => "MI ETIQUETA",
+      "style" => "estilo"
+    ]);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $response = $this->actingAs($user)->putJson(route('tag.update', $tag["id"]), ["id" => $tag->id, "name" => $tag->name]);
 
-        $this->assertDatabaseCount("tags", 1);
-        $response->assertJsonStructure([
-            "error"=>[
-                [
-                    "status",
-                    "detail"
-                ]
-            ]
-        ]);
-    }
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+    $this->assertDatabaseCount("tags", 1);
+    $response->assertJsonStructure([
+      "error" => [
+        "status",
+        "detail"
+      ]
+    ]);
+  }
 }
