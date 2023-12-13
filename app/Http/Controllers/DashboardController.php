@@ -6,9 +6,11 @@ use App\Enums\StatusRecourseEnum;
 use App\Http\Controllers\ApiController;
 use App\Http\Resources\RecourseCollection;
 use App\Models\Recourse;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends ApiController
@@ -17,9 +19,27 @@ class DashboardController extends ApiController
   public function getTop5Recourses(Request $request)
   {
     $statusType = filter_var($request->query('porEmpezar'), FILTER_VALIDATE_BOOLEAN)
-      ? StatusRecourseEnum::STATUS_POREMPEZAR->value
-      :  StatusRecourseEnum::STATUS_ENPROCESO->value;
-    $recourses = Recourse::all()->where('current_status_name', $statusType)->take(5);
+      ? StatusRecourseEnum::STATUS_POREMPEZAR->name
+      :  StatusRecourseEnum::STATUS_ENPROCESO->name;
+
+
+    $statusType = Settings::getData($statusType);
+
+    // $recourses = Recourse::all()->where('current_status_name', $statusType)->take(5);
+    // Subconsulta para obtener los IDs de los últimos registros de historial de estado para cada recurso
+    $latestStatusHistoryIds = DB::table('status_histories as sh')
+      ->select(DB::raw('MAX(sh.id) as max_id'))
+      ->groupBy('sh.recourse_id');
+
+    // Consulta principal
+    $recourses = Recourse::select('recourses.id', 'recourses.name', 'sh.status_id', 'sh.date', 'sh.comment')
+      ->join('status_histories as sh', 'recourses.id', '=', 'sh.recourse_id')
+      ->whereIn('sh.id', $latestStatusHistoryIds)
+      ->where('sh.status_id', $statusType["id"])
+      ->orderBy('recourses.id')
+      ->take(5)
+      ->get();
+
     return $this->showAllResource(new RecourseCollection($recourses), Response::HTTP_OK);
   }
 
