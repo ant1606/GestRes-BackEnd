@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\AuthorizationOAuthGooleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\PasswordResetController;
@@ -62,6 +63,9 @@ Route::middleware(['cors'])->group(function () {
   // TODO Verificar si es mejor ponerle autentificacion a estas 2 rutas de settings
   Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
   Route::get('settings/{value}', [SettingsController::class, 'show'])->name('settings.show');
+
+  //TODO pasarlo a las rutas con autentificacion
+  Route::post('suscriptionyt', [AuthorizationOAuthGooleController::class, 'listsuscription'])->name('oauth.youtube');
 
   //Rutas con autentificación  
   Route::middleware(['auth:sanctum'])->group(function () {
