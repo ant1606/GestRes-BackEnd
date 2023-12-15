@@ -8,22 +8,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'style'
-    ];
+  protected $fillable = [
+    'name',
+    'style'
+  ];
 
-    protected $hidden = [
-        'pivot',
-        'created_at',
-        'updated_at'
-    ];
+  protected $hidden = [
+    'pivot',
+    'created_at',
+    'updated_at'
+  ];
 
-    //TODO Definir como llenar el atributo style tanto en el proceso como en los factories 
-    public function recourses()
-    {
-        return $this->morphedByMany(Recourse::class, 'taggable');
-    }
+  //TODO Definir como llenar el atributo style tanto en el proceso como en los factories 
+  public function recourses()
+  {
+    return $this->morphedByMany(Recourse::class, 'taggable');
+  }
+
+  public function youtubesubscription()
+  {
+    return $this->morphedByMany(YoutubeSubscription::class, 'taggable');
+  }
 }
