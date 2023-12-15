@@ -14,7 +14,9 @@ use App\Http\Controllers\RecourseController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusHistoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\YoutubeSubscriptionController;
 use App\Models\StatusHistory;
+use App\Models\YoutubeSubscription;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,11 +66,12 @@ Route::middleware(['cors'])->group(function () {
   Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
   Route::get('settings/{value}', [SettingsController::class, 'show'])->name('settings.show');
 
-  //TODO pasarlo a las rutas con autentificacion
-  Route::post('suscriptionyt', [AuthorizationOAuthGooleController::class, 'listsuscription'])->name('oauth.youtube');
+
+
 
   //Rutas con autentificación  
   Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
 
     Route::get('/email/verify', [EmailVerificationController::class, 'notify'])->name('verification.notice');
@@ -87,6 +90,10 @@ Route::middleware(['cors'])->group(function () {
     Route::get('dashboard/getAmountByState', [DashboardController::class, 'getAmountByState'])->name('dashboard.getAmountByState');
 
     Route::get('tag/getTagsForTagSelector', [TagController::class, 'getTagsForTagSelector'])->name('tag.getTagForTagSelector');
+
+    Route::post('youtube-subscription', [YoutubeSubscriptionController::class, 'store'])->name('subscription.store');
+    Route::get('youtube-subscription', [YoutubeSubscriptionController::class, 'index'])->name('subscription.index');
+
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
   });
