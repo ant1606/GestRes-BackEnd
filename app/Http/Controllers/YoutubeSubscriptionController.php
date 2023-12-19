@@ -23,11 +23,21 @@ class YoutubeSubscriptionController extends ApiController
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
-    //TODO Agregar filtros
+    $subscription = YoutubeSubscription::query();
 
-    $subscriptions = YoutubeSubscription::where('user_id', Auth::user()->id)->get();
+    $subscription = $subscription->where('user_id', auth()->user()->id);
+    if ($request->has('searchTags') && $request->searchTags !== null && $request->searchTags !== []) {
+      $subscription = $subscription->whereHas('tags', function ($query) use ($request) {
+        $query->whereIn('tag_id', $request->searchTags);
+      });
+    }
+    if ($request->has('searchTitle') && $request->searchTitle !== null)
+      $subscription = $subscription->where('title', 'like', '%' . $request->searchTitle . '%');
+
+    $subscriptions = $subscription->get();
+    // $subscriptions = YoutubeSubscription::where('user_id', Auth::user()->id)->get();
     return $this->showAllResource(new YoutubeSubscriptionCollection($subscriptions), Response::HTTP_OK);
   }
 
@@ -170,7 +180,6 @@ class YoutubeSubscriptionController extends ApiController
         $snippet = $subscription->getSnippet();
         $resource = $snippet->getResourceId();
         $thumbnails = $snippet->getThumbnails();
-        //TODO Colocar el id del usuario autentificado
         $items[] = [
           "youtube_id" => $subscription->getId(),
           "user_id" => Auth::user()->id,
