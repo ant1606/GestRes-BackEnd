@@ -21,6 +21,8 @@ class YoutubeSubscription extends Model
     'thumbnail_high'
   ];
 
+  public $incrementing = false;
+
   public function tags()
   {
     return $this->morphToMany(Tag::class, 'taggable');

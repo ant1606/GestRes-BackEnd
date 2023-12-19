@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\YoutubeSubscriptionStoreRequest;
+use App\Http\Resources\YoutubeSubscriptionCollection;
 use App\Models\YoutubeSubscription;
 use Google\Service\YouTube as ServiceYouTube;
 use Google\Service\YouTube\Subscription;
 use Google_Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
-class YoutubeSubscriptionController extends Controller
+class YoutubeSubscriptionController extends ApiController
 {
   /**
    * Display a listing of the resource.
@@ -20,6 +23,26 @@ class YoutubeSubscriptionController extends Controller
    */
   public function index()
   {
+    //TODO Agregar filtros
+
+    $subscriptions = YoutubeSubscription::all();
+    return $this->showAllResource(new YoutubeSubscriptionCollection($subscriptions), Response::HTTP_OK);
+  }
+
+  /**
+   * Check if process of store subscription is processing
+   *
+   * @return \Illuminate\Http\Response
+   */
+  function checkProcessStatus()
+  {
+    $isProcessing = Cache::get('process_status', false);
+
+    if ($isProcessing) {
+      return $this->showMessage(["message" => "procesando"], Response::HTTP_OK);
+    } else {
+      return $this->showMessage(["message" => "finalizado"], Response::HTTP_OK);
+    }
   }
 
   /**
@@ -40,6 +63,10 @@ class YoutubeSubscriptionController extends Controller
    */
   public function store(YoutubeSubscriptionStoreRequest $request)
   {
+    !Cache::has('process_call_APIYoutube')
+      ? Cache::add('process_call_APIYoutube', true, now()->addMinutes(30))
+      : Cache::put('process_call_APIYoutube', true, now()->addMinutes(30));
+
     $client = new Google_Client();
     $token = $request->get('access_token');
     try {
@@ -77,6 +104,7 @@ class YoutubeSubscriptionController extends Controller
       return ["error" => $th->getMessage()];
     } finally {
       $client->revokeToken($token);
+      Cache::put('process_call_APIYoutube', false, now()->addMinutes(30));
     }
   }
 
