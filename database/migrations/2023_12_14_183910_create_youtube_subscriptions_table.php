@@ -14,7 +14,8 @@ return new class extends Migration
   public function up()
   {
     Schema::create('youtube_subscriptions', function (Blueprint $table) {
-      $table->string('id', 60)->primary()->index();
+      $table->id('id');
+      $table->string('youtube_id', 60);
       $table->unsignedBigInteger('user_id');
       $table->string('channel_id', 30);
       $table->string('title', 150)->index();

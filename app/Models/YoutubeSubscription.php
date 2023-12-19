@@ -10,7 +10,7 @@ class YoutubeSubscription extends Model
   use HasFactory;
 
   protected $fillable = [
-    'id',
+    'youtube_id',
     'user_id',
     'channel_id',
     'title',
@@ -20,8 +20,6 @@ class YoutubeSubscription extends Model
     'thumbnail_medium',
     'thumbnail_high'
   ];
-
-  public $incrementing = false;
 
   public function tags()
   {

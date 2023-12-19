@@ -17,6 +17,7 @@ class YoutubeSubscriptionResource extends JsonResource
     // return parent::toArray($request);
     return [
       'identificador'  => $this->id,
+      'youtubeId'  => $this->youtube_id,
       'usuarioId' => $this->user_id,
       'canalId' => $this->channel_id,
       'titulo' => $this->title,
@@ -34,6 +35,7 @@ class YoutubeSubscriptionResource extends JsonResource
   {
     $attributes = [
       'identificador' => 'id',
+      'youtubeId'  => 'youtube_id',
       'usuarioId' => 'user_id',
       'canalId' => 'channel_id',
       'titulo' => 'title',
@@ -53,6 +55,7 @@ class YoutubeSubscriptionResource extends JsonResource
   {
     $attributes = [
       'id' => 'identificador',
+      'youtube_id'  => 'youtubeId',
       'user_id' => 'usuarioId',
       'channel_id' => 'canalId',
       'title' => 'titulo',
