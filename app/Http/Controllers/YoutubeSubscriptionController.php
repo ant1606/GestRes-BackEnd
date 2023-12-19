@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\YoutubeSubscriptionStoreRequest;
 use App\Http\Resources\YoutubeSubscriptionCollection;
+use App\Http\Resources\YoutubeSubscriptionResource;
 use App\Models\YoutubeSubscription;
 use Google\Service\YouTube as ServiceYouTube;
 use Google\Service\YouTube\Subscription;
 use Google_Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +27,7 @@ class YoutubeSubscriptionController extends ApiController
   {
     //TODO Agregar filtros
 
-    $subscriptions = YoutubeSubscription::all();
+    $subscriptions = YoutubeSubscription::where('user_id', Auth::user()->id)->get();
     return $this->showAllResource(new YoutubeSubscriptionCollection($subscriptions), Response::HTTP_OK);
   }
 
@@ -43,16 +45,6 @@ class YoutubeSubscriptionController extends ApiController
     } else {
       return $this->showMessage(["message" => "finalizado"], Response::HTTP_OK);
     }
-  }
-
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    //
   }
 
   /**
@@ -93,7 +85,7 @@ class YoutubeSubscriptionController extends ApiController
       YoutubeSubscription::upsert(
         $buffer,
         ['id'],
-        ['channel_id', 'title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high', 'user_id']
+        ['youtube_id', 'channel_id', 'title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high', 'user_id']
       );
 
       // DB::commit();
@@ -111,44 +103,57 @@ class YoutubeSubscriptionController extends ApiController
   /**
    * Display the specified resource.
    *
-   * @param  \App\Models\YoutubeSubscriptionController  $youtubeSubscriptionController
+   * @param  \App\Models\YoutubeSubscription $subscription
    * @return \Illuminate\Http\Response
    */
-  public function show(YoutubeSubscriptionController $youtubeSubscriptionController)
+  public function show(YoutubeSubscription $subscription)
   {
     //
   }
 
   /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  \App\Models\YoutubeSubscriptionController  $youtubeSubscriptionController
-   * @return \Illuminate\Http\Response
-   */
-  public function edit(YoutubeSubscriptionController $youtubeSubscriptionController)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
+   * Actualiza los Tags del YoutubeSubscription Model
+   * 
    *
    * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Models\YoutubeSubscriptionController  $youtubeSubscriptionController
+   * @param  \App\Models\YoutubeSubscription $subscription
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, YoutubeSubscriptionController $youtubeSubscriptionController)
+  public function update(YoutubeSubscription $subscription, Request $request)
   {
-    //
+    $existingTags = $subscription->tags()->pluck('taggables.tag_id')->toArray();
+
+    if ((isset($request->tags) ? $request->tags : []) === $existingTags) {
+      return $this->errorResponse(
+        ["api_response" => ["Se debe especificar al menos un valor diferente para actualizar"]],
+        Response::HTTP_UNPROCESSABLE_ENTITY
+      );
+    }
+
+    try {
+      DB::beginTransaction();
+      $subscription->tags()->sync($request->tags);
+      DB::commit();
+      return $this->showOne(new YoutubeSubscriptionResource($subscription), Response::HTTP_ACCEPTED);
+    } catch (\Throwable $th) {
+      DB::rollBack();
+      // TODO Escribir los mensajes de error en un log $e->getMessage()
+      //TODO Envolver los mensajes de error en la nomenclatura usada [api_response => []]
+      dd($th);
+      return $this->errorResponse(
+        ["api_response" => ["Ocurrió un error al actualizar el recurso, hable con el administrador"]],
+        Response::HTTP_UNPROCESSABLE_ENTITY
+      );
+    }
   }
 
   /**
    * Remove the specified resource from storage.
    *
-   * @param  \App\Models\YoutubeSubscriptionController  $youtubeSubscriptionController
+   * @param  \App\Models\YoutubeSubscription $subscription
    * @return \Illuminate\Http\Response
    */
-  public function destroy(YoutubeSubscriptionController $youtubeSubscriptionController)
+  public function destroy(YoutubeSubscription $subscription)
   {
     //
   }
@@ -167,8 +172,8 @@ class YoutubeSubscriptionController extends ApiController
         $thumbnails = $snippet->getThumbnails();
         //TODO Colocar el id del usuario autentificado
         $items[] = [
-          "id" => $subscription->getId(),
-          "user_id" => 1,
+          "youtube_id" => $subscription->getId(),
+          "user_id" => Auth::user()->id,
           "channel_id" => $resource->getChannelId(),
           "title" => $snippet->getTitle(),
           "published_at" => Carbon::parse($snippet->getPublishedAt())->format("Y-m-d"),
