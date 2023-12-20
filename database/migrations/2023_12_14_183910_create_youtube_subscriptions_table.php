@@ -15,9 +15,9 @@ return new class extends Migration
   {
     Schema::create('youtube_subscriptions', function (Blueprint $table) {
       $table->id('id');
-      $table->string('youtube_id', 60);
+      $table->string('youtube_id', 60)->unique();
       $table->unsignedBigInteger('user_id');
-      $table->string('channel_id', 30);
+      $table->string('channel_id', 30)->unique();
       $table->string('title', 150)->index();
       $table->date('published_at');
       $table->longText('description');

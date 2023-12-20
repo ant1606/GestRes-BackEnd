@@ -80,13 +80,14 @@ class YoutubeSubscriptionController extends ApiController
       do {
         // TODO Considerar usar el parametro order, para poder obtener la mayor cantidad de subscripciones, esto triplicaria el proceso
         /*
+        El valor por defecto es SUBSCRIPTION_ORDER_RELEVANCE
         alphabetical – Sort alphabetically.
         relevance – Sort by relevance.
         unread – Sort by order of activity.
         */
         $subs = $youtube->subscriptions->listSubscriptions(
           ['snippet'],
-          ['mine' => true, 'maxResults' => 50, 'pageToken' => $tokenPage]
+          ['mine' => true, 'maxResults' => 50, 'pageToken' => $tokenPage, 'order' => 'unread']
         );
         $tokenPage = $subs->getNextPageToken();
         array_push($buffer, ...$this->process_items($subs->getItems()));
@@ -94,8 +95,8 @@ class YoutubeSubscriptionController extends ApiController
 
       YoutubeSubscription::upsert(
         $buffer,
-        ['id'],
-        ['youtube_id', 'channel_id', 'title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high', 'user_id']
+        ['youtube_id', 'channel_id'],
+        ['title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high']
       );
 
       // DB::commit();
