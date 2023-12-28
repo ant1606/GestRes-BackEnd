@@ -1,13 +1,14 @@
 # For more information: https://laravel.com/docs/sail
-version: '3'
+version: '3.8'
 services:
-  laravel.test:
-    build:
-      context: ./vendor/laravel/sail/runtimes/8.1
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP}'
+  labdev_pygestorrecursos_backend:
+    # build:
+    #   context: ./vendor/laravel/sail/runtimes/8.1
+    #   dockerfile: Dockerfile
+    #   args:
+    #     WWWGROUP: '${WWWGROUP}'
     image: sail-8.1/app
+    container_name: labdev_pygestorrecursos_backend
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
@@ -22,37 +23,27 @@ services:
       - '.:/var/www/html'
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - pygesres_net
-    depends_on:
-      - mysql
-  mysql:
-    image: 'mysql/mysql-server:8.0'
-    ports:
-      - '${FORWARD_DB_PORT:-3306}:3306'
-    environment:
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    volumes:
-      - 'pygesres-mysql:/var/lib/mysql'
-      - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-    networks:
-      - pygesres_net
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-      retries: 3
-      timeout: 5s
+      - labdev_net
+  # mysql:
+  #   image: 'mysql/mysql-server:8.0'
+  #   ports:
+  #     - '${FORWARD_DB_PORT:-3306}:3306'
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+  #     MYSQL_ROOT_HOST: "%"
+  #     MYSQL_DATABASE: '${DB_DATABASE}'
+  #     MYSQL_USER: '${DB_USERNAME}'
+  #     MYSQL_PASSWORD: '${DB_PASSWORD}'
+  #     MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  #   volumes:
+  #     - 'pygesres-mysql:/var/lib/mysql'
+  #     - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+  #   networks:
+  #     - pygesres_net
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+  #     retries: 3
+  #     timeout: 5s
 networks:
-    pygesres_net:
-        driver: bridge
-        name: pygesres
-# networks:
-#   pygesres_net:
-#     name: pygesres
-#     external: true
-volumes:
-  pygesres-mysql:
-    driver: local
+  labdev_net:
+    external: true
