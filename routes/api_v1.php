@@ -14,6 +14,7 @@ use App\Http\Controllers\RecourseController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusHistoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\WebPageController;
 use App\Http\Controllers\YoutubeSubscriptionController;
 use App\Models\StatusHistory;
 use App\Models\YoutubeSubscription;
@@ -95,6 +96,8 @@ Route::middleware(['cors'])->group(function () {
     Route::get('youtube-subscription/checkStatus', [YoutubeSubscriptionController::class, 'checkProcessStatus'])->name('subscription.checking');
     Route::post('youtube-subscription', [YoutubeSubscriptionController::class, 'store'])->name('subscription.store');
     Route::put('youtube-subscription/{subscription}', [YoutubeSubscriptionController::class, 'update'])->name('subscription.update');
+
+    Route::post('webpage', [WebPageController::class, 'store'])->name('webpage.store');
 
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
