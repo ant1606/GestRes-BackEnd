@@ -101,8 +101,12 @@ class WebPageController extends ApiController
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(WebPage $webpage)
   {
-    //
+    //TODO Insertar autorizacion para eliminar webpage sólo al usuario que lo creo
+    $webpage->tags()->detach();
+    $webpage->delete();
+
+    return $this->showOne(new WebPageResource($webpage), Response::HTTP_ACCEPTED);
   }
 }
