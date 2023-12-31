@@ -98,6 +98,7 @@ Route::middleware(['cors'])->group(function () {
     Route::put('youtube-subscription/{subscription}', [YoutubeSubscriptionController::class, 'update'])->name('subscription.update');
 
     Route::post('webpage', [WebPageController::class, 'store'])->name('webpage.store');
+    Route::get('webpage', [WebPageController::class, 'index'])->name('webpage.index');
 
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
