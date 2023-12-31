@@ -31,4 +31,9 @@ class Tag extends Model
   {
     return $this->morphedByMany(YoutubeSubscription::class, 'taggable');
   }
+
+  public function webpages()
+  {
+    return $this->morphedByMany(WebPage::class, 'taggable');
+  }
 }

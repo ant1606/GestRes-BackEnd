@@ -19,7 +19,8 @@ class WebPageResource extends JsonResource
       "nombre" => $this->name ?? "",
       "url" => $this->url,
       "descripcion" => $this->description ?? "",
-      "totalVisitas" => $this->count_visits ?? 0
+      "totalVisitas" => $this->count_visits ?? 0,
+      "tags" => TagResource::collection($this->tags),
     ];
   }
 
@@ -31,7 +32,7 @@ class WebPageResource extends JsonResource
       "url" => "url",
       "descripcion" => "description",
       "totalVisitas" => "count_visits",
-      // "tags" => "tags",
+      "tags" => "tags",
     ];
 
     return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -44,8 +45,8 @@ class WebPageResource extends JsonResource
       "name" => "nombre",
       "url" => "url",
       "description" => "descripcion",
-      "count_visits" => "totalVisitas"
-      // "tags" => "tags",
+      "count_visits" => "totalVisitas",
+      "tags" => "tags",
     ];
 
     return isset($attributes[$index]) ? $attributes[$index] : null;

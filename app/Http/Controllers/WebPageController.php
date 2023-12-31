@@ -41,6 +41,8 @@ class WebPageController extends ApiController
     $request->merge(["user_id" => Auth::user()->id]);
     // dd($request);
     $webpage = WebPage::create($request->all());
+    $webpage->tags()->syncWithoutDetaching($request->tags);
+
     return $this->showOne(new WebPageResource($webpage), Response::HTTP_CREATED);
   }
 
