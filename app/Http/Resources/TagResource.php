@@ -20,7 +20,7 @@ class TagResource extends JsonResource
       'identificador' => $this->id,
       'nombre' => $this->name,
       'estilos' => $this->style,
-      'total' => $this->recourses_count ?? 0,
+      'total' => $this->recourses_count + $this->youtubesubscription_count + $this->webpages_count,
     ];
   }
 

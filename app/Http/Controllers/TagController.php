@@ -39,8 +39,8 @@ class TagController extends ApiController
       $tags = $tags->latest();
     }
 
-    // Agregar recuento de recursos asociados con cada etiqueta
-    $tags = $tags->withCount('recourses')->get();
+    // Agregar recuento de recursos, suscripciones y páginas web asociados con cada etiqueta
+    $tags = $tags->withCount('recourses')->withCount('youtubesubscription')->withCount('webpages')->get();
     // dd($tags);
 
     return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
