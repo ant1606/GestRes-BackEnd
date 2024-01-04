@@ -72,13 +72,11 @@ class YoutubeSubscriptionController extends ApiController
     $client = new Google_Client();
     $token = $request->get('access_token');
     try {
-      // DB::beginTransaction();
       $client->setAccessToken($token);
       $youtube = new ServiceYouTube($client);
       $tokenPage = '';
       $buffer = [];
       do {
-        // TODO Considerar usar el parametro order, para poder obtener la mayor cantidad de subscripciones, esto triplicaria el proceso
         /*
         El valor por defecto es SUBSCRIPTION_ORDER_RELEVANCE
         alphabetical – Sort alphabetically.
@@ -99,11 +97,8 @@ class YoutubeSubscriptionController extends ApiController
         ['title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high']
       );
 
-      // DB::commit();
-      // dd($buffer);
       return ["message" => "Se insertaron los registros"];
     } catch (\Throwable $th) {
-      // DB::rollBack();
       return ["error" => $th->getMessage()];
     } finally {
       $client->revokeToken($token);
@@ -150,7 +145,7 @@ class YoutubeSubscriptionController extends ApiController
       DB::rollBack();
       // TODO Escribir los mensajes de error en un log $e->getMessage()
       //TODO Envolver los mensajes de error en la nomenclatura usada [api_response => []]
-      dd($th);
+      // dd($th);
       return $this->errorResponse(
         ["api_response" => ["Ocurrió un error al actualizar el recurso, hable con el administrador"]],
         Response::HTTP_UNPROCESSABLE_ENTITY

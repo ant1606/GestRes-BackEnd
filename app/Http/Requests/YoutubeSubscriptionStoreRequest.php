@@ -24,7 +24,8 @@ class YoutubeSubscriptionStoreRequest extends FormRequest
   public function rules()
   {
     return [
-      'access_token' => 'required'
+      'access_token' => 'required',
+      'order' => 'required'
     ];
   }
 }
