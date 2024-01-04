@@ -92,11 +92,12 @@ Route::middleware(['cors'])->group(function () {
 
     Route::get('tag/getTagsForTagSelector', [TagController::class, 'getTagsForTagSelector'])->name('tag.getTagForTagSelector');
 
-    Route::get('youtube-subscription', [YoutubeSubscriptionController::class, 'index'])->name('subscription.index');
+    // Route::get('youtube-subscription', [YoutubeSubscriptionController::class, 'index'])->name('subscription.index');
     Route::get('youtube-subscription/checkStatus', [YoutubeSubscriptionController::class, 'checkProcessStatus'])->name('subscription.checking');
-    Route::post('youtube-subscription', [YoutubeSubscriptionController::class, 'store'])->name('subscription.store');
-    Route::put('youtube-subscription/{subscription}', [YoutubeSubscriptionController::class, 'update'])->name('subscription.update');
+    // Route::post('youtube-subscription', [YoutubeSubscriptionController::class, 'store'])->name('subscription.store');
+    // Route::put('youtube-subscription/{subscription}', [YoutubeSubscriptionController::class, 'update'])->name('subscription.update');
 
+    Route::resource('youtube-subscription', YoutubeSubscriptionController::class)->except(['create', 'edit']);
     Route::resource('webpage', WebPageController::class)->except(['create', 'edit']);
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);

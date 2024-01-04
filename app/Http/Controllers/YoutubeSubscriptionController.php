@@ -87,7 +87,7 @@ class YoutubeSubscriptionController extends ApiController
         */
         $subs = $youtube->subscriptions->listSubscriptions(
           ['snippet'],
-          ['mine' => true, 'maxResults' => 50, 'pageToken' => $tokenPage, 'order' => 'unread']
+          ['mine' => true, 'maxResults' => 50, 'pageToken' => $tokenPage, 'order' => $request->get('order')]
         );
         $tokenPage = $subs->getNextPageToken();
         array_push($buffer, ...$this->process_items($subs->getItems()));
@@ -130,9 +130,9 @@ class YoutubeSubscriptionController extends ApiController
    * @param  \App\Models\YoutubeSubscription $subscription
    * @return \Illuminate\Http\Response
    */
-  public function update(YoutubeSubscription $subscription, Request $request)
+  public function update(YoutubeSubscription $youtube_subscription, Request $request)
   {
-    $existingTags = $subscription->tags()->pluck('taggables.tag_id')->toArray();
+    $existingTags = $youtube_subscription->tags()->pluck('taggables.tag_id')->toArray();
 
     if ((isset($request->tags) ? $request->tags : []) === $existingTags) {
       return $this->errorResponse(
@@ -143,9 +143,9 @@ class YoutubeSubscriptionController extends ApiController
 
     try {
       DB::beginTransaction();
-      $subscription->tags()->sync($request->tags);
+      $youtube_subscription->tags()->sync($request->tags);
       DB::commit();
-      return $this->showOne(new YoutubeSubscriptionResource($subscription), Response::HTTP_ACCEPTED);
+      return $this->showOne(new YoutubeSubscriptionResource($youtube_subscription), Response::HTTP_ACCEPTED);
     } catch (\Throwable $th) {
       DB::rollBack();
       // TODO Escribir los mensajes de error en un log $e->getMessage()
@@ -164,9 +164,14 @@ class YoutubeSubscriptionController extends ApiController
    * @param  \App\Models\YoutubeSubscription $subscription
    * @return \Illuminate\Http\Response
    */
-  public function destroy(YoutubeSubscription $subscription)
+  public function destroy(YoutubeSubscription $youtube_subscription)
   {
-    //
+    // dd($youtube_subscription);
+    //TODO Insertar autorizacion para eliminar recurso sólo al usuario que lo creo
+    $youtube_subscription->tags()->detach();
+    $youtube_subscription->delete();
+
+    return $this->showOne(new YoutubeSubscriptionResource($youtube_subscription), Response::HTTP_ACCEPTED);
   }
 
   /**
