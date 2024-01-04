@@ -6,6 +6,7 @@ use App\Enums\StatusRecourseEnum;
 use App\Enums\StatusRecourseStyleEnum;
 use App\Enums\TypeRecourseEnum;
 use App\Enums\TypeSettingsEnum;
+use App\Enums\UnitMeasureProgressEnum;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -23,6 +24,15 @@ class SettingsSeeder extends Seeder
     collect(TypeRecourseEnum::cases())->each(function ($item, $key) {
       DB::table('settings')->insert([
         'type' => TypeSettingsEnum::SETTINGS_TYPE->name,
+        'key' => $item->name,
+        'value' => $item->value,
+        'value2' => null,
+      ]);
+    });
+
+    collect(UnitMeasureProgressEnum::cases())->each(function ($item, $key) {
+      DB::table('settings')->insert([
+        'type' => TypeSettingsEnum::SETTINGS_UNIT_MEASURE_PROGRESS->name,
         'key' => $item->name,
         'value' => $item->value,
         'value2' => null,
