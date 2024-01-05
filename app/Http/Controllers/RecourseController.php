@@ -14,6 +14,7 @@ use App\Models\StatusHistory;
 use App\Enums\TypeRecourseEnum;
 use App\Models\ProgressHistory;
 use App\Enums\StatusRecourseEnum;
+use App\Enums\UnitMeasureProgressEnum;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\ApiController;
@@ -75,9 +76,7 @@ class RecourseController extends ApiController
       ProgressHistory::create([
         "recourse_id" => $recourse->id,
         "done" => 0,
-        "pending" =>
-        Settings::getKeyfromId($recourse['type_id']) === TypeRecourseEnum::TYPE_LIBRO->name ?
-          $recourse->total_pages : $recourse->total_videos,
+        "pending" => $this->getValueFromUnitMeasureProgress($recourse),
         "date" => $dateHistoryCreation,
         "comment" => $commentAutogenerate
       ]);
@@ -104,6 +103,20 @@ class RecourseController extends ApiController
         ["api_response" => ["Ocurrió un error al registrar el recurso, hable con el administrador"]],
         Response::HTTP_UNPROCESSABLE_ENTITY
       );
+    }
+  }
+
+  private function getValueFromUnitMeasureProgress(Recourse $recourse)
+  {
+    switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
+      case UnitMeasureProgressEnum::UNIT_CHAPTERS:
+        return $recourse->total_chapters;
+      case UnitMeasureProgressEnum::UNIT_PAGES:
+        return $recourse->total_pages;
+      case UnitMeasureProgressEnum::UNIT_HOURS:
+        return $recourse->total_hours;
+      case UnitMeasureProgressEnum::UNIT_VIDEOS:
+        return $recourse->total_videos;
     }
   }
 

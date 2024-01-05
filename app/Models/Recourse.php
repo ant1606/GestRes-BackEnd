@@ -17,10 +17,11 @@ class Recourse extends Model
     'author',
     'editorial',
     'type_id',
+    'unit_measure_progress_id',
     'total_videos',
     'total_pages',
     'total_chapters',
-    'total_vides',
+    'total_videos',
     'total_hours',
     'user_id'
   ];
@@ -30,12 +31,19 @@ class Recourse extends Model
     'updated_at',
   ];
 
-  protected $appends = ['type_name', 'current_status_name'];
+  protected $appends = ['type_name', 'unit_measure_progress_name', 'current_status_name'];
 
   protected function typeName(): Attribute
   {
     return new Attribute(
       get: fn () => Settings::getData(Settings::getKeyfromId($this->type_id), "value")
+    );
+  }
+
+  protected function unitMeasureProgressName(): Attribute
+  {
+    return new Attribute(
+      get: fn () => Settings::getData(Settings::getKeyfromId($this->unit_measure_progress_id), "value")
     );
   }
 
