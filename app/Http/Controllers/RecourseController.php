@@ -70,12 +70,14 @@ class RecourseController extends ApiController
 
     try {
       DB::beginTransaction();
+
       $request->merge(["user_id" => Auth::user()->id]);
       $recourse = Recourse::create($request->all());
 
       ProgressHistory::create([
         "recourse_id" => $recourse->id,
         "done" => 0,
+        "advanced" => 0,
         "pending" => $this->getValueFromUnitMeasureProgress($recourse),
         "date" => $dateHistoryCreation,
         "comment" => $commentAutogenerate
@@ -96,7 +98,9 @@ class RecourseController extends ApiController
       // dd($recourse);
       return $this->showOne(new RecourseResource($recourse), Response::HTTP_CREATED);
     } catch (\Exception $e) {
+
       DB::rollBack();
+      dd($e);
       // TODO Escribir los mensajes de error en un log $e->getMessage()
       //TODO Envolver los mensajes de error en la nomenclatura usada [api_response => []]
       return $this->errorResponse(
@@ -106,16 +110,17 @@ class RecourseController extends ApiController
     }
   }
 
+  //TODO EXtraer esta logica
   private function getValueFromUnitMeasureProgress(Recourse $recourse)
   {
     switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
-      case UnitMeasureProgressEnum::UNIT_CHAPTERS:
-        return $recourse->total_chapters;
-      case UnitMeasureProgressEnum::UNIT_PAGES:
-        return $recourse->total_pages;
-      case UnitMeasureProgressEnum::UNIT_HOURS:
-        return $recourse->total_hours;
-      case UnitMeasureProgressEnum::UNIT_VIDEOS:
+      case UnitMeasureProgressEnum::UNIT_CHAPTERS->name:
+        return  $recourse->total_chapters;
+      case UnitMeasureProgressEnum::UNIT_PAGES->name:
+        return  $recourse->total_pages;
+      case UnitMeasureProgressEnum::UNIT_HOURS->name:
+        return  $recourse->total_hours;
+      case UnitMeasureProgressEnum::UNIT_VIDEOS->name:
         return $recourse->total_videos;
     }
   }
@@ -128,6 +133,7 @@ class RecourseController extends ApiController
 
   public function update(Recourse $recourse, RecourseUpdateRequest $request)
   {
+    // TODO APlicar cambios con la nueva lógica de progreso
     $old_type_id = $recourse->type_id;
     $new_type_id = $request->type_id;
 

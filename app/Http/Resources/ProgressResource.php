@@ -16,11 +16,13 @@ class ProgressResource extends JsonResource
   {
     return [
       "identificador" => $this->id,
+      "avanzadoHasta" => $this->advanced,
       "realizado" => $this->done,
       "pendiente" => $this->pending,
       "fecha" => $this->date,
       "comentario" => $this->comment,
-      'esUltimoRegistro' => $this->is_last_record
+      'esUltimoRegistro' => $this->is_last_record,
+      "total" => $this->total
     ];
   }
 
@@ -28,10 +30,12 @@ class ProgressResource extends JsonResource
   {
     $attributes = [
       'realizado' => 'done',
+      'avanzadoHasta' => 'advanced',
       'pendiente' => 'pending',
       'fecha' => 'date',
       'comentario' => 'comment',
-      'esUltimoRegistro' => 'is_last_record'
+      'esUltimoRegistro' => 'is_last_record',
+      "total" => "total"
     ];
 
     return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -41,10 +45,12 @@ class ProgressResource extends JsonResource
   {
     $attributes = [
       'done' => 'realizado',
+      'advanced' => 'avanzadoHasta',
       'pending' => 'pendiente',
       'date' => 'fecha',
       'comment' => 'comentario',
       'is_last_record' => 'esUltimoRegistro',
+      "total" => "total"
     ];
 
     return isset($attributes[$index]) ? $attributes[$index] : null;

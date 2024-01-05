@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\StatusRecourseEnum;
+use App\Enums\UnitMeasureProgressEnum;
 use App\Http\Resources\ProgressCollection;
 use App\Http\Resources\ProgressResource;
 use App\Models\Recourse;
@@ -32,17 +33,24 @@ class ProgressHistoryController extends ApiController
   public function store(Recourse $recourse, ProgressHistoryStoreRequest $request)
   {
     $lastProgress = $recourse->progress->last();
+    $total = $this->getValueFromUnitMeasureProgress($recourse);
 
     if ($request->date < $lastProgress->date)
       return $this->errorResponse(["api_response" => ["La fecha ingresada es menor al último registro existente."]], Response::HTTP_UNPROCESSABLE_ENTITY);
 
-    $pending = $lastProgress->pending - $request->done;
+    $done =   $request->advanced - $lastProgress->advanced;
+    $pending = $total - $request->advanced;
     if ($pending < 0)
-      return $this->errorResponse(["api_response" => ["La cantidad de avance no puede ser mayor a la cantidad pendiente."]], Response::HTTP_UNPROCESSABLE_ENTITY);
+      return $this->errorResponse(["api_response" => ["La cantidad avanzada no puede ser mayor a la cantidad total."]], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+    // $pending = $lastProgress->pending - $request->done;
+    // if ($pending < 0)
+    //   return $this->errorResponse(["api_response" => ["La cantidad de avance no puede ser mayor a la cantidad pendiente."]], Response::HTTP_UNPROCESSABLE_ENTITY);
 
     $progress = ProgressHistory::create([
       'recourse_id' => $recourse->id,
-      'done' => $request->done,
+      'advanced' => $request->advanced,
+      'done' => $done,
       'pending' => $pending,
       'date' => $request->date,
       'comment' => $request->comment,
@@ -59,6 +67,21 @@ class ProgressHistoryController extends ApiController
     }
 
     return $this->showOne($progress, Response::HTTP_CREATED);
+  }
+
+  //TODO EXtraer esta logica
+  private function getValueFromUnitMeasureProgress(Recourse $recourse)
+  {
+    switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
+      case UnitMeasureProgressEnum::UNIT_CHAPTERS->name:
+        return  $recourse->total_chapters;
+      case UnitMeasureProgressEnum::UNIT_PAGES->name:
+        return  $recourse->total_pages;
+      case UnitMeasureProgressEnum::UNIT_HOURS->name:
+        return  $recourse->total_hours;
+      case UnitMeasureProgressEnum::UNIT_VIDEOS->name:
+        return $recourse->total_videos;
+    }
   }
 
 

@@ -15,6 +15,8 @@ class RecourseResource extends JsonResource
   public function toArray($request)
   {
     // dd($this->progress()->latest()->first());
+    // status, se Obtienen las relaciones entre status, se ordenan por fecha descendenmente con latest() y sólo se obtiene el primer registro con first()
+    // progress, lo mismo que con status
     return [
       "identificador" => $this->id,
       "nombre" => $this->name,
@@ -22,6 +24,7 @@ class RecourseResource extends JsonResource
       "autor" => $this->author,
       "editorial" => $this->editorial,
       "tipoId" => $this->type_id,
+      "unidadMedidadProgresoId" => $this->unit_measure_progress_id,
       "tipoNombre" => $this->type_name,
       "nombreEstadoActual" => $this->current_status_name,
       "totalPaginas" => $this->total_pages,
@@ -47,6 +50,7 @@ class RecourseResource extends JsonResource
       "autor" => "author",
       "editorial" => "editorial",
       "tipoId" => "type_id",
+      "unidadMedidadProgresoId" => "unit_measure_progress_id",
       "tipoNombre" => "type_name",
       "nombreEstadoActual" => "current_status_name",
       "totalPaginas" => "total_pages",
@@ -71,6 +75,7 @@ class RecourseResource extends JsonResource
       "author" => "autor",
       "editorial" => "editorial",
       "type_id" => "tipoId",
+      "unit_measure_progress_id" => "unidadMedidadProgresoId",
       "type_name" => "tipoNombre",
       "current_status_name" => "nombreEstadoActual",
       "total_pages" => "totalPaginas",

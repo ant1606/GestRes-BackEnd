@@ -59,8 +59,11 @@ class Recourse extends Model
   protected function totalProgressPercentage(): Attribute
   {
     if ($this->progress()->exists()) {
+      // return new Attribute(
+      //   get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
+      // );
       return new Attribute(
-        get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
+        get: fn () => round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
       );
     } else {
       return new Attribute(
