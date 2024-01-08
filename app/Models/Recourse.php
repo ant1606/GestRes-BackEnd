@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UnitMeasureProgressEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -62,15 +63,23 @@ class Recourse extends Model
       // return new Attribute(
       //   get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
       // );
+      // Aplicar lógica para horas y para enteros
       return new Attribute(
-        get: fn () => round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
+        get: fn () =>  Settings::getKeyfromId($this->unit_measure_progress_id) === UnitMeasureProgressEnum::UNIT_HOURS->name
+          ? round($this->convertHourToSeconds($this->progress->last()->advanced) / $this->convertHourToSeconds($this->progress->first()->pending) * 100, 2)
+          : round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
       );
+      // return new Attribute(
+      //   get: fn () => round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
+      // );
     } else {
       return new Attribute(
         get: null
       );
     }
   }
+
+
   // $recourse->progress->pluck('done')->sum()
   public function tags()
   {
@@ -85,5 +94,12 @@ class Recourse extends Model
   public function progress()
   {
     return $this->hasMany(ProgressHistory::class);
+  }
+
+  //TODO Pasarlo como un helper
+  private function convertHourToSeconds($hour)
+  {
+    list($hours, $minutes, $seconds) = explode(':', $hour);
+    return $hours * 3600 + $minutes * 60 + $seconds;
   }
 }

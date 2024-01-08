@@ -76,8 +76,8 @@ class RecourseController extends ApiController
 
       ProgressHistory::create([
         "recourse_id" => $recourse->id,
-        "done" => 0,
-        "advanced" => 0,
+        "done" => Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name ? "00:00:00" : "0",
+        "advanced" =>  Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name ? "00:00:00" : "0",
         "pending" => $this->getValueFromUnitMeasureProgress($recourse),
         "date" => $dateHistoryCreation,
         "comment" => $commentAutogenerate

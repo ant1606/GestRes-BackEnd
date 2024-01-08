@@ -42,17 +42,14 @@ class RecoursePostRequest extends FormRequest
       ],
       "total_pages" => [
         'nullable',
-        'integer',
         Rule::requiredIf(fn () => $this->type_id == Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"))
       ],
       "total_chapters" => [
         'nullable',
-        'integer',
         Rule::requiredIf(fn () =>  $this->type_id == Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"))
       ],
       "total_videos" => [
         'nullable',
-        'integer',
         Rule::requiredIf(fn () => $this->type_id == Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"))
       ],
       "total_hours" => [
