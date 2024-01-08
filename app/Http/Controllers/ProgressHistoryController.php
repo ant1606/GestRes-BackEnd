@@ -37,9 +37,19 @@ class ProgressHistoryController extends ApiController
 
     if ($request->date < $lastProgress->date)
       return $this->errorResponse(["api_response" => ["La fecha ingresada es menor al último registro existente."]], Response::HTTP_UNPROCESSABLE_ENTITY);
+    //TODO APlicar cambios para horas y enteros
 
-    $done =   $request->advanced - $lastProgress->advanced;
-    $pending = $total - $request->advanced;
+    $done = Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name
+      ? $this->processHours($request->advanced, $lastProgress->advanced)
+      : $request->advanced - $lastProgress->advanced;
+
+    // $done =   $request->advanced - $lastProgress->advanced;
+
+    $pending = Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name
+      ? $this->convertHourToSeconds($total) - $this->convertHourToSeconds($request->advanced)
+      : $total - $request->advanced;
+    // $pending = $total - $request->advanced;
+
     if ($pending < 0)
       return $this->errorResponse(["api_response" => ["La cantidad avanzada no puede ser mayor a la cantidad total."]], Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -51,7 +61,9 @@ class ProgressHistoryController extends ApiController
       'recourse_id' => $recourse->id,
       'advanced' => $request->advanced,
       'done' => $done,
-      'pending' => $pending,
+      'pending' => Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name
+        ? $this->processHours($total, $request->advanced)
+        : $pending,
       'date' => $request->date,
       'comment' => $request->comment,
     ]);
@@ -82,6 +94,31 @@ class ProgressHistoryController extends ApiController
       case UnitMeasureProgressEnum::UNIT_VIDEOS->name:
         return $recourse->total_videos;
     }
+  }
+
+  //TODO ExtraerLogica
+  private function processHours($hora1, $hora2, $isSubstract = true)
+  {
+    list($horas1, $minutos1, $segundos1) = explode(':', $hora1);
+    list($horas2, $minutos2, $segundos2) = explode(':', $hora2);
+
+    $totalSegundos1 = $horas1 * 3600 + $minutos1 * 60 + $segundos1;
+    $totalSegundos2 = $horas2 * 3600 + $minutos2 * 60 + $segundos2;
+
+    $totalSegundos = $isSubstract ? $totalSegundos1 - $totalSegundos2 : $totalSegundos1 + $totalSegundos2;
+
+    $nuevasHoras = floor($totalSegundos / 3600);
+    $nuevosMinutos = floor(($totalSegundos % 3600) / 60);
+    $nuevosSegundos = $totalSegundos % 60;
+
+    return sprintf('%02d:%02d:%02d', abs($nuevasHoras), abs($nuevosMinutos), abs($nuevosSegundos));
+  }
+
+  //TODO Pasarlo como un helper
+  private function convertHourToSeconds($hour)
+  {
+    list($hours, $minutes, $seconds) = explode(':', $hour);
+    return $hours * 3600 + $minutes * 60 + $seconds;
   }
 
 

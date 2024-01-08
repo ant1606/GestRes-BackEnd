@@ -24,7 +24,7 @@ class ProgressHistoryStoreRequest extends FormRequest
   public function rules()
   {
     return [
-      "advanced" => 'required|numeric|min:1',
+      "advanced" => 'required',
       "date" => 'required|date',
       "comment" => 'max:100'
     ];
