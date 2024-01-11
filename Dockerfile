@@ -3,8 +3,8 @@ FROM php:8.1-apache
 ARG UID
 ARG GID
 
-ENV UID=${UID}
-ENV GID=${GID}
+ENV UID=${UID:-1000}
+ENV GID=${GID:-1000}
 
 # 1. Install development packages and clean up apt cache.
 RUN apt-get update && apt-get install -y \
@@ -63,4 +63,5 @@ RUN adduser --gid ${GID} --system -u ${UID} laravel
 USER laravel
 
 # WORKDIR /var/www/html
-# COPY ../ /var/www/html/
+
+# COPY . /var/www/html/

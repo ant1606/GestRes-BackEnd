@@ -1,0 +1,14 @@
+.idea
+Dockerfiles
+tests
+vendor
+.editorconfig
+.env.development
+.env.example
+.env.production
+.phpunit.result.cache
+docker-compose.prod.yml
+docker-compose.yml
+Dockerfile
+phpunit.xml
+README.md
