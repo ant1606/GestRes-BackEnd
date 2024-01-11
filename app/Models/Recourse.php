@@ -32,7 +32,7 @@ class Recourse extends Model
     'updated_at',
   ];
 
-  protected $appends = ['type_name', 'unit_measure_progress_name', 'current_status_name'];
+  protected $appends = ['type_name', 'unit_measure_progress_name', 'current_status_name', 'totalProgressPercentage'];
 
   protected function typeName(): Attribute
   {
@@ -55,23 +55,15 @@ class Recourse extends Model
       get: fn () => !$this->status->isEmpty() ? $this->loadExists('status')->status->last()->status_name : ''
     );
   }
-  //TODO Añadir atributo que indique el % total avanzado del progreso del recurso
 
   protected function totalProgressPercentage(): Attribute
   {
     if ($this->progress()->exists()) {
-      // return new Attribute(
-      //   get: fn () => round($this->progress->pluck('done')->sum() / $this->progress->first()->pending * 100, 2)
-      // );
-      // Aplicar lógica para horas y para enteros
       return new Attribute(
         get: fn () =>  Settings::getKeyfromId($this->unit_measure_progress_id) === UnitMeasureProgressEnum::UNIT_HOURS->name
           ? round($this->convertHourToSeconds($this->progress->last()->advanced) / $this->convertHourToSeconds($this->progress->first()->pending) * 100, 2)
           : round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
       );
-      // return new Attribute(
-      //   get: fn () => round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
-      // );
     } else {
       return new Attribute(
         get: null
@@ -79,8 +71,6 @@ class Recourse extends Model
     }
   }
 
-
-  // $recourse->progress->pluck('done')->sum()
   public function tags()
   {
     return $this->morphToMany(Tag::class, 'taggable');

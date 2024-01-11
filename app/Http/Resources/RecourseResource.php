@@ -35,9 +35,6 @@ class RecourseResource extends JsonResource
       "status" => new StatusResource($this->status()->latest()->first()),
       "tags" => TagResource::collection($this->tags),
       "progress" => new ProgressResource($this->progress()->latest()->first()),
-      //            "tags" => TagResource::collection($this->whenLoaded('tags')),
-      //            "status" => StatusResource::collection($this->whenLoaded('status')),
-      //            "progress" => ProgressResource::collection($this->whenLoaded('progress')),
     ];
   }
 

@@ -32,7 +32,7 @@ class DashboardController extends ApiController
       ->groupBy('sh.recourse_id');
 
     // Consulta principal
-    $recourses = Recourse::select('recourses.id', 'recourses.name', 'sh.status_id', 'sh.date', 'sh.comment')
+    $recourses = Recourse::select('recourses.id', 'recourses.name', 'recourses.unit_measure_progress_id', 'sh.status_id', 'sh.date', 'sh.comment')
       ->join('status_histories as sh', 'recourses.id', '=', 'sh.recourse_id')
       ->whereIn('sh.id', $latestStatusHistoryIds)
       ->where('sh.status_id', $statusType["id"])
