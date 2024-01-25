@@ -68,6 +68,8 @@ class ProgressHistoryController extends ApiController
       'comment' => $request->comment,
     ]);
 
+
+
     if ($pending === 0) {
       $commentAutogenerate = "REGISTRO GENERADO POR EL SISTEMA POR FINALIZACIÓN DEL RECURSO";
       StatusHistory::create([
@@ -78,7 +80,8 @@ class ProgressHistoryController extends ApiController
       ]);
     }
 
-    return $this->showOne($progress, Response::HTTP_CREATED);
+
+    return $this->showOne(new ProgressResource($progress), Response::HTTP_CREATED);
   }
 
   //TODO EXtraer esta logica

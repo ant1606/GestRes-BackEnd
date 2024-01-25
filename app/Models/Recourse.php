@@ -32,7 +32,7 @@ class Recourse extends Model
     'updated_at',
   ];
 
-  protected $appends = ['type_name', 'unit_measure_progress_name', 'current_status_name', 'totalProgressPercentage'];
+  protected $appends = ['type_name', 'unit_measure_progress_name', 'current_status_name', 'total_progress_percentage'];
 
   protected function typeName(): Attribute
   {

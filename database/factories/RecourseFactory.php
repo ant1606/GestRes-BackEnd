@@ -7,6 +7,7 @@ use App\Models\Settings;
 use App\Models\StatusHistory;
 use App\Enums\TypeRecourseEnum;
 use App\Enums\StatusRecourseEnum;
+use App\Enums\UnitMeasureProgressEnum;
 use App\Models\ProgressHistory;
 use App\Models\User;
 use Carbon\Carbon;
@@ -35,6 +36,7 @@ class RecourseFactory extends Factory
     if ($typeName == TypeRecourseEnum::TYPE_LIBRO->name) {
       $total_pages = $this->faker->numberBetween(100, 600);
       $total_chapters = $this->faker->numberBetween(5, 30);
+      $unit_measure_progress_id = array_rand([UnitMeasureProgressEnum::UNIT_CHAPTERS->name => 1, UnitMeasureProgressEnum::UNIT_PAGES->name => 1]);
     }
 
     if ($typeName == TypeRecourseEnum::TYPE_VIDEO->name) {
@@ -43,18 +45,16 @@ class RecourseFactory extends Factory
         $this->faker->numberBetween(7, 100) . ":" .
         str_pad($this->faker->numberBetween(0, 59), 2, '0', STR_PAD_LEFT) . ":" .
         str_pad($this->faker->numberBetween(0, 59), 2, '0', STR_PAD_LEFT);
+      $unit_measure_progress_id = array_rand([UnitMeasureProgressEnum::UNIT_VIDEOS->name => 1, UnitMeasureProgressEnum::UNIT_HOURS->name => 1]);
     }
 
-    // $this->faker->randomElement([
-    //     Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-    //     Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"),
-    // ]
     return [
       'name' => $this->faker->words($this->faker->numberBetween(5, 15), true),
       'source' => $this->faker->url(),
       "author" => $this->faker->name(),
       "editorial" => $this->faker->company(),
       'type_id' =>  Settings::getData($typeName, "id"),
+      'unit_measure_progress_id' => Settings::getData($unit_measure_progress_id, "id"),
       "total_pages" => $total_pages,
       "total_chapters" => $total_chapters,
       "total_videos" => $total_videos,

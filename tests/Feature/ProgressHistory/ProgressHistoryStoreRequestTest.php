@@ -13,22 +13,22 @@ class ProgressHistoryStoreRequestTest extends TestCase
   use RefreshDatabase;
   use ProgressHistoryDataTrait;
 
-  #region DONE Field
+  #region ADVANCED Field
 
   /** @test */
-  public function the_done_is_required()
+  public function the_advanced_is_required()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
       $this->progressHistoryValidData([
-        'done' => null
+        'advanced' => null
       ])
     );
 
     $response->assertJsonFragment([
-      "done" => ["The done field is required."],
+      "advanced" => ["The advanced field is required."],
     ]);
 
     $response->assertJsonStructure([
@@ -39,19 +39,19 @@ class ProgressHistoryStoreRequestTest extends TestCase
   }
 
   /** @test */
-  public function the_done_may_not_be_equals_to_zero()
+  public function the_advanced_may_not_be_equals_to_zero()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
       $this->progressHistoryValidData([
-        'done' => 0
+        'advanced' => 0
       ])
     );
 
     $response->assertJsonFragment([
-      "done" => ["The done must be at least 1."],
+      "advanced" => ["The advanced must be at least 1."],
     ]);
 
     $response->assertJsonStructure([
@@ -62,19 +62,19 @@ class ProgressHistoryStoreRequestTest extends TestCase
   }
 
   /** @test */
-  public function the_done_may_not_be_below_to_zero()
+  public function the_advanced_may_not_be_below_to_zero()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
       $this->progressHistoryValidData([
-        'done' => -15
+        'advanced' => -15
       ])
     );
 
     $response->assertJsonFragment([
-      "done" => ["The done must be at least 1."],
+      "advanced" => ["The advanced must be at least 1."],
     ]);
 
     $response->assertJsonStructure([
@@ -85,19 +85,19 @@ class ProgressHistoryStoreRequestTest extends TestCase
   }
 
   /** @test */
-  public function the_done_must_be_an_integer()
+  public function the_advanced_must_be_an_integer()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
       $this->progressHistoryValidData([
-        'done' => Str::random(10)
+        'advanced' => Str::random(10)
       ])
     );
 
     $response->assertJsonFragment([
-      "done" => ["The done must be a number."],
+      "advanced" => ["The advanced must be a number."],
     ]);
 
     $response->assertJsonStructure([
@@ -124,7 +124,7 @@ class ProgressHistoryStoreRequestTest extends TestCase
   //   );
 
   //   $response->assertJsonFragment([
-  //     "pending" => ["The done must be a number."],
+  //     "pending" => ["The advanced must be a number."],
   //   ]);
 
   //   $response->assertJsonStructure([

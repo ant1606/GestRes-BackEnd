@@ -20,6 +20,7 @@ class ProgressHistoryTest extends TestCase
 
     $progress = ProgressHistory::factory()->create();
 
+    // dd($progress->recourse);
     $this->assertInstanceOf(Recourse::class, $progress->recourse);
   }
 }
