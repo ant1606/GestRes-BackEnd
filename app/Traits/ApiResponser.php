@@ -25,7 +25,7 @@
       if(is_array($result)){
         return $this->successResponse(
           $code,
-          $result
+          [ "data" => $result ]
         );
       }
 
@@ -34,9 +34,7 @@
         case JsonResource::class:
           return $this->successResponse(
             $code,
-            [
-              "data" => $result
-            ]
+            [ "data" => $result ]
           );
         case ResourceCollection::class:
           if ($result->count() === 0) {
@@ -87,9 +85,21 @@
       );
     }
 
-    protected function showMessage($message, $code = 200)
+    /**Genera una respuesta Json que envía solo un mensaje al cliente
+     * @param string $message Indica mensaje generador por API a enviar a Cliente
+     * @param int $code Código de respuesta HTTP
+     * @return JsonResponse
+     */
+    protected function sendMessage($message, $code = 200): JsonResponse
     {
-      return $this->successResponse(['data' => $message], $code);
+      return response()->json(
+        [
+          "status"=>"success",
+          "code"=>$code,
+          "message"=>$message
+        ],
+        $code
+      );
     }
 
     //TODO Cambiar el contenido de showAll por showAllResource en los controladores
@@ -178,17 +188,5 @@
         ],
       ];
     }
-
-
-//    protected function showOne($instance, $code)
-//    {
-//      return $this->successResponse(['data' => $instance], $code);
-//    }
-//
-//    protected function showAll(Collection $collection, $code)
-//    {
-//      // $collection = $this->paginate($collection);
-//
-//      return $this->successResponse(['data' => $collection], $code);
-//    }
+    
   }

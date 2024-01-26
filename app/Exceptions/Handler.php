@@ -52,14 +52,6 @@ class Handler extends ExceptionHandler
    */
   public function register()
   {
-    // $this->reportable(function (Throwable $e) {
-    //     dd($e);
-    // });
-
-    // $this->renderable(function (Throwable $e) {
-    //     // dd($e);
-    // });
-
     $this->renderable(function (Exception $exception, $request) {
 
       // dd($request->is('api/*'));
@@ -69,33 +61,35 @@ class Handler extends ExceptionHandler
       // dd($exception instanceof AuthenticationException);
       if ($request->is('api/*')) {
 
-        // dd(get_class($exception));
-        // dd($exception instanceof NotFoundHttpException);
-        if ($exception instanceof ValidationException) {
-          // dd($exception->validator->errors()->getMessages());
-          return $this->errorResponse(
-            $exception->validator->errors()->getMessages(),
-            Response::HTTP_UNPROCESSABLE_ENTITY
-          );
-        }
-        //Usado cuando un usuario intenta acceder a una ruta no existente (404)
-        if ($exception instanceof NotFoundHttpException) {
-          return $this->errorResponse(["api_response" => ["No se encontró el recurso"]], 404);
-        }
-
-        if ($exception instanceof ModelNotFoundException) {
-          return $this->errorResponse(["api_response" => ["No se encontró el modelo"]], 404);
-        }
-
-        if ($exception instanceof AuthenticationException) {
-          return $this->errorResponse(["api_response" => ["No esta autorizado para continuar"]], 404);
-        }
-
-        if ($exception instanceof MethodNotAllowedHttpException) {
-          return $this->errorResponse(["api_response" => ["Método no aceptado"]], 404);
-        }
-        return $this->errorResponse(["api_response" => ["Hubo un problema al comunicarse con el servidor"]], 404);
+        return match (true) {
+          $exception instanceof ValidationException => $this->sendError(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            detail: $exception->validator->errors()->getMessages(),
+          ),
+          $exception instanceof ModelNotFoundException, $exception instanceof NotFoundHttpException => $this->sendError(
+            Response::HTTP_NOT_FOUND,
+            "No se encontró el recurso"
+          ),
+          $exception instanceof AuthenticationException => $this->sendError(
+            Response::HTTP_UNAUTHORIZED,
+            "No esta autorizado para continuar"
+          ),
+          $exception instanceof MethodNotAllowedHttpException => $this->sendError(
+            Response::HTTP_METHOD_NOT_ALLOWED,
+            "Método no aceptado"
+          ),
+          default => $this->sendError(
+            Response::HTTP_NOT_FOUND,
+            "Hubo un problema al comunicarse con el servidor"
+          ),
+        };
       }
+
+      return $this->sendError(
+        Response::HTTP_NOT_FOUND,
+        "Hubo un problema al comunicarse con el servidor"
+      );
+
     });
   }
 

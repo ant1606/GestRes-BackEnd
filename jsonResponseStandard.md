@@ -95,15 +95,18 @@
     {
       "status": "success",
       "code": 200,
-      "bearer_token": "39|fTEPWXnKdGhIHw2BonIi6oXd6Cf8jBI3KDZ5AzvGea9f34c3",
-      "bearer_expire": "Fri, 26 Jan 2024 05:06:20 GMT",
-      "user": {
-        "id": 1,
-        "name": "Test User",
-        "email": "test@example.com",
-        "remember_token": null,
-        "is_verified": true
+      "data": {
+        "bearer_token": "39|fTEPWXnKdGhIHw2BonIi6oXd6Cf8jBI3KDZ5AzvGea9f34c3",
+        "bearer_expire": "Fri, 26 Jan 2024 05:06:20 GMT",
+        "user": {
+          "id": 1,
+          "name": "Test User",
+          "email": "test@example.com",
+          "remember_token": null,
+          "is_verified": true
+        }
       }
+
     }
 
 
@@ -118,6 +121,12 @@
         "name": "Test User",
       }
     }
-- Queda pendiente establecer cuando se necesite enviar solo un mensaje sin ninguna entidad
+
+# Sólo Mensajes
+    {
+      "status": "success",
+      "code": 200,
+      "message": "Se generó respuesta por parte de la API"
+    }
 - Queda pendiente determinar el objeto de respuesta a LogIn y LogOut
-- Queda pendiente determinar como enviar objetos custom 
+ 
