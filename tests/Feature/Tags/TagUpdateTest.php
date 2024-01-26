@@ -30,10 +30,18 @@ class TagUpdateTest extends TestCase
     $response->assertStatus(Response::HTTP_ACCEPTED);
 
     $this->assertDatabaseCount("tags", 1);
-
     $this->assertDatabaseHas("tags", [
       "name" => Str::upper($updatedTag["name"]),
       "id" => $updatedTag["id"],
+    ]);
+    $response->assertJsonStructure([
+      "status",
+      "code",
+      "data" => [
+        "identificador",
+        "nombre",
+        "estilos",
+      ],
     ]);
   }
 
@@ -53,10 +61,13 @@ class TagUpdateTest extends TestCase
 
     $this->assertDatabaseCount("tags", 1);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status",
-        "detail"
+        "message",
+        "details"
       ]
     ]);
+    $response->assertJsonPath('error.message', 'No se realizó ninguna modificación del Tag. Se cancelo la operación');
   }
 }

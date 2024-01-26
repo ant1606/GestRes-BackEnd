@@ -17,23 +17,38 @@ class TagCanGetDataTest extends TestCase
   {
     // $this->withoutExceptionHandling();
     $user = User::factory()->create();
-
     Tag::Factory(10)->create();
 
     $response = $this->actingAs($user)->getJson(route('tag.index'));
 
     $response->assertStatus(Response::HTTP_ACCEPTED);
-    // dd($response);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
-        [
+        "*"=>[
           "identificador",
           "nombre",
           "estilos",
         ]
+      ],
+      "meta"=>[
+        "path",
+        "currentPage",
+        "perPage",
+        "totalPages",
+        "from",
+        "to",
+        "total"
+      ],
+      "links"=>[
+        "self",
+        "first",
+        "last",
+        "next",
+        "prev"
       ]
     ]);
-    // dd($tags);
   }
 
   /** @test */
@@ -41,35 +56,35 @@ class TagCanGetDataTest extends TestCase
   {
     // $this->withoutExceptionHandling();
     $user = User::factory()->create();
-    Tag::Factory(10)->create();
+    Tag::factory(10)->create();
+    Tag::factory()->create(['name' => "MI ETIQUETA"]);
     $filter = "MI ETIQUETA";
-    Tag::create(['name' => "MI ETIQUETA"]);
 
     $response = $this->actingAs($user)->getJson(route('tag.index',  ["searchNombre" => $filter]));
-
-    //         dd($response->getContent());
     $response->assertStatus(Response::HTTP_ACCEPTED);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
         [
           "identificador",
           "nombre",
           "estilos",
         ]
-      ]
+      ],
+      "meta",
+      "links"
     ]);
-    //        $response->assertJsonCount(1);
-    // dd($tags);
+    $response->assertJsonFragment(['nombre' => 'MI ETIQUETA']);
   }
 
   /** @test */
-  public function get_response_when_does_not_found_results_from_filter()
+  public function get_response_with_no_data_when_does_not_found_results_from_filter()
   {
     // $this->withoutExceptionHandling();
     $user = User::factory()->create();
-    Tag::Factory(10)->create();
+    Tag::factory(10)->create();
     $filter = "asdasd";
-
 
     $response = $this->actingAs($user)->getJson(route('tag.index', ["searchNombre" => $filter]));
 
@@ -77,28 +92,33 @@ class TagCanGetDataTest extends TestCase
     // $response->assertStatus(Response::HTTP_NO_CONTENT);
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonStructure([
+      'status',
+      'code',
       'data',
       'message'
     ]);
+    $response->assertJsonCount(0, 'data');
+    $response->assertJsonPath('message', 'No se encontraron resultados');
   }
 
-  // /** @test */
-  // public function can_not_get_results_when_filter_is_less_or_equal_to_2()
-  // {
-  //     $this->withoutExceptionHandling();
+   /** @test */
+   public function can_not_get_results_when_filter_is_less_or_equal_to_2()
+   {
+       $user = User::factory()->create();
+       Tag::factory(10)->create();
+       Tag::factory()->create(['name' => "Mi Etiqueta"]);
+       $filter = "Mi";
 
-  //     Tag::Factory(10)->create();
-  //     $filter = "Mi";
-  //     $tag = Tag::create(['name' => "Mi Etiqueta"]);
+       $response = $this->actingAs($user)->getJson(route('tag.index', ["searchNombre" => $filter]));
 
-  //     $response = $this->getJson(route('tag.index', ["filter" => $filter]));
-
-  //     $response->assertStatus(Response::HTTP_LENGTH_REQUIRED);
-  //     $response->assertJsonStructure([
-  //         'error',
-  //         'code'
-  //     ]);
-  //     // $response->assertJsonCount(1);
-  //     // dd($tags);
-  // }
+       $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+       $response->assertJsonStructure([
+         "status",
+         "code",
+         "error" => [
+           "message",
+           "details"
+         ]
+       ]);
+   }
 }

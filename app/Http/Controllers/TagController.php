@@ -7,6 +7,7 @@
   use App\Http\Resources\TagCollection;
   use App\Http\Resources\TagResource;
   use App\Models\Tag;
+  use Illuminate\Http\JsonResponse;
   use Illuminate\Http\Request;
   use Illuminate\Support\Str;
   use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@
       // $this->middleware('transform.input:' . TagResource::class)->only(['store', 'update']);
     }
 
-//  public function index(Request $request)
+//  public function index2(Request $request)
 //  {
 //    $tags = Tag::query();
 //
@@ -41,13 +42,17 @@
 //    $tags = $tags->withCount('recourses')->withCount('youtubesubscription')->withCount('webpages')->get();
 //    // dd($tags);
 //
-//    return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
+//    return $this->sendResponse(new TagCollection($tags), Response::HTTP_ACCEPTED);
+////    return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
 //  }
 
   // Testear perfomance de esta forma en recourse
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-//      in_array( ['desc', 'asc']);
+      $validated = $request->validate([
+        "searchNombre"=>"min:3"
+      ]);
+
       $tags = Tag::when($request->has('searchNombre') && $request->searchNombre !== null, function ($query) use ($request) {
           $query->where('name', 'like', '%' . $request->searchNombre . '%');
         })
@@ -62,52 +67,47 @@
         ->withCount('webpages')
         ->get();
 
-      // Agregar recuento de recursos, suscripciones y páginas web asociados con cada etiqueta
-//      $tags = $tags->withCount('recourses')->withCount('youtubesubscription')->withCount('webpages')->get();
-      // dd($tags);
-
-      return $this->showAllResource(new TagCollection($tags), Response::HTTP_ACCEPTED);
+      return $this->sendResponse(new TagCollection($tags), Response::HTTP_ACCEPTED);
     }
 
-    public function store(TagRequest $request)
+    public function store(TagRequest $request): JsonResponse
     {
       $tag = Tag::create([
         "name" => Str::upper($request->name),
         "style" => $this->randomTagStyle(),
       ]);
 
-      return $this->showOne(new TagResource($tag), Response::HTTP_CREATED);
+      return $this->sendResponse(new TagResource($tag), Response::HTTP_CREATED);
     }
 
-    public function show(Tag $tag)
+    public function show(Tag $tag): JsonResponse
     {
-      return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
+      return $this->sendResponse(new TagResource($tag), Response::HTTP_ACCEPTED);
     }
 
-    public function update(TagRequest $request, Tag $tag)
+    public function update(TagRequest $request, Tag $tag): JsonResponse
     {
-      // dd($request->name);
       $tag->fill($request->only([
         "name"
       ]));
 
       if ($tag->isClean()) {
-        return $this->errorResponse(
-          ["api_response" => ["No se realizó ninguna modificacion de la etiqueta. Se cancelo la operación"]],
-          Response::HTTP_UNPROCESSABLE_ENTITY
+        return $this->sendError(
+          Response::HTTP_UNPROCESSABLE_ENTITY,
+          "No se realizó ninguna modificación del Tag. Se cancelo la operación"
         );
       }
 
       $tag->save();
-
-      return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
-      // dd($tag->name);
+      return $this->sendResponse(new TagResource($tag), Response::HTTP_ACCEPTED);
     }
 
-    public function destroy(Tag $tag)
+    public function destroy(Tag $tag): JsonResponse
     {
       $tag->delete();
       $tag->recourses()->detach();
+      $tag->youtubesubscription()->detach();
+      $tag->webpages()->detach();
       //TODO Se sugiere que al momento de eliminar, se lance un evento para eliminar las relaciones de Tag
       //   static::deleting(function ($tag) {
       //     // Eliminar las relaciones con recursos, canales y páginas web
@@ -116,16 +116,16 @@
       //     $tag->webPages()->detach();
       // });
 
-      return $this->showOne(new TagResource($tag), Response::HTTP_ACCEPTED);
+      return $this->sendResponse(new TagResource($tag), Response::HTTP_ACCEPTED);
     }
 
-    public function getTagsForTagSelector()
+    public function getTagsForTagSelector(): JsonResponse
     {
-      //TODO Ver como estandarizar esta respuesta y hacer el cambio con el frontend
       $tags = Tag::all();
-      return $this->showAll($tags, Response::HTTP_ACCEPTED);
+      return $this->sendResponse($tags->toArray(), Response::HTTP_ACCEPTED);
     }
 
+    // TODO EXtraer esta lógica
     private function randomTagStyle()
     {
       return array_rand([
