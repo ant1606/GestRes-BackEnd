@@ -22,10 +22,12 @@ class RecourseCanGetDataTest extends TestCase
     Recourse::factory(5)->create(["user_id" => $user->id]);
 
     $response = $this->actingAs($user)->get(route('recourses.index'));
-
+//    dd($response->getContent());
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonCount(5, "data");
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
         [
           "identificador",
@@ -39,7 +41,9 @@ class RecourseCanGetDataTest extends TestCase
           "totalVideos",
           "totalHoras",
         ]
-      ]
+      ],
+      "meta",
+      "links"
     ]);
   }
 
@@ -58,6 +62,8 @@ class RecourseCanGetDataTest extends TestCase
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonCount(1, "data");
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
         [
           "identificador",
@@ -71,7 +77,9 @@ class RecourseCanGetDataTest extends TestCase
           "totalVideos",
           "totalHoras",
         ]
-      ]
+      ],
+      "meta",
+      "links"
     ]);
     $response->assertJsonFragment(['nombre' => "Este es mi recurso"]);
   }
@@ -90,6 +98,8 @@ class RecourseCanGetDataTest extends TestCase
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonCount(2, "data");
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
         [
           "identificador",
@@ -103,7 +113,9 @@ class RecourseCanGetDataTest extends TestCase
           "totalVideos",
           "totalHoras",
         ]
-      ]
+      ],
+      "meta",
+      "links"
     ]);
     $response->assertJsonFragment(['tipoId' => $filterSearchTipo]);
   }

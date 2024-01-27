@@ -3,6 +3,7 @@
 namespace Tests\Feature\Recourse;
 
 use App\Enums\TypeRecourseEnum;
+use App\Enums\UnitMeasureProgressEnum;
 use App\Models\Settings;
 use App\Models\User;
 use Tests\TestCase;
@@ -31,8 +32,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["name"]
       ]
     ]);
   }
@@ -51,8 +55,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["name"]
       ]
     ]);
   }
@@ -76,8 +83,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["source"]
       ]
     ]);
   }
@@ -96,8 +106,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["source"]
       ]
     ]);
   }
@@ -119,8 +132,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["author"]
       ]
     ]);
   }
@@ -143,8 +159,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["editorial"]
       ]
     ]);
   }
@@ -167,8 +186,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["type_id"]
       ]
     ]);
   }
@@ -196,8 +218,72 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["type_id"]
+      ]
+    ]);
+  }
+
+  #endregion
+
+  #region UNIT_MEASURE_PROGRESS_ID
+
+  /** @test */
+  public function the_unit_measure_progress_id_is_required()
+  {
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->postJson(
+      route('recourses.store'),
+      $this->recourseValidData(['unit_measure_progress_id' => null])
+    );
+
+    $response->assertJsonFragment(
+      ["unit_measure_progress_id" => ["The unit measure progress id field is required."]]
+    );
+
+    $response->assertJsonStructure([
+      "status",
+      "code",
+      "error" => [
+        "message",
+        "details"=>["unit_measure_progress_id"]
+      ]
+    ]);
+  }
+
+  /** @test */
+  public function the_the_unit_measure_progress_id_can_not_be_a_value_different_to_UnitMeasureProgressEnum_cases_id()
+  {
+    $acceptedId = [
+      Settings::getData(UnitMeasureProgressEnum::UNIT_VIDEOS->name, "id"),
+      Settings::getData(UnitMeasureProgressEnum::UNIT_PAGES->name, "id"),
+      Settings::getData(UnitMeasureProgressEnum::UNIT_HOURS->name, "id"),
+      Settings::getData(UnitMeasureProgressEnum::UNIT_CHAPTERS->name, "id"),
+    ];
+
+    do {
+      $unit_measure_progress_id = random_int(1, 50);
+    } while (in_array($unit_measure_progress_id, $acceptedId));
+
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->postJson(
+      route('recourses.store'),
+      $this->recourseValidData(['unit_measure_progress_id' => $unit_measure_progress_id])
+    );
+
+    $response->assertJsonFragment(
+      ["unit_measure_progress_id" => ["The selected unit measure progress id is invalid."]]
+    );
+
+    $response->assertJsonStructure([
+      "status",
+      "code",
+      "error" => [
+        "message",
+        "details"=>["unit_measure_progress_id"]
       ]
     ]);
   }
@@ -223,8 +309,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_pages"]
       ]
     ]);
   }
@@ -233,6 +322,12 @@ class RecoursePostRequestTest extends TestCase
   public function the_total_pages_must_be_an_integer()
   {
     $user = User::factory()->create();
+//    $REC = $this->recourseValidData([
+//      'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
+//      'total_pages' => Str::random(10)
+//    ]);
+//    dd($REC);
+
     $response = $this->actingAs($user)->postJson(
       route('recourses.store'),
       $this->recourseValidData([
@@ -246,8 +341,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_pages"]
       ]
     ]);
   }
@@ -273,8 +371,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_chapters"]
       ]
     ]);
   }
@@ -296,8 +397,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_chapters"]
       ]
     ]);
   }
@@ -322,8 +426,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_videos"]
       ]
     ]);
   }
@@ -345,8 +452,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_videos"]
       ]
     ]);
   }
@@ -372,8 +482,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_hours"]
       ]
     ]);
   }
@@ -396,8 +509,11 @@ class RecoursePostRequestTest extends TestCase
     );
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>["total_hours"]
       ]
     ]);
   }

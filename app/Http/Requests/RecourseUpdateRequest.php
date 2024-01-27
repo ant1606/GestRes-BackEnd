@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UnitMeasureProgressEnum;
 use App\Models\Settings;
 use App\Enums\TypeRecourseEnum;
 use Illuminate\Validation\Rule;
@@ -39,6 +40,13 @@ class RecourseUpdateRequest extends FormRequest
         'required',
         'in:' . Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id") . ',' .
           Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id")
+      ],
+      "unit_measure_progress_id"=>[
+        'required',
+        'in:' . Settings::getData(UnitMeasureProgressEnum::UNIT_CHAPTERS->name, "id") . ',' .
+        Settings::getData(UnitMeasureProgressEnum::UNIT_HOURS->name, "id") . ',' .
+        Settings::getData(UnitMeasureProgressEnum::UNIT_PAGES->name, "id") . ',' .
+        Settings::getData(UnitMeasureProgressEnum::UNIT_VIDEOS->name, "id")
       ],
       "total_pages" => [
         'nullable',

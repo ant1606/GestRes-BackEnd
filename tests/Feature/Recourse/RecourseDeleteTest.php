@@ -30,5 +30,6 @@ class RecourseDeleteTest extends TestCase
     $this->assertDatabaseCount("recourses", 0);
     $this->assertDatabaseCount("progress_histories", 0);
     $this->assertDatabaseCount("status_histories", 0);
+
   }
 }

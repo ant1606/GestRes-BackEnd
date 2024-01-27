@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UnitMeasureProgressEnum;
 use App\Models\Settings;
 use App\Enums\TypeRecourseEnum;
 use Illuminate\Validation\Rule;
@@ -26,7 +27,7 @@ class RecoursePostRequest extends FormRequest
    */
   public function rules()
   {
-    // Este es el regex usado en JS 
+    // Este es el regex usado en JS
     //  /(\d+)[:]([0-5]{1}[0-9]{1})[:]([0-5]{1}[0-9]{1})/
     //Verificarlo en laravel por si las dudas
 
@@ -40,16 +41,26 @@ class RecoursePostRequest extends FormRequest
         'in:' . Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id") . ',' .
           Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id")
       ],
+      "unit_measure_progress_id"=>[
+        'required',
+        'in:' . Settings::getData(UnitMeasureProgressEnum::UNIT_CHAPTERS->name, "id") . ',' .
+        Settings::getData(UnitMeasureProgressEnum::UNIT_HOURS->name, "id") . ',' .
+        Settings::getData(UnitMeasureProgressEnum::UNIT_PAGES->name, "id") . ',' .
+        Settings::getData(UnitMeasureProgressEnum::UNIT_VIDEOS->name, "id")
+      ],
       "total_pages" => [
         'nullable',
+        'integer',
         Rule::requiredIf(fn () => $this->type_id == Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"))
       ],
       "total_chapters" => [
         'nullable',
+        'integer',
         Rule::requiredIf(fn () =>  $this->type_id == Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"))
       ],
       "total_videos" => [
         'nullable',
+        'integer',
         Rule::requiredIf(fn () => $this->type_id == Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name, "id"))
       ],
       "total_hours" => [

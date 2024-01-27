@@ -25,10 +25,8 @@ class CanSeeDetailDataOfRecurseTest extends TestCase
     $recourse->tags()->syncWithoutDetaching($tags->pluck('id'));
 
     $response = $this->actingAs($user)->getJson(route('recourses.show', $recourse->id));
-    // dd($response->getContent());
 
     $response->assertStatus(Response::HTTP_OK);
-
     $response->assertJsonStructure([
       "data" => [
         "nombre",
@@ -58,8 +56,6 @@ class CanSeeDetailDataOfRecurseTest extends TestCase
     $response = $this->actingAs($user)->getJson(route('recourses.show', $recourse->id));
 
     $response->assertStatus(Response::HTTP_OK);
-
-    // dd($response->getContent());
     $response->assertJsonStructure([
       "data" => [
         "nombre",
