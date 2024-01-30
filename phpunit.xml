@@ -26,6 +26,9 @@
     <testsuite name="Settings">
       <directory>./tests/Feature/Settings</directory>
     </testsuite>
+    <testsuite name="WebPage">
+      <directory>./tests/Feature/WebPage</directory>
+    </testsuite>
   </testsuites>
   <coverage processUncoveredFiles="true">
     <include>

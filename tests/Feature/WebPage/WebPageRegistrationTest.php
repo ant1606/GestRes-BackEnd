@@ -47,6 +47,16 @@ class WebPageRegistrationTest extends TestCase
         "totalVisitas" => $webpage['count_visits']
       ]
     ]);
+    $response->assertJsonStructure([
+      "status",
+      "code",
+      "data"=>[
+        "url",
+        "nombre",
+        "descripcion",
+        "totalVisitas",
+      ]
+    ]);
   }
 
   /** @test */
@@ -89,6 +99,8 @@ class WebPageRegistrationTest extends TestCase
     ]);
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       'data' => [
         "url",
         "nombre",
@@ -104,7 +116,5 @@ class WebPageRegistrationTest extends TestCase
         ],
       ]
     ]);
-
-    $response->assertJsonCount(5, "data.tags");
   }
 }

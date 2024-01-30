@@ -97,6 +97,7 @@ class CanEditRecourseDataTest extends TestCase
   }
 
   /** @test */
+  //TODO Verificar este test, en ocasiones falla
   public function recourse_can_be_edited_when_change_all_values()
   {
     $user = User::factory()->create();
