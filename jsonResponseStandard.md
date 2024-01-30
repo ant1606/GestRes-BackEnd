@@ -128,5 +128,4 @@
       "code": 200,
       "message": "Se generó respuesta por parte de la API"
     }
-- Queda pendiente determinar el objeto de respuesta a LogIn y LogOut
  

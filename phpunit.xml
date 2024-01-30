@@ -23,6 +23,9 @@
     <testsuite name="Status">
       <directory>./tests/Feature/StatusHistory</directory>
     </testsuite>
+    <testsuite name="Settings">
+      <directory>./tests/Feature/Settings</directory>
+    </testsuite>
   </testsuites>
   <coverage processUncoveredFiles="true">
     <include>
