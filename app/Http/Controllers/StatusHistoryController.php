@@ -20,8 +20,7 @@ class StatusHistoryController extends ApiController
   public function index(Recourse $recourse)
   {
     $statusHistories = $recourse->status()->latest()->get();
-
-    return $this->showAllResource(new StatusCollection($statusHistories), Response::HTTP_OK);
+    return $this->sendResponse(new StatusCollection($statusHistories), Response::HTTP_OK);
   }
 
   public function store(Recourse $recourse, Request $request)
@@ -32,7 +31,7 @@ class StatusHistoryController extends ApiController
     $lastStatus = $recourse->status->last();
 
     if ($request->date < $lastStatus->date)
-      return $this->errorResponse(["api_response" => ["La fecha ingresada no es correcta"]], Response::HTTP_UNPROCESSABLE_ENTITY);
+      return $this->sendError(Response::HTTP_UNPROCESSABLE_ENTITY, "La fecha ingresada no es correcta");
 
     $status = StatusHistory::create([
       'recourse_id' => $recourse->id,
@@ -40,17 +39,7 @@ class StatusHistoryController extends ApiController
       'date' => $request->date,
       'comment' => $request->comment
     ]);
-    return $this->showOne($status, Response::HTTP_CREATED);
-  }
-
-  public function show(StatusHistory $statusHistory)
-  {
-    //
-  }
-
-  public function update(Request $request, StatusHistory $statusHistory)
-  {
-    //
+    return $this->sendResponse(new StatusResource($status), Response::HTTP_CREATED, false);
   }
 
   public function destroy(StatusHistory $statusHistory)
@@ -58,20 +47,20 @@ class StatusHistoryController extends ApiController
     $recourse = $statusHistory->recourse;
 
     if ($statusHistory->comment === "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA" && $statusHistory->id === $recourse->status->first()->id) {
-      return $this->errorResponse(
-        ["api_response" => ["Acción prohibida, No esta permitido eliminar el registro generado por el sistema"]],
-        Response::HTTP_UNPROCESSABLE_ENTITY
+      return $this->sendError(
+        Response::HTTP_UNPROCESSABLE_ENTITY,
+        "Acción prohibida, No esta permitido eliminar el registro generado por el sistema"
       );
     }
 
     if ($statusHistory->id !== $recourse->status->last()->id) {
-      return $this->errorResponse(
-        ["api_response" => ["Acción prohibida, sólo puede eliminarse el último registro de estados del recurso"]],
-        Response::HTTP_UNPROCESSABLE_ENTITY
+      return $this->sendError(
+        Response::HTTP_UNPROCESSABLE_ENTITY,
+        "Acción prohibida, sólo puede eliminarse el último registro de estados del recurso"
       );
     }
 
     $statusHistory->delete();
-    return $this->showOne(new StatusResource($statusHistory), Response::HTTP_ACCEPTED);
+    return $this->sendResponse(new StatusResource($statusHistory), Response::HTTP_ACCEPTED, false);
   }
 }

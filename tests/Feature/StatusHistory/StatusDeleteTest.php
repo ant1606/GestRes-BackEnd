@@ -18,7 +18,7 @@ class StatusDeleteTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
-    $status1 = StatusHistory::factory()->create([
+    StatusHistory::factory()->create([
       "recourse_id" => $recourse->id,
       "comment" => "Status Test Second Delete"
     ]);
@@ -34,6 +34,8 @@ class StatusDeleteTest extends TestCase
     $response->assertStatus(Response::HTTP_ACCEPTED);
     $this->assertDatabaseCount("status_histories", 2);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
         "identificador",
         "fecha",
@@ -42,6 +44,7 @@ class StatusDeleteTest extends TestCase
         "estadoNombre",
       ]
     ]);
+    $response->assertJsonFragment(["comentario"=>$status2["comment"]]);
   }
 
   /** @test **/
@@ -53,7 +56,7 @@ class StatusDeleteTest extends TestCase
       "recourse_id" => $recourse->id,
       "comment" => "Status Test Middle Register"
     ]);
-    $status2 = StatusHistory::factory()->create([
+     StatusHistory::factory()->create([
       "recourse_id" => $recourse->id,
       "comment" => "Status Test Last Register"
     ]);
@@ -65,11 +68,14 @@ class StatusDeleteTest extends TestCase
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("status_histories", 3);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status",
-        "detail"
+        "message",
+        "details"
       ]
     ]);
+    $response->assertJsonFragment(["message"=>"Acción prohibida, sólo puede eliminarse el último registro de estados del recurso"]);
   }
 
 
@@ -87,10 +93,13 @@ class StatusDeleteTest extends TestCase
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("status_histories", 1);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status",
-        "detail"
+        "message",
+        "details"
       ]
     ]);
+    $response->assertJsonFragment(["message"=>"Acción prohibida, No esta permitido eliminar el registro generado por el sistema"]);
   }
 }

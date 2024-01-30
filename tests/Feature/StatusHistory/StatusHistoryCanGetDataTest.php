@@ -14,7 +14,7 @@ class StatusHistoryCanGetDataTest extends TestCase
   use RefreshDatabase;
 
   /** @test **/
-  public function get_all_progress_history_from_a_recourse_exists()
+  public function get_all_status_history_from_a_recourse_exists()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
@@ -24,17 +24,34 @@ class StatusHistoryCanGetDataTest extends TestCase
 
     $response = $this->actingAs($user)->getJson(route('status.index', $recourse));
 
+//    dd($response->getContent());
     $response->assertStatus(Response::HTTP_OK);
     // Tener en cuenta que puede variar segun la cantidad de resultados por pagina en ApiResponser
     $response->assertJsonCount(5, "data");
+    $response->assertJsonStructure([
+      "status",
+      "code",
+      "data"=>[
+        [
+          "identificador",
+          "fecha",
+          "comentario",
+          "estadoId",
+          "estadoNombre",
+          "esUltimoRegistro"
+        ]
+      ],
+      "links",
+      "meta"
+    ]);
   }
 
   /** @test **/
-  public function can_not_get_progress_history_from_a_recourse_that_not_exists()
+  public function can_not_get_status_history_from_a_recourse_that_not_exists()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
-    $statusHistories = StatusHistory::factory(4)->create([
+    StatusHistory::factory(4)->create([
       "recourse_id" => $recourse->id
     ]);
 
@@ -42,9 +59,13 @@ class StatusHistoryCanGetDataTest extends TestCase
 
     $response->assertStatus(Response::HTTP_NOT_FOUND);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"
       ]
     ]);
+    $response->assertJsonFragment(["message"=>"No se encontró el recurso"]);
   }
 }
