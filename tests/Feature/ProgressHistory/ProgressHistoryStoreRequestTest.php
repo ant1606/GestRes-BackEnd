@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\ProgressHistory;
 
+use App\Enums\UnitMeasureProgressEnum;
+use App\Models\Settings;
 use Tests\TestCase;
 use App\Models\Recourse;
 use App\Models\User;
@@ -20,11 +22,10 @@ class ProgressHistoryStoreRequestTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData([
-        'advanced' => null
-      ])
+      $this->progressHistoryValidData($recourse_measure_is_hour, ['advanced' => null])
     );
 
     $response->assertJsonFragment([
@@ -32,10 +33,16 @@ class ProgressHistoryStoreRequestTest extends TestCase
     ]);
 
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>[
+          "advanced"
+        ]
       ]
     ]);
+    $response->assertJsonFragment(["advanced"=>["The advanced field is required."]]);
   }
 
   /** @test */
@@ -43,21 +50,24 @@ class ProgressHistoryStoreRequestTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData([
-        'advanced' => 0
-      ])
+      $this->progressHistoryValidData($recourse_measure_is_hour, ['advanced' => $recourse_measure_is_hour ? "00:00:00" : "0"])
     );
 
-    $response->assertJsonFragment([
-      "advanced" => ["The advanced must be at least 1."],
-    ]);
-
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>[
+          "advanced"
+        ]
       ]
+    ]);
+    $response->assertJsonFragment([
+      "advanced" => ["El valor avanzado debe ser mayor a 00:00:00 o a 0"],
     ]);
   }
 
@@ -66,44 +76,24 @@ class ProgressHistoryStoreRequestTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData([
-        'advanced' => -15
-      ])
+      $this->progressHistoryValidData($recourse_measure_is_hour, ['advanced' => $recourse_measure_is_hour ?  "00:00:00" : "-15"])
     );
 
-    $response->assertJsonFragment([
-      "advanced" => ["The advanced must be at least 1."],
-    ]);
-
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>[
+          "advanced"
+        ]
       ]
     ]);
-  }
-
-  /** @test */
-  public function the_advanced_must_be_an_integer()
-  {
-    $user = User::factory()->create();
-    $recourse = Recourse::factory()->create(["user_id" => $user->id]);
-    $response = $this->actingAs($user)->postJson(
-      route('progress.store', $recourse),
-      $this->progressHistoryValidData([
-        'advanced' => Str::random(10)
-      ])
-    );
-
     $response->assertJsonFragment([
-      "advanced" => ["The advanced must be a number."],
-    ]);
-
-    $response->assertJsonStructure([
-      "error" => [
-        "status", "detail"
-      ]
+      "advanced" => ["El valor avanzado debe ser mayor a 00:00:00 o a 0"],
     ]);
   }
 
@@ -194,20 +184,23 @@ class ProgressHistoryStoreRequestTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData([
-        'date' => null
-      ])
+      $this->progressHistoryValidData( $recourse_measure_is_hour, ['date' => null])
     );
 
     $response->assertJsonFragment([
       "date" => ["The date field is required."],
     ]);
-
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>[
+          "date"
+        ]
       ]
     ]);
   }
@@ -217,20 +210,23 @@ class ProgressHistoryStoreRequestTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData([
-        'date' => Str::random(10)
-      ])
+      $this->progressHistoryValidData($recourse_measure_is_hour, ['date' => Str::random(10)])
     );
 
     $response->assertJsonFragment([
       "date" => ["The date is not a valid date."],
     ]);
-
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>[
+          "date"
+        ]
       ]
     ]);
   }
@@ -240,22 +236,27 @@ class ProgressHistoryStoreRequestTest extends TestCase
   #region COMMENT Field
 
   /** @test */
-  public function the_comment_may_not_be_greater_than_100_characters()
+  public function the_comment_may_not_be_greater_than_1000_characters()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData(['comment' => Str::random(101)])
+      $this->progressHistoryValidData( $recourse_measure_is_hour, ['comment' => Str::random(1001)])
     );
 
     $response->assertJsonFragment([
-      "comment" => ["The comment must not be greater than 100 characters."],
+      "comment" => ["The comment must not be greater than 1000 characters."],
     ]);
-
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status", "detail"
+        "message",
+        "details"=>[
+          "comment"
+        ]
       ]
     ]);
   }
@@ -265,13 +266,16 @@ class ProgressHistoryStoreRequestTest extends TestCase
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
+    $recourse_measure_is_hour =Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name;
     $response = $this->actingAs($user)->postJson(
       route('progress.store', $recourse),
-      $this->progressHistoryValidData(['comment' => null])
+      $this->progressHistoryValidData($recourse_measure_is_hour, ['comment' => null])
     );
 
-    // dd($response->getContent());
     $response->assertStatus(201);
+    $response->assertJsonFragment(["status"=>"success"]);
+    $this->assertDatabaseCount('progress_histories', 2 );
+
   }
 
   #endregion

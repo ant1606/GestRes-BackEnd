@@ -17,6 +17,9 @@
     <testsuite name="Recourse">
       <directory>./tests/Feature/Recourse</directory>
     </testsuite>
+    <testsuite name="Progress">
+      <directory>./tests/Feature/ProgressHistory</directory>
+    </testsuite>
   </testsuites>
   <coverage processUncoveredFiles="true">
     <include>

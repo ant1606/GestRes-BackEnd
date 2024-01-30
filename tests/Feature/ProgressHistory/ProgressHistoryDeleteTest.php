@@ -14,11 +14,11 @@ class ProgressHistoryDeleteTest extends TestCase
   use RefreshDatabase;
 
   /** @test **/
-  public function a_progress_can_be_deleted_if_is_the_last_register()
+  public function a_progress_can_be_deleted_only_if_is_the_last_register()
   {
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
-    $progress1 = ProgressHistory::factory()->create([
+    ProgressHistory::factory()->create([
       "recourse_id" => $recourse->id,
       "comment" => "Progress Test Second Delete"
     ]);
@@ -34,12 +34,17 @@ class ProgressHistoryDeleteTest extends TestCase
     $response->assertStatus(Response::HTTP_ACCEPTED);
     $this->assertDatabaseCount("progress_histories", 2);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "data" => [
-        "identificador",
-        "realizado",
-        "pendiente",
-        "fecha",
-        "comentario"
+          "identificador",
+          "avanzadoHasta",
+          "realizado",
+          "pendiente",
+          "fecha",
+          "comentario",
+          "esUltimoRegistro",
+          "total"
       ]
     ]);
   }
@@ -55,7 +60,7 @@ class ProgressHistoryDeleteTest extends TestCase
       "recourse_id" => $recourse->id,
       "comment" => "Progress Test Middle Register"
     ]);
-    $progress2 = ProgressHistory::factory()->create([
+    ProgressHistory::factory()->create([
       "recourse_id" => $recourse->id,
       "comment" => "Progress Test Last Register"
     ]);
@@ -67,11 +72,14 @@ class ProgressHistoryDeleteTest extends TestCase
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("progress_histories", 3);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status",
-        "detail"
+        "message",
+        "details"
       ]
     ]);
+    $response->assertJsonFragment(["message"=>"No se puede eliminar el registro, sólo puede eliminarse el ultimo registro del recurso"]);
   }
 
   /** @test **/
@@ -89,10 +97,13 @@ class ProgressHistoryDeleteTest extends TestCase
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("progress_histories", 1);
     $response->assertJsonStructure([
+      "status",
+      "code",
       "error" => [
-        "status",
-        "detail"
+        "message",
+        "details"
       ]
     ]);
+    $response->assertJsonFragment(["message"=>"No se puede eliminar el registro generado por el sistema"]);
   }
 }
