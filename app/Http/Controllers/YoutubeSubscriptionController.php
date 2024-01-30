@@ -18,11 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class YoutubeSubscriptionController extends ApiController
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
+
+  //TODO Generar casos de prueba para este controlador
   public function index(Request $request)
   {
     $subscription = YoutubeSubscription::query();
@@ -38,31 +35,21 @@ class YoutubeSubscriptionController extends ApiController
 
     $subscriptions = $subscription->get();
     // $subscriptions = YoutubeSubscription::where('user_id', Auth::user()->id)->get();
-    return $this->showAllResource(new YoutubeSubscriptionCollection($subscriptions), Response::HTTP_OK);
+    return $this->sendResponse(new YoutubeSubscriptionCollection($subscriptions), Response::HTTP_OK);
   }
 
-  /**
-   * Check if process of store subscription is processing
-   *
-   * @return \Illuminate\Http\Response
-   */
+
   function checkProcessStatus()
   {
     $isProcessing = Cache::get('process_status', false);
 
     if ($isProcessing) {
-      return $this->showMessage(["message" => "procesando"], Response::HTTP_OK);
+      return $this->sendMessage("procesando" ,Response::HTTP_OK);
     } else {
-      return $this->showMessage(["message" => "finalizado"], Response::HTTP_OK);
+      return $this->sendMessage( "finalizado", Response::HTTP_OK);
     }
   }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
   public function store(YoutubeSubscriptionStoreRequest $request)
   {
     !Cache::has('process_call_APIYoutube')
@@ -97,42 +84,24 @@ class YoutubeSubscriptionController extends ApiController
         ['title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high']
       );
 
-      return ["message" => "Se insertaron los registros"];
+      return $this->sendMessage( "Se insertaron los registros", Response::HTTP_OK);
     } catch (\Throwable $th) {
-      return ["error" => $th->getMessage()];
+      return $this->sendError(Response::HTTP_NOT_FOUND, $th->getMessage());
     } finally {
       $client->revokeToken($token);
       Cache::put('process_call_APIYoutube', false, now()->addMinutes(30));
     }
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\YoutubeSubscription $subscription
-   * @return \Illuminate\Http\Response
-   */
-  public function show(YoutubeSubscription $subscription)
-  {
-    //
-  }
 
-  /**
-   * Actualiza los Tags del YoutubeSubscription Model
-   * 
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Models\YoutubeSubscription $subscription
-   * @return \Illuminate\Http\Response
-   */
   public function update(YoutubeSubscription $youtube_subscription, Request $request)
   {
     $existingTags = $youtube_subscription->tags()->pluck('taggables.tag_id')->toArray();
 
     if ((isset($request->tags) ? $request->tags : []) === $existingTags) {
-      return $this->errorResponse(
-        ["api_response" => ["Se debe especificar al menos un valor diferente para actualizar"]],
-        Response::HTTP_UNPROCESSABLE_ENTITY
+      return $this->sendError(
+        Response::HTTP_UNPROCESSABLE_ENTITY,
+        "Se debe especificar al menos un valor diferente para actualizar"
       );
     }
 
@@ -140,25 +109,19 @@ class YoutubeSubscriptionController extends ApiController
       DB::beginTransaction();
       $youtube_subscription->tags()->sync($request->tags);
       DB::commit();
-      return $this->showOne(new YoutubeSubscriptionResource($youtube_subscription), Response::HTTP_ACCEPTED);
+      return $this->sendResponse(new YoutubeSubscriptionResource($youtube_subscription), Response::HTTP_ACCEPTED, false);
     } catch (\Throwable $th) {
       DB::rollBack();
       // TODO Escribir los mensajes de error en un log $e->getMessage()
       //TODO Envolver los mensajes de error en la nomenclatura usada [api_response => []]
       // dd($th);
-      return $this->errorResponse(
-        ["api_response" => ["Ocurrió un error al actualizar el recurso, hable con el administrador"]],
-        Response::HTTP_UNPROCESSABLE_ENTITY
+      return $this->sendError(
+        Response::HTTP_UNPROCESSABLE_ENTITY,
+        "Ocurrió un error al actualizar el recurso, hable con el administrador"
       );
     }
   }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\YoutubeSubscription $subscription
-   * @return \Illuminate\Http\Response
-   */
   public function destroy(YoutubeSubscription $youtube_subscription)
   {
     // dd($youtube_subscription);
@@ -166,7 +129,7 @@ class YoutubeSubscriptionController extends ApiController
     $youtube_subscription->tags()->detach();
     $youtube_subscription->delete();
 
-    return $this->showOne(new YoutubeSubscriptionResource($youtube_subscription), Response::HTTP_ACCEPTED);
+    return $this->sendResponse(new YoutubeSubscriptionResource($youtube_subscription), Response::HTTP_ACCEPTED, false);
   }
 
   /**

@@ -40,7 +40,7 @@ class DashboardController extends ApiController
       ->take(5)
       ->get();
 
-    return $this->showAllResource(new RecourseCollection($recourses), Response::HTTP_OK);
+    return $this->sendResponse(new RecourseCollection($recourses), Response::HTTP_OK, false);
   }
 
   public function getAmountByState()
@@ -61,7 +61,7 @@ class DashboardController extends ApiController
       }
     }
 
-    return $this->showOne($result, Response::HTTP_OK);
+    return $this->sendResponse($result, Response::HTTP_OK, false);
   }
 
   // $recourses = Recourse::all()->pluck('current_status_name')->countBy();

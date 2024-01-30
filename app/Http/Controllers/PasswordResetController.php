@@ -20,15 +20,15 @@ class PasswordResetController extends ApiController
     //    dd( $request->get('email'));
     //    dd(User::where('email', $request->get('email'))->first());
     if (!User::where('email', $request->get('email'))->first())
-      return $this->errorResponse(["email" => ["No se encuentra el usuario"]], Response::HTTP_BAD_GATEWAY);
+      return $this->sendError(Response::HTTP_BAD_GATEWAY, "No se encontró al usuario", ["email" => ["No se encuentra el usuario"]]);
 
     $status = Password::sendResetLink(
       $request->only('email'),
     );
 
     return $status === Password::RESET_LINK_SENT
-      ? $this->showMessage("Se envió el link para reseteo de link a su correo", Response::HTTP_OK)
-      : $this->errorResponse("Hubo un problema", Response::HTTP_BAD_GATEWAY);
+      ? $this->sendMessage("Se envió el link para reseteo de link a su correo", Response::HTTP_OK)
+      : $this->sendError(Response::HTTP_BAD_GATEWAY, "Hubo un problema");
   }
 
   public function resetPassword(Request $request)
@@ -53,7 +53,7 @@ class PasswordResetController extends ApiController
     );
 
     return $status === Password::PASSWORD_RESET
-      ? $this->showMessage("Se actualizó su contraseña", Response::HTTP_OK)
-      : $this->errorResponse("Hubo un problema", Response::HTTP_BAD_GATEWAY);
+      ? $this->sendMessage("Se actualizó su contraseña", Response::HTTP_OK)
+      : $this->sendError(Response::HTTP_BAD_GATEWAY, "Hubo un problema");
   }
 }
