@@ -183,7 +183,8 @@
                             }
                         }
                     }
-                }
+                },
+                "security": []
             }
         },
         "/remember": {
@@ -191,25 +192,25 @@
                 "tags": [
                     "Authentication"
                 ],
-                "summary": "Verificando token remember_me de usuario autentificado",
-                "description": "Verificando token remember_me de usuario autentificado",
-                "operationId": "RememberMe",
+                "summary": "Verificando token remember_token de usuario autentificado",
+                "description": "Verificando token remember_token de usuario autentificado",
+                "operationId": "RememberToken",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "remember_me"
+                                    "remember_token"
                                 ],
                                 "properties": {
-                                    "remember_me": {
+                                    "remember_token": {
                                         "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "remember_me": "lunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJm$%kxcjq412"
+                                    "remember_token": "lunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJm$%kxcjq412"
                                 }
                             }
                         }
@@ -349,7 +350,8 @@
                             }
                         }
                     }
-                }
+                },
+                "security": []
             }
         },
         "/logout": {
@@ -451,7 +453,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },

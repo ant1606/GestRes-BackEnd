@@ -28,6 +28,7 @@
      *    tags={"Authentication"},
      *    summary="Login user",
      *    description="Login user",
+     *    security={},
      *    @OA\RequestBody(
      *      required=true,
      *      @OA\MediaType(
@@ -131,6 +132,7 @@
      *    tags={"Authentication"},
      *    summary="Verificando token remember_token de usuario autentificado",
      *    description="Verificando token remember_token de usuario autentificado",
+     *    security={},
      *    @OA\RequestBody(
      *      required=true,
      *      @OA\MediaType(
@@ -225,6 +227,7 @@
      *    tags={"Authentication"},
      *    summary="LogoOut current user authenticated",
      *    description="LogoOut current user authenticated",
+     *    security={{ "bearerAuth": {} }},
      *    @OA\Response(
      *       response="200",
      *       description="Se cerro la sesión correctamente",

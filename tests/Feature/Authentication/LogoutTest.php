@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Authentication;
 
+use App\Http\Services\AuthenticationService;
 use App\Models\User;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
