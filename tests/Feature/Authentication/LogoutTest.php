@@ -29,14 +29,14 @@ class LogoutTest extends TestCase
   }
 
   /** @test **/
-  public function user_can_not_logout_if_attempt_logout_with_other_user(){
-    $this->markTestSkipped();
-    //TODO Hacer este test, eliminando el token de autentificación o mockeando la clase para retornar el bloque catch
-    $user = User::factory()->create(['name' => 'admin', 'email' => 'admin@mail.com']);
+  public function can_not_logout_if_attempt_logout_without_authorization_token(){
+    User::factory()->create(['name' => 'admin', 'email' => 'admin@mail.com']);
 
-    $response = $this->actingAs($user)->postJson(route('logout'));
+    $response = $this->withHeaders([
+      'Authorization'=>'not_existing_token'
+    ])->postJson(route('logout'));
 
-    $response->assertStatus(Response::HTTP_NOT_FOUND);
+    $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     $response->assertJsonStructure([
       'status',
       'code',
@@ -44,7 +44,8 @@ class LogoutTest extends TestCase
         'message',
       ],
     ]);
-    $response->assertJsonFragment(['message' => 'Todo esta correcto']);
+    $response->assertJsonFragment(['message' => 'No esta autorizado para continuar']);
+
   }
 
 }

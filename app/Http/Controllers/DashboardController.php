@@ -12,7 +12,16 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
-
+/**
+ * @OA\OpenApi(
+ *   security={{"bearerAuth": {}}}
+ * )
+ * @OA\SecurityScheme(
+ *   securityScheme="bearerAuth",
+ *   type="http",
+ *   scheme="bearer"
+ * )
+ */
 class DashboardController extends ApiController
 {
 

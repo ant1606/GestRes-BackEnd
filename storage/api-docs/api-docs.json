@@ -1,29 +1,471 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "AuthenticationController",
-        "description": "Controller que gestiona el login del usuario al API",
+        "title": "Gestor Recursos API",
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "http://apiparaprincipiantesv10.test:8081"
+            "url": "http://localhost:80/api/v1"
         }
     ],
     "paths": {
-        "/user/logout": {
-            "get": {
+        "/login": {
+            "post": {
                 "tags": [
-                    "user"
+                    "Authentication"
                 ],
-                "summary": "Logs out current logged in user session",
-                "operationId": "logoutUser",
+                "summary": "Login user",
+                "description": "Login user",
+                "operationId": "Login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "remember_me"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "remember_me": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "mimail@example.com",
+                                    "password": "abcxd232sx",
+                                    "remember_me": false
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
-                    "default": {
-                        "description": "successful operation"
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "bearer_token": {
+                                                    "type": "string",
+                                                    "example": "41|ylunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJmkZgd4b82742"
+                                                },
+                                                "bearer_expire": {
+                                                    "type": "string",
+                                                    "example": "Wed, 31 Jan 2024 23:16:03 GMT"
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "number",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Dummy User"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "dummye@email.com"
+                                                        },
+                                                        "remember_token": {
+                                                            "type": "string",
+                                                            "example": null
+                                                        },
+                                                        "is_verified": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 401
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Usuario no autentificado"
+                                                },
+                                                "details": {
+                                                    "type": "object",
+                                                    "example": "[]"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Exception",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 422
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": ""
+                                                },
+                                                "details": {
+                                                    "properties": {
+                                                        "password": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "description": "The password field is required.",
+                                                                "type": "string",
+                                                                "example": "The password field is required."
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/remember": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verificando token remember_me de usuario autentificado",
+                "description": "Verificando token remember_me de usuario autentificado",
+                "operationId": "RememberMe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "remember_me"
+                                ],
+                                "properties": {
+                                    "remember_me": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "remember_me": "lunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJm$%kxcjq412"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "bearer_token": {
+                                                    "type": "string",
+                                                    "example": "41|ylunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJmkZgd4b82742"
+                                                },
+                                                "bearer_expire": {
+                                                    "type": "string",
+                                                    "example": "Wed, 31 Jan 2024 23:16:03 GMT"
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "number",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Dummy User"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "dummye@email.com"
+                                                        },
+                                                        "remember_token": {
+                                                            "type": "string",
+                                                            "example": "lunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJm$%kxcjq412"
+                                                        },
+                                                        "is_verified": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 401
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Usuario no autentificado"
+                                                },
+                                                "details": {
+                                                    "type": "object",
+                                                    "example": "[]"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Exception",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 422
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": ""
+                                                },
+                                                "details": {
+                                                    "properties": {
+                                                        "remember_me": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "description": "The remember me field is required.",
+                                                                "type": "string",
+                                                                "example": "The remember me field is required."
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "LogoOut current user authenticated",
+                "description": "LogoOut current user authenticated",
+                "operationId": "Logout",
+                "responses": {
+                    "200": {
+                        "description": "Se cerro la sesión correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se cerro la sesión correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 401
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "No esta autorizado para continuar"
+                                                },
+                                                "details": {
+                                                    "type": "object",
+                                                    "example": "[]"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Error closing session user authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 404
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Ocurrió un problema al cerrar sesión"
+                                                },
+                                                "details": {
+                                                    "type": "object",
+                                                    "example": "[]"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
 }
