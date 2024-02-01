@@ -2,19 +2,23 @@
 
   namespace App\Http\Controllers;
 
-  use App\Models\User;
-  use DateInterval;
-  use DateTimeInterface;
+  use App\Http\Requests\Authentication\CheckRememberRequest;
+  use App\Http\Requests\Authentication\LoginRequest;
+  use App\Http\Services\AuthenticationService;
+  use Exception;
   use Illuminate\Http\JsonResponse;
-  use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Auth;
   use OpenApi\Annotations as OA;
   use Symfony\Component\HttpFoundation\Response;
-  use Throwable;
 
 
   class AuthenticationController extends ApiController
   {
+    public function __construct(
+      protected AuthenticationService $authenticationService
+    )
+    {
+    }
 
     /**
      * Login de usuario
@@ -107,60 +111,37 @@
      *    )
      * )
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-      $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-      ]);
+      $credentials = $request->validated();
+      $data = $this->authenticationService->login($credentials, $request->get('remember_me'));
 
-      if (Auth::attempt($credentials, $request->get("remember_me"))) {
-
-        $usuario = Auth::user();
-        $token_expiring_date = date_create("now")->add(new DateInterval('PT6H'));
-        $token = $usuario->createToken("API-TOKEN", ['*'], $token_expiring_date);
-        return $this->sendResponse(
-          [
-            "bearer_token" => $token->plainTextToken,
-            "bearer_expire" => $token_expiring_date->format(DateTimeInterface::RFC7231),
-            "user" => [
-              "id" => $usuario->id,
-              "name" => $usuario->name,
-              "email" => $usuario->email,
-              "remember_token" => $usuario->remember_token,
-              "is_verified" => $usuario->hasVerifiedEmail()
-            ]
-          ],
-          Response::HTTP_OK,
-          false
-        );
+      if (!empty($data)) {
+        return $this->sendResponse($data, Response::HTTP_OK, false);
+      } else {
+        return $this->sendError(Response::HTTP_UNAUTHORIZED, "Usuario no autentificado");
       }
-
-      return $this->sendError(
-        Response::HTTP_UNAUTHORIZED,
-        "Usuario no autentificado"
-      );
     }
 
     /**
-     * Verificando token remember_me
+     * Verificando remember_token
      * @OA\Post(
      *    path="/remember",
-     *    operationId="RememberMe",
+     *    operationId="RememberToken",
      *    tags={"Authentication"},
-     *    summary="Verificando token remember_me de usuario autentificado",
-     *    description="Verificando token remember_me de usuario autentificado",
+     *    summary="Verificando token remember_token de usuario autentificado",
+     *    description="Verificando token remember_token de usuario autentificado",
      *    @OA\RequestBody(
      *      required=true,
      *      @OA\MediaType(
      *        mediaType="application/json",
      *        @OA\Schema(
-     *          required={"remember_me"},
+     *          required={"remember_token"},
      *          @OA\Property(
-     *            property="remember_me",
+     *            property="remember_token",
      *            type="string"
      *          ),
-     *          example={"remember_me":"lunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJm$%kxcjq412"}
+     *          example={"remember_token":"lunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJm$%kxcjq412"}
      *        )
      *      )
      *    ),
@@ -225,38 +206,15 @@
      *    )
      * )
      */
-    public function check_remember(Request $request): JsonResponse
+    public function check_remember(CheckRememberRequest $request): JsonResponse
     {
-      //TODO Hacer Tests de esta funcionalidad
-      $credentials = $request->validate([
-        'remember_me' => ['required'],
-      ]);
-      $usuario = User::where("remember_token", $request->get("remember_me"))->first();
-      if ($usuario) {
-        $token_expiring_date = date_create("now")->add(new DateInterval('P1DT6H'));
-        $token = $usuario->createToken("API-TOKEN", ['*'], $token_expiring_date);
+      $data = $this->authenticationService->check_remember_token($request->get('remember_token'));
 
-        return $this->sendResponse(
-          [
-            "bearer_token" => $token->plainTextToken,
-            "bearer_expire" => $token_expiring_date->format(DateTimeInterface::RFC7231),
-            "user" => [
-              "id" => $usuario->id,
-              "name" => $usuario->name,
-              "email" => $usuario->email,
-              "remember_token" => $usuario->remember_token,
-              "is_verified" => $usuario->hasVerifiedEmail()
-            ]
-          ],
-          Response::HTTP_OK,
-          false
-        );
+      if(!empty($data)){
+        return $this->sendResponse($data,Response::HTTP_OK,false);
+      }else{
+        return $this->sendError(Response::HTTP_UNAUTHORIZED,"Usuario no autentificado");
       }
-
-      return $this->sendError(
-        Response::HTTP_UNAUTHORIZED,
-        "Usuario no autentificado"
-      );
     }
 
     /**
@@ -305,26 +263,14 @@
      *      )
      *    ),
      * )
+     * @throws Exception
      */
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-      try {
-        $usuario = Auth::user();
-        $usuario->remember_token = null;
-        $usuario->tokens()->delete();
-        $usuario->save();
-
-        // Auth::logout();
-        return $this->sendMessage(
-          "Se cerro la sesión correctamente",
-          Response::HTTP_OK
-        );
-      } catch (Throwable $th) {
-        // TODO: Generar Log de $th
-        return $this->sendError(
-          Response::HTTP_NOT_FOUND,
-          "Ocurrió un problema al cerrar sesión"
-        );
+      if ($this->authenticationService->logout(Auth::user())) {
+        return $this->sendMessage("Se cerro la sesión correctamente",Response::HTTP_OK);
+      } else {
+        return $this->sendError(Response::HTTP_NOT_FOUND,"Ocurrió un problema al cerrar sesión");
       }
     }
   }
