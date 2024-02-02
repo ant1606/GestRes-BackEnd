@@ -103,11 +103,11 @@
     }
 
     //TODO Cambiar el contenido de showAll por showAllResource en los controladores
-    protected function showAllResource(ResourceCollection $collection, $make_pagination)
+    protected function showAllResource(ResourceCollection $collection, $make_pagination): array
     {
       if ($make_pagination) $collection = $this->paginate($collection);
       $collection = $this->cacheResponse($collection);
-      return  $make_pagination ? $this->responsePaginateJson($collection) : $collection;
+      return  $make_pagination ? $this->responsePaginateJson($collection) : ["data"=>$collection];
     }
 
     protected function paginate(ResourceCollection $collection): LengthAwarePaginator

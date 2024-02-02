@@ -7,30 +7,21 @@ use App\Http\Controllers\ApiController;
 use App\Http\Resources\RecourseCollection;
 use App\Models\Recourse;
 use App\Models\Settings;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
-/**
- * @OA\OpenApi(
- *   security={{"bearerAuth": {}}}
- * )
- * @OA\SecurityScheme(
- *   securityScheme="bearerAuth",
- *   type="http",
- *   scheme="bearer"
- * )
- */
+
 class DashboardController extends ApiController
 {
 
-  public function getTop5Recourses(Request $request)
+  public function getTop5Recourses(Request $request): JsonResponse
   {
     $statusType = filter_var($request->query('porEmpezar'), FILTER_VALIDATE_BOOLEAN)
       ? StatusRecourseEnum::STATUS_POREMPEZAR->name
       :  StatusRecourseEnum::STATUS_ENPROCESO->name;
-
 
     $statusType = Settings::getData($statusType);
 
@@ -52,7 +43,7 @@ class DashboardController extends ApiController
     return $this->sendResponse(new RecourseCollection($recourses), Response::HTTP_OK, false);
   }
 
-  public function getAmountByState()
+  public function getAmountByState(): JsonResponse
   {
     $recoursesByStatusAmount = Recourse::where('user_id', Auth::user()->id)->get()->pluck('current_status_name')->countBy();
     $result = [
@@ -72,8 +63,4 @@ class DashboardController extends ApiController
 
     return $this->sendResponse($result, Response::HTTP_OK, false);
   }
-
-  // $recourses = Recourse::all()->pluck('current_status_name')->countBy();
-
-
 }

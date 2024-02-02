@@ -14,6 +14,9 @@
     <testsuite name="Authentication">
       <directory>./tests/Feature/Authentication</directory>
     </testsuite>
+    <testsuite name="Dashboard">
+      <directory>./tests/Feature/Dashboard</directory>
+    </testsuite>
     <testsuite name="Tags">
       <directory>./tests/Feature/Tags</directory>
     </testsuite>
