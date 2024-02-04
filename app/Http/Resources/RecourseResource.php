@@ -14,7 +14,6 @@ class RecourseResource extends JsonResource
    */
   public function toArray($request)
   {
-    // dd($this->progress()->latest()->first());
     // status, se Obtienen las relaciones entre status, se ordenan por fecha descendenmente con latest() y sólo se obtiene el primer registro con first()
     // progress, lo mismo que con status
     return [

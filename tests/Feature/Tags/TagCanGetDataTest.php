@@ -21,7 +21,7 @@ class TagCanGetDataTest extends TestCase
 
     $response = $this->actingAs($user)->getJson(route('tag.index'));
 
-    $response->assertStatus(Response::HTTP_ACCEPTED);
+    $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonStructure([
       "status",
       "code",
@@ -61,7 +61,7 @@ class TagCanGetDataTest extends TestCase
     $filter = "MI ETIQUETA";
 
     $response = $this->actingAs($user)->getJson(route('tag.index',  ["searchNombre" => $filter]));
-    $response->assertStatus(Response::HTTP_ACCEPTED);
+    $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonStructure([
       "status",
       "code",

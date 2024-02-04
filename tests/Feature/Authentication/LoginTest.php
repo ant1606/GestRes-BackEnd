@@ -120,7 +120,7 @@
       $response = $this->postJson(route('login'), ['password' => 'falsypassword', 'email' => 'falsyemail@mail.com', 'remember_me' => false]);
 
       $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-      //    dd($response->getContent());
+
       $response->assertJsonStructure([
         'status',
         'code',

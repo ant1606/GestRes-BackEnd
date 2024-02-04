@@ -24,7 +24,6 @@ class StatusHistoryCanGetDataTest extends TestCase
 
     $response = $this->actingAs($user)->getJson(route('status.index', $recourse));
 
-//    dd($response->getContent());
     $response->assertStatus(Response::HTTP_OK);
     // Tener en cuenta que puede variar segun la cantidad de resultados por pagina en ApiResponser
     $response->assertJsonCount(5, "data");

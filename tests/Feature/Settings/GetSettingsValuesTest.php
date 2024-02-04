@@ -22,7 +22,6 @@
 
       $response = $this->getJson(route('settings.show', $typeName));
 
-//      dd($response->getContent());
       $response->assertStatus(Response::HTTP_OK);
       $response->assertJsonStructure([
         "data" => [

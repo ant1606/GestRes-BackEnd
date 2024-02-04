@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //Se verifica la existencia de la tabla por fallo al realizar testing que no encuentra la tabla
         if (Schema::hasTable('settings') && !Cache::has('settings')) {
-            // dd("hola");
+
             Settings::reload_data_settings_to_cache();
         }
 

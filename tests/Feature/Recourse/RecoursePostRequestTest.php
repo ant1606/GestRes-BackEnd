@@ -322,11 +322,6 @@ class RecoursePostRequestTest extends TestCase
   public function the_total_pages_must_be_an_integer()
   {
     $user = User::factory()->create();
-//    $REC = $this->recourseValidData([
-//      'type_id' => Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name, "id"),
-//      'total_pages' => Str::random(10)
-//    ]);
-//    dd($REC);
 
     $response = $this->actingAs($user)->postJson(
       route('recourses.store'),
@@ -503,7 +498,7 @@ class RecoursePostRequestTest extends TestCase
         'total_hours' => Str::random(10)
       ])
     );
-    // dd($response->getContent());
+
     $response->assertJsonFragment(
       ["total_hours" => ["The total hours format is invalid."]]
     );

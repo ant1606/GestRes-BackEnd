@@ -41,19 +41,8 @@
         "code",
         "data" => [
           [
-            "identificador",
-            "nombre",
-            "ruta",
-            "autor",
-            "editorial",
-            "tipoId",
-            "totalPaginas",
-            "totalCapitulos",
-            "totalVideos",
-            "totalHoras",
-            "tags",
-            "status",
-            "progress"
+            "id",
+            "name",
           ]
         ]
       ]);
@@ -95,19 +84,8 @@
         "code",
         "data" => [
           [
-            "identificador",
-            "nombre",
-            "ruta",
-            "autor",
-            "editorial",
-            "tipoId",
-            "totalPaginas",
-            "totalCapitulos",
-            "totalVideos",
-            "totalHoras",
-            "tags",
-            "status",
-            "progress"
+            "id",
+            "name",
           ]
         ]
       ]);

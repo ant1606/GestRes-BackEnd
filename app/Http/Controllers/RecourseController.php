@@ -90,7 +90,6 @@
 
         DB::commit();
 
-        // dd($recourse);
         return $this->sendResponse(new RecourseResource($recourse), Response::HTTP_CREATED);
       } catch (\Exception $e) {
         DB::rollBack();
@@ -220,7 +219,7 @@
       $recourse->tags()->detach();
       $recourse->delete();
 
-      return $this->sendResponse(new RecourseResource($recourse), Response::HTTP_ACCEPTED);
+      return $this->sendResponse([], Response::HTTP_ACCEPTED);
     }
 
     //TODO ExtraerLogica

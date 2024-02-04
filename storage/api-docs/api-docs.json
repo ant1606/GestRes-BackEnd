@@ -456,6 +456,125 @@
                 },
                 "security": [
                     {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/getTop5Recourses": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Summary of 5 top Recoures by Status",
+                "description": "Get Summary of 5 top Recoures by Status",
+                "operationId": "GetTop5Recourses",
+                "parameters": [
+                    {
+                        "name": "porEmpezar",
+                        "in": "query",
+                        "description": "Valor booleano que indica si se buscará recursos con estado porEmpezar (true) o enProceso (false)",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "bearer_token": {
+                                                    "type": "string",
+                                                    "example": "41|ylunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJmkZgd4b82742"
+                                                },
+                                                "bearer_expire": {
+                                                    "type": "string",
+                                                    "example": "Wed, 31 Jan 2024 23:16:03 GMT"
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "number",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Dummy User"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "dummye@email.com"
+                                                        },
+                                                        "remember_token": {
+                                                            "type": "string",
+                                                            "example": null
+                                                        },
+                                                        "is_verified": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 401
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Usuario no autentificado"
+                                                },
+                                                "details": {
+                                                    "type": "object",
+                                                    "example": "[]"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
                         "bearerAuth": []
                     }
                 ]
@@ -464,15 +583,11 @@
     },
     "components": {
         "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer"
+            "api_key": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
             }
         }
-    },
-    "security": [
-        {
-            "bearerAuth": []
-        }
-    ]
+    }
 }

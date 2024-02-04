@@ -35,7 +35,6 @@ class WebPageController extends ApiController
   public function store(Request $request)
   {
     $request->merge(["user_id" => Auth::user()->id]);
-    // dd($request);
     $webpage = WebPage::create($request->all());
     $webpage->tags()->syncWithoutDetaching($request->tags);
 

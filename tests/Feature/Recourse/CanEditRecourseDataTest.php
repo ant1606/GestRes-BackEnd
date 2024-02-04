@@ -79,7 +79,7 @@ class CanEditRecourseDataTest extends TestCase
     ];
 
     $response = $this->actingAs($user)->putJson(route('recourses.update', $recourse), $recourseUpdate);
-//            dd($response->getContent());
+
     $response->assertStatus(Response::HTTP_ACCEPTED);
     $this->assertDatabaseCount('recourses', 1);
     $this->assertDatabaseHas('recourses', [
@@ -174,7 +174,7 @@ class CanEditRecourseDataTest extends TestCase
     ]);
 
     $response = $this->actingAs($user)->putJson(route('recourses.update', $recourse), $recourseUpdate);
-//    dd($response->getContent());
+
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
     $this->assertDatabaseHas('recourses', [

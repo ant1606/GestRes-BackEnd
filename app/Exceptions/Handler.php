@@ -80,7 +80,7 @@ class Handler extends ExceptionHandler
           ),
           default => $this->sendError(
             Response::HTTP_NOT_FOUND,
-            "Hubo un problema al comunicarse con el servidor {$exception->getMessage()}"
+            "Hubo un problema al comunicarse con el servidor"
           ),
         };
       }

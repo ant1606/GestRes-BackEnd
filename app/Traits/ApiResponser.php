@@ -4,65 +4,13 @@
 
   use Illuminate\Http\JsonResponse;
   use Illuminate\Http\Resources\Json\JsonResource;
+  use Illuminate\Http\Resources\Json\ResourceCollection;
+  use Illuminate\Pagination\LengthAwarePaginator;
   use Illuminate\Support\Facades\Cache;
   use Illuminate\Support\Facades\Validator;
-  use Symfony\Component\HttpFoundation\Response;
-  use Illuminate\Pagination\LengthAwarePaginator;
-  use Illuminate\Http\Resources\Json\ResourceCollection;
 
   trait ApiResponser
   {
-
-    /**Genera una respuesta Json
-     * @param JsonResource|ResourceCollection|array $result
-     * @param int $code
-     * @param bool $make_pagination
-     * @return JsonResponse
-     */
-    protected function sendResponse(JsonResource|ResourceCollection|array $result, int $code, bool $make_pagination=true) : JsonResponse
-    {
-      //Para objetos|Array creados manualmente para una respuesta específica
-      if(is_array($result)){
-        return $this->successResponse(
-          $code,
-          [ "data" => $result ]
-        );
-      }
-
-      //Usado cuando se retorna un ApiResources
-      switch (get_parent_class($result)) {
-        case JsonResource::class:
-          return $this->successResponse(
-            $code,
-            [ "data" => $result ]
-          );
-        case ResourceCollection::class:
-          if ($result->count() === 0) {
-            return $this->successResponse(
-              Response::HTTP_OK,
-              [
-                'data' => [],
-                'message' => "No se encontraron resultados"
-              ]
-            );
-          }
-
-          $data = $this->showAllResource($result, $make_pagination);
-          return $this->successResponse($code, $data);
-      }
-    }
-
-    private function successResponse($code, $data ): JsonResponse
-    {
-      return response()->json(
-        [
-          "status"=>"success",
-          "code"=>$code,
-          ...$data
-        ],
-        $code
-      );
-    }
 
     /**Genera una respuesta Json
      * @param int $code
@@ -70,14 +18,14 @@
      * @param array $detail Contiene los errores de validación
      * @return JsonResponse
      */
-    protected function sendError(int $code, string $message="", array $detail=[]  ): JsonResponse
+    protected function sendError(int $code, string $message = "", array $detail = []): JsonResponse
     {
       return response()->json(
         [
-          "status"=>"error",
-          "code"=> $code,
-          "error" =>  [
-            "message"=> $message,
+          "status" => "error",
+          "code" => $code,
+          "error" => [
+            "message" => $message,
             "details" => $detail
           ]
         ],
@@ -90,31 +38,78 @@
      * @param int $code Código de respuesta HTTP
      * @return JsonResponse
      */
-    protected function sendMessage($message, $code = 200): JsonResponse
+    protected function sendMessage(string $message, int $code = 200): JsonResponse
     {
       return response()->json(
         [
-          "status"=>"success",
-          "code"=>$code,
-          "message"=>$message
+          "status" => "success",
+          "code" => $code,
+          "message" => $message
         ],
         $code
       );
     }
 
-    //TODO Cambiar el contenido de showAll por showAllResource en los controladores
+    /**Genera una respuesta Json
+     * @param JsonResource|ResourceCollection|array $result
+     * @param int $code
+     * @param bool $make_pagination
+     * @return JsonResponse
+     */
+    protected function sendResponse(JsonResource|ResourceCollection|array $result, int $code, bool $make_pagination = true): JsonResponse
+    {
+      $responseData = $this->buildResponseData($result, $code, $make_pagination);
+      return response()->json($responseData, $code);
+    }
+
+    private function buildResponseData(JsonResource|ResourceCollection|array $result, int $code, bool $make_pagination): array
+    {
+      // Inicializamos el arreglo de respuesta
+      $response = [
+        "status" => "success",
+        "code" => $code,
+      ];
+
+      //Para objetos|Array creados manualmente para una respuesta específica
+      if (is_array($result)) {
+        $response["data"] = $result;
+        return $response;
+      }
+
+      //Usado cuando se retorna un ApiResources
+      switch (get_parent_class($result)) {
+        case JsonResource::class:
+          $response["data"] = $result->toArray(request());
+          break;
+        case ResourceCollection::class:
+          if ($result->count() === 0) {
+            $response["data"] = [];
+            $response["message"] = "No se encontraron resultados";
+          } else {
+            $result = $this->showAllResource($result, $make_pagination);
+            $response["data"] = $result["data"];
+            if(array_key_exists('meta', $result)){
+              $response["meta"] = $result["meta"];
+            }
+            if(array_key_exists('links', $result)){
+              $response["links"] = $result["links"];
+            }
+          }
+          break;
+      }
+
+      return $response;
+    }
+
     protected function showAllResource(ResourceCollection $collection, $make_pagination): array
     {
       if ($make_pagination) $collection = $this->paginate($collection);
       $collection = $this->cacheResponse($collection);
-      return  $make_pagination ? $this->responsePaginateJson($collection) : ["data"=>$collection];
+      return $make_pagination ? $this->responsePaginateJson($collection) : ["data" => $collection];
     }
 
     protected function paginate(ResourceCollection $collection): LengthAwarePaginator
     {
-//      if ($collection->isEmpty()) {
-//        return $this->successResponse(['data' => $collection], 200);
-//      }
       $rules = [
         'perPage' => 'integer|min:2|max:50'
       ];
@@ -126,9 +121,8 @@
       // Cantidad de elementos a mostrar por pagina
       $perPage = 10;
       if (request()->has('perPage')) {
-        $perPage = (int) request()->perPage;
+        $perPage = (int)request()->perPage;
       }
-
 
       //Obtenemos los registros segun la pagina actual (0-15, 16-30, 31-45, ....etc)
       $results = $collection->slice(($page - 1) * $perPage, $perPage)->values();
@@ -166,7 +160,7 @@
       });
     }
 
-    protected function responsePaginateJson(LengthAwarePaginator $pagination) : array
+    protected function responsePaginateJson(LengthAwarePaginator $pagination): array
     {
       return [
         'meta' => [

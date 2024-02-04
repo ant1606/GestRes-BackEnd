@@ -67,7 +67,7 @@
         ->withCount('webpages')
         ->get();
 
-      return $this->sendResponse(new TagCollection($tags), Response::HTTP_ACCEPTED);
+      return $this->sendResponse(new TagCollection($tags), Response::HTTP_OK);
     }
 
     public function store(TagRequest $request): JsonResponse

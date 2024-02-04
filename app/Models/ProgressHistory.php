@@ -37,7 +37,7 @@ class ProgressHistory extends Model
   protected function isLastRecord(): Attribute
   {
     return new Attribute(
-      get: fn () => $this->recourse->progress()->latest()->first()->id === $this->id
+      get: fn () => $this->recourse->progress()->latest('id')->first()->id === $this->id
     );
   }
 

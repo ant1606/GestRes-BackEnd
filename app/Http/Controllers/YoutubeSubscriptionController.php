@@ -124,7 +124,6 @@ class YoutubeSubscriptionController extends ApiController
 
   public function destroy(YoutubeSubscription $youtube_subscription)
   {
-    // dd($youtube_subscription);
     //TODO Insertar autorizacion para eliminar recurso sólo al usuario que lo creo
     $youtube_subscription->tags()->detach();
     $youtube_subscription->delete();

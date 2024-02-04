@@ -17,8 +17,6 @@ class PasswordResetController extends ApiController
   {
     $request->validate(['email' => 'required|email']);
 
-    //    dd( $request->get('email'));
-    //    dd(User::where('email', $request->get('email'))->first());
     if (!User::where('email', $request->get('email'))->first())
       return $this->sendError(Response::HTTP_BAD_GATEWAY, "No se encontró al usuario", ["email" => ["No se encuentra el usuario"]]);
 

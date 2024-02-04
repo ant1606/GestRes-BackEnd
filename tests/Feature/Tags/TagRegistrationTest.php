@@ -26,7 +26,6 @@ class TagRegistrationTest extends TestCase
     $response = $this->actingAs($user)->postJson(route("tag.store"), $tag);
 
     $response->assertStatus(Response::HTTP_CREATED);
-//     dd($response->getContent());
     $this->assertDatabaseCount("tags", 1);
     $this->assertDatabaseHas("tags", [
       "name" => Str::upper($tag['name']),
@@ -80,7 +79,6 @@ class TagRegistrationTest extends TestCase
     $this->assertDatabaseCount("tags", 1);
 
     $response = $this->actingAs($user)->postJson(route("tag.store"), $tagDuplicated);
-//     dd($response->getContent());
 
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     $this->assertDatabaseCount("tags", 1);

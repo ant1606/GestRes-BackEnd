@@ -22,7 +22,7 @@ class RecourseCanGetDataTest extends TestCase
     Recourse::factory(5)->create(["user_id" => $user->id]);
 
     $response = $this->actingAs($user)->get(route('recourses.index'));
-//    dd($response->getContent());
+
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJsonCount(5, "data");
     $response->assertJsonStructure([
