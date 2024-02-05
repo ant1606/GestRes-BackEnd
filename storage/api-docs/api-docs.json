@@ -473,7 +473,7 @@
                     {
                         "name": "porEmpezar",
                         "in": "query",
-                        "description": "Valor booleano que indica si se buscará recursos con estado porEmpezar (true) o enProceso (false)",
+                        "description": "Boolean value indicating whether to search for resources with status 'porEmpezar' (true) or 'enProceso' (false)",
                         "required": true,
                         "schema": {
                             "type": "boolean"
@@ -492,76 +492,87 @@
                                             "example": "success"
                                         },
                                         "code": {
-                                            "type": "number",
+                                            "type": "integer",
                                             "example": 200
                                         },
                                         "data": {
-                                            "properties": {
-                                                "bearer_token": {
-                                                    "type": "string",
-                                                    "example": "41|ylunYCnOo71w2xzckQEnnXLq4m1Qc6HG5JqbJmkZgd4b82742"
-                                                },
-                                                "bearer_expire": {
-                                                    "type": "string",
-                                                    "example": "Wed, 31 Jan 2024 23:16:03 GMT"
-                                                },
-                                                "user": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "number",
-                                                            "example": 1
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "example": "Dummy User"
-                                                        },
-                                                        "email": {
-                                                            "type": "string",
-                                                            "example": "dummye@email.com"
-                                                        },
-                                                        "remember_token": {
-                                                            "type": "string",
-                                                            "example": null
-                                                        },
-                                                        "is_verified": {
-                                                            "type": "boolean",
-                                                            "example": true
-                                                        }
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
                                                     },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Mi recurso de prueba"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "User unauthenticated",
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/getAmountByState": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get summary of amount of recourse by state",
+                "description": "Get summary of amount of recourse by state",
+                "operationId": "GetAmountByState",
+                "responses": {
+                    "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "status": {
                                             "type": "string",
-                                            "example": "error"
+                                            "example": "success"
                                         },
                                         "code": {
                                             "type": "number",
-                                            "example": 401
+                                            "example": 200
                                         },
-                                        "error": {
+                                        "data": {
                                             "properties": {
-                                                "message": {
-                                                    "type": "string",
-                                                    "example": "Usuario no autentificado"
+                                                "REGISTRADO": {
+                                                    "type": "number",
+                                                    "example": 5
                                                 },
-                                                "details": {
-                                                    "type": "object",
-                                                    "example": "[]"
+                                                "POR EMPEZAR": {
+                                                    "type": "number",
+                                                    "example": 2
+                                                },
+                                                "EN PROCESO": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "CULMINADO": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "DESCARTADO": {
+                                                    "type": "number",
+                                                    "example": 4
+                                                },
+                                                "DESFASADO": {
+                                                    "type": "number",
+                                                    "example": 2
                                                 }
                                             },
                                             "type": "object"
