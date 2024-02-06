@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Recourse>
+ * @extends Factory<Recourse>
  */
 class RecourseFactory extends Factory
 {
@@ -33,13 +33,11 @@ class RecourseFactory extends Factory
 
     $total_pages = $total_chapters = $total_videos = $total_hours = null;
 
-    if ($typeName == TypeRecourseEnum::TYPE_LIBRO->name) {
+    if ($typeName === TypeRecourseEnum::TYPE_LIBRO->name) {
       $total_pages = $this->faker->numberBetween(100, 600);
       $total_chapters = $this->faker->numberBetween(5, 30);
       $unit_measure_progress_id = array_rand([UnitMeasureProgressEnum::UNIT_CHAPTERS->name => 1, UnitMeasureProgressEnum::UNIT_PAGES->name => 1]);
-    }
-
-    if ($typeName == TypeRecourseEnum::TYPE_VIDEO->name) {
+    }else if ($typeName === TypeRecourseEnum::TYPE_VIDEO->name) {
       $total_videos = $this->faker->numberBetween(10, 150);
       $total_hours =
         $this->faker->numberBetween(7, 100) . ":" .
@@ -79,26 +77,10 @@ class RecourseFactory extends Factory
         'recourse_id' => $recourse->id,
         "done" => Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name ? "00:00:00" : "0",
         "advanced" =>  Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name ? "00:00:00" : "0",
-        "pending" => $this->getValueFromUnitMeasureProgress($recourse),
+        "pending" => Recourse::getTotalValueFromUnitMeasureProgress($recourse),
         'date' => $dateRecord,
         'comment' => "REGISTRO INICIAL GENERADO AUTOMATICAMENTE POR EL SISTEMA"
       ]);
     });
-  }
-
-
-  //TODO EXtraer esta logica
-  private function getValueFromUnitMeasureProgress(Recourse $recourse)
-  {
-    switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
-      case UnitMeasureProgressEnum::UNIT_CHAPTERS->name:
-        return  $recourse->total_chapters;
-      case UnitMeasureProgressEnum::UNIT_PAGES->name:
-        return  $recourse->total_pages;
-      case UnitMeasureProgressEnum::UNIT_HOURS->name:
-        return  $recourse->total_hours;
-      case UnitMeasureProgressEnum::UNIT_VIDEOS->name:
-        return $recourse->total_videos;
-    }
   }
 }

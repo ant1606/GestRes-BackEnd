@@ -79,8 +79,8 @@ class Handler extends ExceptionHandler
             "Método no aceptado"
           ),
           default => $this->sendError(
-            Response::HTTP_NOT_FOUND,
-            "Hubo un problema al comunicarse con el servidor"
+            $exception->getCode(),
+            $exception->getMessage()
           ),
         };
       }

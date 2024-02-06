@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Enums\UnitMeasureProgressEnum;
+use App\Helpers\TimeHelper;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use function PHPUnit\Framework\isNull;
 
 class Recourse extends Model
 {
@@ -56,12 +56,27 @@ class Recourse extends Model
     );
   }
 
+  // TODO Corregir test recourse_can_be_edited_when_change_all_values
+  // Error generando por esta función, posiblemente un error al contrastar datos con unidad de Medida Hora y de otro tipo
+  /*
+   * #message: "Undefined array key 1"
+      #code: 0
+      #file: "./app/Helpers/TimeHelper.php"
+      #line: 26
+      #severity: E_WARNING
+   * ./app/Helpers/TimeHelper.php:26 {
+      Illuminate\Foundation\Bootstrap\HandleExceptions->handleError($level, $message, $file = '', $line = 0, $context = [])^
+      › {
+      ›   list($hours, $minutes, $seconds) = explode(':', $hour);
+      ›   return (int)$hours * 3600 + (int)$minutes * 60 + (int)$seconds;
+    }
+   */
   protected function totalProgressPercentage(): Attribute
   {
     if ($this->progress()->exists()) {
       return new Attribute(
         get: fn () =>  Settings::getKeyfromId($this->unit_measure_progress_id) === UnitMeasureProgressEnum::UNIT_HOURS->name
-          ? round($this->convertHourToSeconds($this->progress->last()->advanced) / $this->convertHourToSeconds($this->progress->first()->pending) * 100, 2)
+          ? round(TimeHelper::convertHourToSeconds($this->progress->last()->advanced) / TimeHelper::convertHourToSeconds($this->progress->first()->pending) * 100, 2)
           : round($this->progress->last()->advanced / $this->progress->first()->pending * 100, 2)
       );
     } else {
@@ -86,24 +101,17 @@ class Recourse extends Model
     return $this->hasMany(ProgressHistory::class);
   }
 
-  //TODO Pasarlo como un helper
-  private function convertHourToSeconds($hour)
-  {
-    list($hours, $minutes, $seconds) = explode(':', $hour);
-    return $hours * 3600 + $minutes * 60 + $seconds;
-  }
-
-  static public function getTotalValueFromUnitMeasureProgress(Recourse $recourse)
+  static public function getTotalValueFromUnitMeasureProgress(Recourse|array $recourse)
   {
     switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
       case UnitMeasureProgressEnum::UNIT_CHAPTERS->name:
-        return $recourse->total_chapters;
+        return $recourse["total_chapters"];
       case UnitMeasureProgressEnum::UNIT_PAGES->name:
-        return $recourse->total_pages;
+        return $recourse["total_pages"];
       case UnitMeasureProgressEnum::UNIT_HOURS->name:
-        return $recourse->total_hours;
+        return $recourse["total_hours"];
       case UnitMeasureProgressEnum::UNIT_VIDEOS->name:
-        return $recourse->total_videos;
+        return $recourse["total_videos"];
     }
   }
 }

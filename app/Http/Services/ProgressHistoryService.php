@@ -6,18 +6,14 @@
   use App\DTOs\ProgressHistory\ProgressSaveResult;
   use App\Enums\StatusRecourseEnum;
   use App\Enums\UnitMeasureProgressEnum;
+  use App\Helpers\TimeHelper;
   use App\Models\ProgressHistory;
   use App\Models\Recourse;
   use App\Models\Settings;
   use App\Models\StatusHistory;
-  use App\Utils\TimeUtils;
 
   class ProgressHistoryService
   {
-
-    public function __construct(
-      protected TimeUtils $timeUtils
-    ){}
 
     public function save_progress(Recourse $recourse, array $progress): ProgressSaveResult
     {
@@ -34,14 +30,14 @@
       //TODO APlicar cambios para horas y enteros
 
       $done = Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name
-        ? $this->timeUtils->processHours($progress['advanced'], $lastProgress->advanced)
+        ? TimeHelper::processHours($progress['advanced'], $lastProgress->advanced)
         : $progress['advanced'] - $lastProgress->advanced;
 
       // $done =   $progress['dvanced - $lastProgress->advanced'];
 
       //TODO GENERAR CASO DE PRUEBA PARA ESTA SENTENCIA
       $pending = Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name
-        ? $this->timeUtils->convertHourToSeconds($total) - $this->timeUtils->convertHourToSeconds($progress['advanced'])
+        ? TimeHelper::convertHourToSeconds($total) - TimeHelper::convertHourToSeconds($progress['advanced'])
         : $total - $progress['advanced'];
       // $pending = $total - $progress['advanced'];
 
@@ -59,7 +55,7 @@
         'advanced' => $progress['advanced'],
         'done' => $done,
         'pending' => Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name
-          ? $this->timeUtils->processHours($total, $progress['advanced'])
+          ? TimeHelper::processHours($total, $progress['advanced'])
           : $pending,
         'date' => $progress['date'],
         'comment' => $progress['comment'],

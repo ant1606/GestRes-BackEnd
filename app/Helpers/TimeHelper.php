@@ -1,9 +1,10 @@
 <?php
-  namespace App\Utils;
 
-  class TimeUtils
+  namespace App\Helpers;
+
+  class TimeHelper
   {
-    public function processHours($hora1, $hora2, $isSubtract = true): string
+    public static function processHours($hora1, $hora2, $isSubtract = true): string
     {
       list($horas1, $minutos1, $segundos1) = explode(':', $hora1);
       list($horas2, $minutos2, $segundos2) = explode(':', $hora2);
@@ -20,11 +21,9 @@
       return sprintf('%02d:%02d:%02d', abs($nuevasHoras), abs($nuevosMinutos), abs($nuevosSegundos));
     }
 
-    public function convertHourToSeconds($hour): int
+    public static function convertHourToSeconds($hour): int
     {
       list($hours, $minutes, $seconds) = explode(':', $hour);
       return (int)$hours * 3600 + (int)$minutes * 60 + (int)$seconds;
     }
   }
-
-

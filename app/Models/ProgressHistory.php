@@ -30,7 +30,7 @@ class ProgressHistory extends Model
   protected function total(): Attribute
   {
     return new Attribute(
-      get: fn () => $this->getValueFromUnitMeasureProgress($this->recourse)
+      get: fn () => Recourse::getTotalValueFromUnitMeasureProgress($this->recourse)
     );
   }
 
@@ -41,24 +41,8 @@ class ProgressHistory extends Model
     );
   }
 
-
   public function recourse()
   {
     return $this->belongsTo(Recourse::class);
-  }
-
-  //TODO EXtraer esta logica
-  private function getValueFromUnitMeasureProgress(Recourse $recourse)
-  {
-    switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
-      case UnitMeasureProgressEnum::UNIT_CHAPTERS->name:
-        return  $recourse->total_chapters;
-      case UnitMeasureProgressEnum::UNIT_PAGES->name:
-        return  $recourse->total_pages;
-      case UnitMeasureProgressEnum::UNIT_HOURS->name:
-        return  $recourse->total_hours;
-      case UnitMeasureProgressEnum::UNIT_VIDEOS->name:
-        return $recourse->total_videos;
-    }
   }
 }
