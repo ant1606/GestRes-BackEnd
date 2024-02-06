@@ -70,7 +70,7 @@ Route::middleware(['cors'])->group(function () {
 
 
 
-  //Rutas con autentificación  
+  //Rutas con autentificación
   Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
@@ -80,11 +80,10 @@ Route::middleware(['cors'])->group(function () {
 
     Route::get('recourses/{recourse}/status', [StatusHistoryController::class, 'index'])->name('status.index');
     Route::post('recourses/{recourse}/status', [StatusHistoryController::class, 'store'])->name('status.store');
-    Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
-    Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
-
     Route::delete('status/{statusHistory}', [StatusHistoryController::class, 'destroy'])->name('status.destroy');
 
+    Route::get('recourses/{recourse}/progress', [ProgressHistoryController::class, 'index'])->name('progress.index');
+    Route::post('recourses/{recourse}/progress', [ProgressHistoryController::class, 'store'])->name('progress.store');
     Route::delete('progress/{progressHistory}', [ProgressHistoryController::class, 'destroy'])->name('progress.destroy');
 
     Route::get('dashboard/getTop5Recourses', [DashboardController::class, 'getTop5Recourses'])->name('dashboard.getTop5Recourses');
@@ -92,12 +91,9 @@ Route::middleware(['cors'])->group(function () {
 
     Route::get('tag/getTagsForTagSelector', [TagController::class, 'getTagsForTagSelector'])->name('tag.getTagForTagSelector');
 
-    // Route::get('youtube-subscription', [YoutubeSubscriptionController::class, 'index'])->name('subscription.index');
     Route::get('youtube-subscription/checkStatus', [YoutubeSubscriptionController::class, 'checkProcessStatus'])->name('subscription.checking');
-    // Route::post('youtube-subscription', [YoutubeSubscriptionController::class, 'store'])->name('subscription.store');
-    // Route::put('youtube-subscription/{subscription}', [YoutubeSubscriptionController::class, 'update'])->name('subscription.update');
-
     Route::resource('youtube-subscription', YoutubeSubscriptionController::class)->except(['create', 'edit']);
+
     Route::resource('webpage', WebPageController::class)->except(['create', 'edit']);
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);
