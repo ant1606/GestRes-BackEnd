@@ -31,7 +31,6 @@ class WebPageRegistrationTest extends TestCase
     $response = $this->actingAs($user)->postJson(route('webpage.store'), $webpage);
 
     $response->assertStatus(Response::HTTP_CREATED);
-
     $this->assertDatabaseHas('web_pages', [
       "url" => $webpage['url'],
       "name" => $webpage['name'],

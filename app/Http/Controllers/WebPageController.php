@@ -1,90 +1,64 @@
 <?php
 
-namespace App\Http\Controllers;
+  namespace App\Http\Controllers;
 
-use App\Http\Resources\WebPageCollection;
-use App\Http\Resources\WebPageResource;
-use App\Models\WebPage;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response;
+  use App\Http\Requests\WebPagePostRequest;
+  use App\Http\Resources\WebPageCollection;
+  use App\Http\Resources\WebPageResource;
+  use App\Http\Services\WebPageService;
+  use App\Models\WebPage;
+  use Exception;
+  use Illuminate\Http\JsonResponse;
+  use Illuminate\Http\Request;
+  use Symfony\Component\HttpFoundation\Response;
 
-class WebPageController extends ApiController
-{
   //TODO Realizar los casos de Test faltantes de este controlador
-  public function index(Request $request)
+  class WebPageController extends ApiController
   {
-    $web_pages = WebPage::query();
 
-    $web_pages = $web_pages->where('user_id', Auth::user()->id);
-
-    if ($request->has('searchTags') && $request->searchTags !== null && $request->searchTags !== []) {
-      $web_pages = $web_pages->whereHas('tags', function ($query) use ($request) {
-        $query->whereIn('tag_id', $request->searchTags);
-      });
+    public function __construct(protected WebPageService $webPageService)
+    {
     }
-    if ($request->has('searchNombre') && $request->searchNombre !== null)
-      $web_pages = $web_pages->where('name', 'like', '%' . $request->searchNombre . '%');
 
-    $web_pages = $web_pages->latest()->get();
-
-    return $this->sendResponse(new WebPageCollection($web_pages), Response::HTTP_OK);
-  }
-
-  public function store(Request $request)
-  {
-    $request->merge(["user_id" => Auth::user()->id]);
-    $webpage = WebPage::create($request->all());
-    $webpage->tags()->syncWithoutDetaching($request->tags);
-
-    return $this->sendResponse(new WebPageResource($webpage), Response::HTTP_CREATED, false);
-  }
-
-
-  public function update(WebPage $webpage, Request $request)
-  {
-
-    $webpage->fill($request->only([
-      'name',
-      'description',
-      'url',
-    ]));
-    $existingTags = $webpage->tags()->pluck('taggables.tag_id')->toArray();
-
-    if ($webpage->isClean() && (isset($request->tags) ? $request->tags : []) === $existingTags) {
-      return $this->sendError(
-        Response::HTTP_UNPROCESSABLE_ENTITY,
-        "Se debe especificar al menos un valor diferente para actualizar"
+    public function index(Request $request): JsonResponse
+    {
+      $data = $this->webPageService->get_web_pages(
+        $request->input('searchTags', []),
+        $request->input('searchNombre'),
       );
+      return $this->sendResponse(new WebPageCollection($data), Response::HTTP_OK);
     }
 
-    try {
-      DB::beginTransaction();
-
-      $webpage->save();
-      $webpage->tags()->sync($request->tags);
-
-
-      DB::commit();
-      return $this->sendResponse(new WebPageResource($webpage), Response::HTTP_ACCEPTED, false);
-    } catch (\Throwable $th) {
-      DB::rollBack();
-      // TODO Escribir los mensajes de error en un log $e->getMessage()
-//      dd($th);
-      return $this->sendError(
-        Response::HTTP_UNPROCESSABLE_ENTITY,
-        "Ocurrió un error al actualizar la página Web, hable con el administrador"
+    public function store(WebPagePostRequest $request): JsonResponse
+    {
+      $data = $this->webPageService->save_web_page(
+        $request->input('url'),
+        $request->input('name'),
+        $request->input('description'),
+        $request->input('tags', []),
       );
+      return $this->sendResponse(new WebPageResource($data), Response::HTTP_CREATED, false);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function update(WebPage $webpage, Request $request): JsonResponse
+    {
+      $data = $this->webPageService->update_web_page(
+        $webpage,
+        $request->input('url'),
+        $request->input('name'),
+        $request->input('description'),
+        $request->input('tags', []),
+      );
+
+      return $this->sendResponse(new WebPageResource($data), Response::HTTP_ACCEPTED, false);
+    }
+
+    public function destroy(WebPage $webpage): JsonResponse
+    {
+      $data = $this->webPageService->delete_web_page($webpage);
+      return $this->sendResponse(new WebPageResource($data), Response::HTTP_ACCEPTED, false);
     }
   }
-
-  public function destroy(WebPage $webpage)
-  {
-    //TODO Insertar autorizacion para eliminar webpage sólo al usuario que lo creo
-    $webpage->tags()->detach();
-    $webpage->delete();
-
-    return $this->sendResponse(new WebPageResource($webpage), Response::HTTP_ACCEPTED, false);
-  }
-}
