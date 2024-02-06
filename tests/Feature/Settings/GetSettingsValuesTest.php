@@ -49,6 +49,6 @@
           "details"
         ]
       ]);
-      $response->assertJsonFragment(["message"=>"Error al procesar la data"]);
+      $response->assertJsonFragment(["message"=>"Error al procesar la data de Settings"]);
     }
   }
