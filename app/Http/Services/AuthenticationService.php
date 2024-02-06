@@ -31,6 +31,17 @@
       return [];
     }
 
+    public function verify_email_user(int $id_user): array
+    {
+      $usuario = User::find($id_user);
+      //TODO Verificar si el email ya ha sido verificado para brindar una respuesta adecuada
+      if ($usuario !== null) {
+        $usuario->markEmailAsVerified();
+        return $this->generate_credentials_user($usuario);
+      }
+      return [];
+    }
+
     /**
      * @throws Exception
      */

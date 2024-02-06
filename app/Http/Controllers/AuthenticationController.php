@@ -117,11 +117,9 @@
       $credentials = $request->validated();
       $data = $this->authenticationService->login($credentials, $request->get('remember_me'));
 
-      if (!empty($data)) {
-        return $this->sendResponse($data, Response::HTTP_OK, false);
-      } else {
-        return $this->sendError(Response::HTTP_UNAUTHORIZED, "Usuario no autentificado");
-      }
+      return !empty($data)
+        ? $this->sendResponse($data, Response::HTTP_OK, false)
+        : $this->sendError(Response::HTTP_UNAUTHORIZED, "Usuario no autentificado");
     }
 
     /**
@@ -212,11 +210,9 @@
     {
       $data = $this->authenticationService->check_remember_token($request->get('remember_token'));
 
-      if(!empty($data)){
-        return $this->sendResponse($data,Response::HTTP_OK,false);
-      }else{
-        return $this->sendError(Response::HTTP_UNAUTHORIZED,"Usuario no autentificado");
-      }
+      return !empty($data)
+        ? $this->sendResponse($data, Response::HTTP_OK, false)
+        : $this->sendError(Response::HTTP_UNAUTHORIZED, "Usuario no autentificado");
     }
 
     /**
@@ -271,9 +267,9 @@
     public function logout(): JsonResponse
     {
       if ($this->authenticationService->logout(Auth::user())) {
-        return $this->sendMessage("Se cerro la sesión correctamente",Response::HTTP_OK);
+        return $this->sendMessage("Se cerro la sesión correctamente", Response::HTTP_OK);
       } else {
-        return $this->sendError(Response::HTTP_NOT_FOUND,"Ocurrió un problema al cerrar sesión");
+        return $this->sendError(Response::HTTP_NOT_FOUND, "Ocurrió un problema al cerrar sesión");
       }
     }
   }

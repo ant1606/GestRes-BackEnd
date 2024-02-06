@@ -2,52 +2,39 @@
 
   namespace App\Http\Controllers;
 
-  use App\Models\User;
+  use App\Http\Services\AuthenticationService;
   use Illuminate\Http\JsonResponse;
   use Illuminate\Http\Request;
   use Symfony\Component\HttpFoundation\Response;
 
+  //TODO Hacer test de este controlador
   class EmailVerificationController extends ApiController
   {
+
+    public function __construct(protected AuthenticationService $authenticationService)
+    {
+    }
+
     public function notify(Request $request): JsonResponse
     {
       return $this->sendMessage("Se debe verificar el correo electrónico", Response::HTTP_OK);
     }
 
-    public function verify(Request $request, $id, $hash,): JsonResponse
+    public function verify(Request $request, $id, $hash): JsonResponse
     {
-      //TODO Verificar si el email ya ha sido verificado para brindar una respuesta adecuada
-      $usuario = User::find($id);
+      $data = $this->authenticationService->verify_email_user($id);
 
-      if ($usuario !== null) {
-        $usuario->markEmailAsVerified();
+      return !empty($data)
+        ? $this->sendResponse($data, Response::HTTP_OK, false)
+        : $this->sendError(Response::HTTP_UNAUTHORIZED, "No se encontró al usuario");
 
-        $token_expiring_date = date_create("now")->add(new \DateInterval('PT6H'));
-        $token = $usuario->createToken("API-TOKEN", ['*'], $token_expiring_date);
-
-        return $this->sendResponse(
-          [
-            "bearer_token" => $token->plainTextToken,
-            "bearer_expire" => $token_expiring_date->format(\DateTimeInterface::RFC7231),
-            "user" => [
-              "id" => $usuario->id,
-              "name" => $usuario->name,
-              "email" => $usuario->email,
-              "remember_token" => $usuario->getRememberToken(),
-              "is_verified" => $usuario->hasVerifiedEmail()
-            ]
-          ],
-          Response::HTTP_OK,
-          false);
-      }
-      return $this->sendError(Response::HTTP_UNAUTHORIZED, "No se encontró al usuario");
     }
 
-    public function resendLinkVerification(Request $request)
+    public function resendLinkVerification(Request $request): JsonResponse
     {
       $request->user()->sendEmailVerificationNotification();
       return $this->sendMessage(
-       "Se reenvío el link de verificación"
-      , Response::HTTP_OK);
+        "Se reenvío el link de verificación"
+        , Response::HTTP_OK);
     }
   }
