@@ -52,7 +52,7 @@ class TagCanGetDataTest extends TestCase
   }
 
   /** @test */
-  public function can_search_tags_with_minimun_length_of_query_value_is_equals_or_higher_than_2()
+  public function can_search_tags_with_minimum_length_of_query_value_is_equals_or_higher_than_2()
   {
     // $this->withoutExceptionHandling();
     $user = User::factory()->create();
