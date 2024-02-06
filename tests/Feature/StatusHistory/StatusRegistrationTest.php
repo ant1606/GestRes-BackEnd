@@ -62,9 +62,9 @@
 
       $date = Carbon::now()->subDays(15);
       $status = [
-        'estadoId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
-        'fecha' => $date,
-        'comentario' => 'Curso a punto de empezar'
+        'statusId' => Settings::getData(StatusRecourseEnum::STATUS_POREMPEZAR->name, "id"),
+        'date' => $date,
+        'comment' => 'Curso a punto de empezar'
       ];
 
       $response = $this->actingAs($user)->postJson(route('status.store', $recourse->id), $status);
