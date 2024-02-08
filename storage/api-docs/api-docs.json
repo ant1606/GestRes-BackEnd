@@ -456,7 +456,7 @@
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -573,6 +573,3289 @@
                                                 "DESFASADO": {
                                                     "type": "number",
                                                     "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}/progress?page=1": {
+            "get": {
+                "tags": [
+                    "Progress"
+                ],
+                "summary": "List History progress of recourse",
+                "description": "List History progress of recourse",
+                "operationId": "getProgress",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "number",
+                                                        "example": 1
+                                                    },
+                                                    "avanzadoHasta": {
+                                                        "type": "string",
+                                                        "example": "0"
+                                                    },
+                                                    "realizado": {
+                                                        "type": "string",
+                                                        "example": "16"
+                                                    },
+                                                    "pendiente": {
+                                                        "type": "string",
+                                                        "example": "126"
+                                                    },
+                                                    "fecha": {
+                                                        "type": "string",
+                                                        "example": "2024-01-03"
+                                                    },
+                                                    "comentario": {
+                                                        "type": "string",
+                                                        "example": null
+                                                    },
+                                                    "esUltimoRegistro": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "total": {
+                                                        "type": "string",
+                                                        "example": "142"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag"
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "totalPages": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=4"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}/progress": {
+            "post": {
+                "tags": [
+                    "Progress"
+                ],
+                "summary": "Save a Progress for a Recourse",
+                "description": "Save a Progress for a Recourse",
+                "operationId": "postProgress",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "advanced",
+                                    "date",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "advanced": {
+                                        "type": "string"
+                                    },
+                                    "date": {
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "advanced": "01:23:12",
+                                    "date": "2024-12-31",
+                                    "comment": ""
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "avanzadoHasta": {
+                                                    "type": "string",
+                                                    "example": "0"
+                                                },
+                                                "realizado": {
+                                                    "type": "string",
+                                                    "example": "16"
+                                                },
+                                                "pendiente": {
+                                                    "type": "string",
+                                                    "example": "126"
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "example": "2024-01-03"
+                                                },
+                                                "comentario": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "esUltimoRegistro": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "total": {
+                                                    "type": "string",
+                                                    "example": "142"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}/progress/{progress_id}": {
+            "delete": {
+                "tags": [
+                    "Progress"
+                ],
+                "summary": "Delete a Progress for a Recourse",
+                "description": "Delete a Progress for a Recourse",
+                "operationId": "deleteProgress",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "avanzadoHasta": {
+                                                    "type": "string",
+                                                    "example": "0"
+                                                },
+                                                "realizado": {
+                                                    "type": "string",
+                                                    "example": "16"
+                                                },
+                                                "pendiente": {
+                                                    "type": "string",
+                                                    "example": "126"
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "example": "2024-01-03"
+                                                },
+                                                "comentario": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "esUltimoRegistro": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "total": {
+                                                    "type": "string",
+                                                    "example": "142"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses?searchTags=[]&searchNombre=''&searchTipo=0&searchEstado=\"&page=1&perPage=5": {
+            "get": {
+                "tags": [
+                    "Recourse"
+                ],
+                "summary": "List Recourses",
+                "description": "List Recourses",
+                "operationId": "getRecourses",
+                "parameters": [
+                    {
+                        "name": "searchTags",
+                        "in": "query",
+                        "description": "Array of Tag's id",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "name": "searchNombre",
+                        "in": "query",
+                        "description": "Name to filter recourses",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "searchTipo",
+                        "in": "query",
+                        "description": "Filter recourses by Id of Type recourse",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "searchEstado",
+                        "in": "query",
+                        "description": "Filter recourses by Id of Status",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Amount of register for page",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "integer",
+                                                        "example": 67
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Recurso de prueba de horas"
+                                                    },
+                                                    "ruta": {
+                                                        "type": "string",
+                                                        "example": "AHSBDLXKJDAS"
+                                                    },
+                                                    "autor": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "editorial": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "tipoId": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "unidadMedidadProgresoId": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "tipoNombre": {
+                                                        "type": "string",
+                                                        "example": "VIDEO TUTORIAL"
+                                                    },
+                                                    "nombreEstadoActual": {
+                                                        "type": "string",
+                                                        "example": "CULMINADO"
+                                                    },
+                                                    "totalPaginas": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "totalCapitulos": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "totalVideos": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "totalHoras": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "totalProgresoPorcentaje": {
+                                                        "type": "number",
+                                                        "example": 100
+                                                    },
+                                                    "status": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 68
+                                                            },
+                                                            "fecha": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2024-01-22"
+                                                            },
+                                                            "comentario": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "estadoId": {
+                                                                "type": "integer",
+                                                                "example": 6
+                                                            },
+                                                            "estadoNombre": {
+                                                                "type": "string",
+                                                                "example": "CULMINADO"
+                                                            },
+                                                            "esUltimoRegistro": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "tags": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "identificador": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "nombre": {
+                                                                    "type": "string",
+                                                                    "example": "PHP"
+                                                                },
+                                                                "estilos": {
+                                                                    "type": "string",
+                                                                    "example": "bg-teal-500 text-white"
+                                                                },
+                                                                "total": {
+                                                                    "type": "integer",
+                                                                    "example": 0
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "progress": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 79
+                                                            },
+                                                            "avanzadoHasta": {
+                                                                "type": "string",
+                                                                "example": "01:20:00"
+                                                            },
+                                                            "realizado": {
+                                                                "type": "string",
+                                                                "example": "00:39:10"
+                                                            },
+                                                            "pendiente": {
+                                                                "type": "string",
+                                                                "example": "00:00:00"
+                                                            },
+                                                            "fecha": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2024-01-22"
+                                                            },
+                                                            "comentario": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "esUltimoRegistro": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "total": {
+                                                                "type": "string",
+                                                                "example": "01:20:00"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag"
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "totalPages": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=4"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses": {
+            "post": {
+                "tags": [
+                    "Recourse"
+                ],
+                "summary": "Save a Recourse",
+                "description": "Save a Recourse",
+                "operationId": "postRecourse",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "source",
+                                    "total_chapters",
+                                    "total_pages,",
+                                    "total_hours",
+                                    "total_videos",
+                                    "type_id",
+                                    "unit_measure_progress_id"
+                                ],
+                                "properties": {
+                                    "author": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "editorial": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nueva prueba para horas 23213"
+                                    },
+                                    "recourse_id": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "source": {
+                                        "type": "string",
+                                        "example": "HTTPS://WWW.YOUTUBE.COM/C/KSI23ZKXO2312"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        },
+                                        "example": "[]"
+                                    },
+                                    "total_chapters": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "total_hours": {
+                                        "type": "string",
+                                        "example": "20:10:14"
+                                    },
+                                    "total_pages": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "total_videos": {
+                                        "type": "integer",
+                                        "example": 48
+                                    },
+                                    "type_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "unit_measure_progress_id": {
+                                        "type": "integer",
+                                        "example": 10
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "author": "",
+                                    "editorial": "",
+                                    "name": "Nueva prueba para horas 23213",
+                                    "recourse_id": 0,
+                                    "source": "HTTPS://WWW.YOUTUBE.COM/C/KSI23ZKXO2312",
+                                    "tags": "[]",
+                                    "total_chapters": null,
+                                    "total_hours": "20:10:14",
+                                    "total_pages": null,
+                                    "total_videos": 48,
+                                    "type_id": 2,
+                                    "unit_measure_progress_id": 10
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 67
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Recurso de prueba de horas"
+                                                },
+                                                "ruta": {
+                                                    "type": "string",
+                                                    "example": "AHSBDLXKJDAS"
+                                                },
+                                                "autor": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "editorial": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "tipoId": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "unidadMedidadProgresoId": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "tipoNombre": {
+                                                    "type": "string",
+                                                    "example": "VIDEO TUTORIAL"
+                                                },
+                                                "nombreEstadoActual": {
+                                                    "type": "string",
+                                                    "example": "CULMINADO"
+                                                },
+                                                "totalPaginas": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "totalCapitulos": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "totalVideos": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "totalHoras": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "totalProgresoPorcentaje": {
+                                                    "type": "number",
+                                                    "example": 100
+                                                },
+                                                "status": {
+                                                    "properties": {
+                                                        "identificador": {
+                                                            "type": "integer",
+                                                            "example": 68
+                                                        },
+                                                        "fecha": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2024-01-22"
+                                                        },
+                                                        "comentario": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "estadoId": {
+                                                            "type": "integer",
+                                                            "example": 6
+                                                        },
+                                                        "estadoNombre": {
+                                                            "type": "string",
+                                                            "example": "CULMINADO"
+                                                        },
+                                                        "esUltimoRegistro": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PHP"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-teal-500 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "progress": {
+                                                    "properties": {
+                                                        "identificador": {
+                                                            "type": "integer",
+                                                            "example": 79
+                                                        },
+                                                        "avanzadoHasta": {
+                                                            "type": "string",
+                                                            "example": "01:20:00"
+                                                        },
+                                                        "realizado": {
+                                                            "type": "string",
+                                                            "example": "00:39:10"
+                                                        },
+                                                        "pendiente": {
+                                                            "type": "string",
+                                                            "example": "00:00:00"
+                                                        },
+                                                        "fecha": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2024-01-22"
+                                                        },
+                                                        "comentario": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "esUltimoRegistro": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "total": {
+                                                            "type": "string",
+                                                            "example": "01:20:00"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id": {
+            "get": {
+                "tags": [
+                    "Recourse"
+                ],
+                "summary": "Get Data of one Recourse",
+                "description": "Get Data of one Recourse",
+                "operationId": "getRecourse",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "integer",
+                                                        "example": 67
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Recurso de prueba de horas"
+                                                    },
+                                                    "ruta": {
+                                                        "type": "string",
+                                                        "example": "AHSBDLXKJDAS"
+                                                    },
+                                                    "autor": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "editorial": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "tipoId": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "unidadMedidadProgresoId": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "tipoNombre": {
+                                                        "type": "string",
+                                                        "example": "VIDEO TUTORIAL"
+                                                    },
+                                                    "nombreEstadoActual": {
+                                                        "type": "string",
+                                                        "example": "CULMINADO"
+                                                    },
+                                                    "totalPaginas": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "totalCapitulos": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "totalVideos": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "totalHoras": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "totalProgresoPorcentaje": {
+                                                        "type": "number",
+                                                        "example": 100
+                                                    },
+                                                    "status": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 68
+                                                            },
+                                                            "fecha": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2024-01-22"
+                                                            },
+                                                            "comentario": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "estadoId": {
+                                                                "type": "integer",
+                                                                "example": 6
+                                                            },
+                                                            "estadoNombre": {
+                                                                "type": "string",
+                                                                "example": "CULMINADO"
+                                                            },
+                                                            "esUltimoRegistro": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "tags": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "identificador": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "nombre": {
+                                                                    "type": "string",
+                                                                    "example": "PHP"
+                                                                },
+                                                                "estilos": {
+                                                                    "type": "string",
+                                                                    "example": "bg-teal-500 text-white"
+                                                                },
+                                                                "total": {
+                                                                    "type": "integer",
+                                                                    "example": 0
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "progress": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 79
+                                                            },
+                                                            "avanzadoHasta": {
+                                                                "type": "string",
+                                                                "example": "01:20:00"
+                                                            },
+                                                            "realizado": {
+                                                                "type": "string",
+                                                                "example": "00:39:10"
+                                                            },
+                                                            "pendiente": {
+                                                                "type": "string",
+                                                                "example": "00:00:00"
+                                                            },
+                                                            "fecha": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2024-01-22"
+                                                            },
+                                                            "comentario": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "esUltimoRegistro": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "total": {
+                                                                "type": "string",
+                                                                "example": "01:20:00"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}": {
+            "put": {
+                "tags": [
+                    "Recourse"
+                ],
+                "summary": "Update a Recourse",
+                "description": "Update a Recourse",
+                "operationId": "putRecourse",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "source",
+                                    "total_chapters",
+                                    "total_pages,",
+                                    "total_hours",
+                                    "total_videos",
+                                    "type_id",
+                                    "unit_measure_progress_id"
+                                ],
+                                "properties": {
+                                    "author": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "editorial": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nueva prueba para horas 23213"
+                                    },
+                                    "recourse_id": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "source": {
+                                        "type": "string",
+                                        "example": "HTTPS://WWW.YOUTUBE.COM/C/KSI23ZKXO2312"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        },
+                                        "example": "[]"
+                                    },
+                                    "total_chapters": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "total_hours": {
+                                        "type": "string",
+                                        "example": "20:10:14"
+                                    },
+                                    "total_pages": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "total_videos": {
+                                        "type": "integer",
+                                        "example": 48
+                                    },
+                                    "type_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "unit_measure_progress_id": {
+                                        "type": "integer",
+                                        "example": 10
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "author": "",
+                                    "editorial": "",
+                                    "name": "Nueva prueba para horas 23213",
+                                    "recourse_id": 0,
+                                    "source": "HTTPS://WWW.YOUTUBE.COM/C/KSI23ZKXO2312",
+                                    "tags": "[]",
+                                    "total_chapters": null,
+                                    "total_hours": "20:10:14",
+                                    "total_pages": null,
+                                    "total_videos": 48,
+                                    "type_id": 2,
+                                    "unit_measure_progress_id": 10
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 67
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Recurso de prueba de horas"
+                                                },
+                                                "ruta": {
+                                                    "type": "string",
+                                                    "example": "AHSBDLXKJDAS"
+                                                },
+                                                "autor": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "editorial": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "tipoId": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "unidadMedidadProgresoId": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "tipoNombre": {
+                                                    "type": "string",
+                                                    "example": "VIDEO TUTORIAL"
+                                                },
+                                                "nombreEstadoActual": {
+                                                    "type": "string",
+                                                    "example": "CULMINADO"
+                                                },
+                                                "totalPaginas": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "totalCapitulos": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "totalVideos": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "totalHoras": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "totalProgresoPorcentaje": {
+                                                    "type": "number",
+                                                    "example": 100
+                                                },
+                                                "status": {
+                                                    "properties": {
+                                                        "identificador": {
+                                                            "type": "integer",
+                                                            "example": 68
+                                                        },
+                                                        "fecha": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2024-01-22"
+                                                        },
+                                                        "comentario": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "estadoId": {
+                                                            "type": "integer",
+                                                            "example": 6
+                                                        },
+                                                        "estadoNombre": {
+                                                            "type": "string",
+                                                            "example": "CULMINADO"
+                                                        },
+                                                        "esUltimoRegistro": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PHP"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-teal-500 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "progress": {
+                                                    "properties": {
+                                                        "identificador": {
+                                                            "type": "integer",
+                                                            "example": 79
+                                                        },
+                                                        "avanzadoHasta": {
+                                                            "type": "string",
+                                                            "example": "01:20:00"
+                                                        },
+                                                        "realizado": {
+                                                            "type": "string",
+                                                            "example": "00:39:10"
+                                                        },
+                                                        "pendiente": {
+                                                            "type": "string",
+                                                            "example": "00:00:00"
+                                                        },
+                                                        "fecha": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2024-01-22"
+                                                        },
+                                                        "comentario": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "esUltimoRegistro": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "total": {
+                                                            "type": "string",
+                                                            "example": "01:20:00"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Recourse"
+                ],
+                "summary": "Delete a Recourse",
+                "description": "Delete a Recourse",
+                "operationId": "deleteRecourse",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}/status?page=1": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "List History Status of recourse",
+                "description": "List History Status of recourse",
+                "operationId": "getStatus",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "fecha": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2024-01-03"
+                                                    },
+                                                    "comentario": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "estadoId": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "estadoNombre": {
+                                                        "type": "string",
+                                                        "example": "EN PROCESO"
+                                                    },
+                                                    "esUltimoRegistro": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag"
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "totalPages": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=4"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}/status": {
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Save a Status for a Recourse",
+                "description": "Save a Status for a Recourse",
+                "operationId": "postStatus",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status_id",
+                                    "date",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "status_id": {
+                                        "type": "number"
+                                    },
+                                    "date": {
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "status_id": 3,
+                                    "date": "2024-12-31",
+                                    "comment": ""
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-01-03"
+                                                },
+                                                "comentario": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "estadoId": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "estadoNombre": {
+                                                    "type": "string",
+                                                    "example": "EN PROCESO"
+                                                },
+                                                "esUltimoRegistro": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/recourses/{recourse_id}/status/{status_id}": {
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Delete a Status for a Recourse",
+                "description": "Delete a Status for a Recourse",
+                "operationId": "deleteStatus",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-01-03"
+                                                },
+                                                "comentario": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "estadoId": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "estadoNombre": {
+                                                    "type": "string",
+                                                    "example": "EN PROCESO"
+                                                },
+                                                "esUltimoRegistro": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tag?searchNombre=''&sortNombre=''": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "List Tags",
+                "description": "List Tags",
+                "operationId": "getTags",
+                "parameters": [
+                    {
+                        "name": "searchNombre",
+                        "in": "query",
+                        "description": "Filter Tag By Name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sortNombre",
+                        "in": "query",
+                        "description": "Sorting Name by desc or asc",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "integer",
+                                                        "example": 67
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "DESARROLLO WEB"
+                                                    },
+                                                    "estilos": {
+                                                        "type": "string",
+                                                        "example": "bg-pink-400 text-white"
+                                                    },
+                                                    "total": {
+                                                        "type": "number",
+                                                        "nullable": 5
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag"
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "totalPages": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=4"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tag": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Get All Tag to SelectTag",
+                "description": "Get All Tag to SelectTag",
+                "operationId": "getTagsToSelecTag",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 67
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "DESARROLLO WEB"
+                                                    },
+                                                    "style": {
+                                                        "type": "string",
+                                                        "example": "bg-pink-400 text-white"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Save a Tag",
+                "description": "Save a Tag",
+                "operationId": "postTag",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "nombre": "Mi Etiqueta"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 67
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "DESARROLLO WEB"
+                                                },
+                                                "estilos": {
+                                                    "type": "string",
+                                                    "example": "bg-pink-400 text-white"
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "nullable": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tag/{tag_id}": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Get Tag",
+                "description": "Get Tag",
+                "operationId": "getTag",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 67
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "DESARROLLO WEB"
+                                                },
+                                                "estilos": {
+                                                    "type": "string",
+                                                    "example": "bg-pink-400 text-white"
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "nullable": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Update a Tag",
+                "description": "Update a Tag",
+                "operationId": "putTag",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "nombre": "Mi Etiqueta"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 67
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "DESARROLLO WEB"
+                                                },
+                                                "estilos": {
+                                                    "type": "string",
+                                                    "example": "bg-pink-400 text-white"
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "nullable": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tag/{recourse_id}": {
+            "delete": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Delete a Tag",
+                "description": "Delete a Tag",
+                "operationId": "deleteTag",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 67
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "DESARROLLO WEB"
+                                                },
+                                                "estilos": {
+                                                    "type": "string",
+                                                    "example": "bg-pink-400 text-white"
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "nullable": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/webpage?searchTags=[]&searchNombre=''&page=1&perPage=5": {
+            "get": {
+                "tags": [
+                    "WebPages"
+                ],
+                "summary": "List WebPages",
+                "description": "List WebPages",
+                "operationId": "getWebPages",
+                "parameters": [
+                    {
+                        "name": "searchTags",
+                        "in": "query",
+                        "description": "Array of Tag's id",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "name": "searchNombre",
+                        "in": "query",
+                        "description": "Name to filter recourses",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Amount of register for page",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Developer Roadmaps"
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://roadmap.sh/"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "RoadMaps para formación profesional de Desarrolladores"
+                                                    },
+                                                    "totalVisitas": {
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "tags": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "identificador": {
+                                                                    "type": "integer",
+                                                                    "example": 2
+                                                                },
+                                                                "nombre": {
+                                                                    "type": "string",
+                                                                    "example": "PROGRAMACIÓN"
+                                                                },
+                                                                "estilos": {
+                                                                    "type": "string",
+                                                                    "example": "bg-gray-900 text-white"
+                                                                },
+                                                                "total": {
+                                                                    "type": "integer",
+                                                                    "example": 0
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag"
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "totalPages": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=4"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/webpage": {
+            "post": {
+                "tags": [
+                    "WebPages"
+                ],
+                "summary": "Save a WebPages",
+                "description": "Save a WebPages",
+                "operationId": "postWebPage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "url",
+                                    "description",
+                                    "tags"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        },
+                                        "example": "[]"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "miweb",
+                                    "url": "http://web.com",
+                                    "description": "Web Testing",
+                                    "tags": "[]"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Developer Roadmaps"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "example": "https://roadmap.sh/"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "RoadMaps para formación profesional de Desarrolladores"
+                                                },
+                                                "totalVisitas": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PROGRAMACIÓN"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-gray-900 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/webpage/{webpage_id}": {
+            "put": {
+                "tags": [
+                    "WebPages"
+                ],
+                "summary": "Update a WebPages",
+                "description": "Update a WebPages",
+                "operationId": "putWebPage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "url",
+                                    "description",
+                                    "tags"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Mi Etiqueta"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        },
+                                        "example": "[]"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "miweb",
+                                    "url": "http://web.com",
+                                    "description": "Web Testing",
+                                    "tags": "[]"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Developer Roadmaps"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "example": "https://roadmap.sh/"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "RoadMaps para formación profesional de Desarrolladores"
+                                                },
+                                                "totalVisitas": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PROGRAMACIÓN"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-gray-900 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "WebPages"
+                ],
+                "summary": "Delete a WebPages",
+                "description": "Delete a WebPages",
+                "operationId": "deleteWebPage",
+                "responses": {
+                    "202": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 202
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Developer Roadmaps"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "example": "https://roadmap.sh/"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "RoadMaps para formación profesional de Desarrolladores"
+                                                },
+                                                "totalVisitas": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PROGRAMACIÓN"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-gray-900 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/youtube-subscription?searchTags=[]&searchTitle=''&page=1&perPage=5": {
+            "get": {
+                "tags": [
+                    "YoutubeSubscription"
+                ],
+                "summary": "List Youtube Subscription",
+                "description": "List Youtube Subscription",
+                "operationId": "getYoutubeSubscription",
+                "parameters": [
+                    {
+                        "name": "searchTags",
+                        "in": "query",
+                        "description": "Array of Tag's id",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "name": "searchTitle",
+                        "in": "query",
+                        "description": "Name to filter recourses",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Amount of register for page",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "identificador": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "youtubeId": {
+                                                        "type": "string",
+                                                        "example": "SkZG2_P243X9PONV3QdZukxHB-ASrwsvbB5CvjuovAs"
+                                                    },
+                                                    "usuarioId": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "canalId": {
+                                                        "type": "string",
+                                                        "example": "UCoQPEruJuFCppnu2fBtyEbA"
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "El Loco Pildorita"
+                                                    },
+                                                    "fechaSubscripcion": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2023-09-28"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "Hola soy el LOCO PILDORITA, te envito a que te suscribas a mi canal, activa la campanita, dale me gusta, comparte. NO TE ARREPENTIRAS. TU AMIGO EL LOCO PILDORITA\\n#ellocopildorita #comicosambulantes #tendencia"
+                                                    },
+                                                    "fotoDefault": {
+                                                        "type": "string",
+                                                        "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s88-c-k-c0x00ffffff-no-rj"
+                                                    },
+                                                    "fotoMedium": {
+                                                        "type": "string",
+                                                        "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s240-c-k-c0x00ffffff-no-rj"
+                                                    },
+                                                    "fotoHigh": {
+                                                        "type": "string",
+                                                        "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s800-c-k-c0x00ffffff-no-rj"
+                                                    },
+                                                    "tags": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "identificador": {
+                                                                    "type": "integer",
+                                                                    "example": 2
+                                                                },
+                                                                "nombre": {
+                                                                    "type": "string",
+                                                                    "example": "PROGRAMACIÓN"
+                                                                },
+                                                                "estilos": {
+                                                                    "type": "string",
+                                                                    "example": "bg-gray-900 text-white"
+                                                                },
+                                                                "total": {
+                                                                    "type": "integer",
+                                                                    "example": 0
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag"
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "totalPages": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 5
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=4"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost/api/v1/tag?perPage=5&page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/youtube-subscription/checkstatus": {
+            "get": {
+                "tags": [
+                    "YoutubeSubscription"
+                ],
+                "summary": "Get Status of proccess to import YoutubeSubscription",
+                "description": "Get Status of proccess to import YoutubeSubscription",
+                "operationId": "getYoutubeSubscriptionChekcStatus",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "procesando"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/youtube-subscription": {
+            "post": {
+                "tags": [
+                    "YoutubeSubscription"
+                ],
+                "summary": "Import Youtube Subscription from Google Login OAuth",
+                "description": "Import Youtube Subscription from Google Login OAuth",
+                "operationId": "postYoutubeSubscription",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "access_token",
+                                    "order"
+                                ],
+                                "properties": {
+                                    "author": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "editorial": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "access_token": "ASK29ZXC_aSD1741%5&4ECS",
+                                    "order": "relevance"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se insertaron los registros"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/youtube-subscription/{youtubeSubscription_id}": {
+            "put": {
+                "tags": [
+                    "YoutubeSubscription"
+                ],
+                "summary": "Update Tags on Youtube Subscription",
+                "description": "Update Tags on Youtube Subscription",
+                "operationId": "putYoutubeSubscription",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tags"
+                                ],
+                                "properties": {
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        },
+                                        "example": "[]"
+                                    },
+                                    "editorial": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "tags": "[2,3]"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "youtubeId": {
+                                                    "type": "string",
+                                                    "example": "SkZG2_P243X9PONV3QdZukxHB-ASrwsvbB5CvjuovAs"
+                                                },
+                                                "usuarioId": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "canalId": {
+                                                    "type": "string",
+                                                    "example": "UCoQPEruJuFCppnu2fBtyEbA"
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "El Loco Pildorita"
+                                                },
+                                                "fechaSubscripcion": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2023-09-28"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Hola soy el LOCO PILDORITA, te envito a que te suscribas a mi canal, activa la campanita, dale me gusta, comparte. NO TE ARREPENTIRAS. TU AMIGO EL LOCO PILDORITA\\n#ellocopildorita #comicosambulantes #tendencia"
+                                                },
+                                                "fotoDefault": {
+                                                    "type": "string",
+                                                    "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s88-c-k-c0x00ffffff-no-rj"
+                                                },
+                                                "fotoMedium": {
+                                                    "type": "string",
+                                                    "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s240-c-k-c0x00ffffff-no-rj"
+                                                },
+                                                "fotoHigh": {
+                                                    "type": "string",
+                                                    "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s800-c-k-c0x00ffffff-no-rj"
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PROGRAMACIÓN"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-gray-900 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "YoutubeSubscription"
+                ],
+                "summary": "Delete Youtube Subscription",
+                "description": "Delete Youtube Subscription",
+                "operationId": "deleteYoutubeSubscription",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "identificador": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "youtubeId": {
+                                                    "type": "string",
+                                                    "example": "SkZG2_P243X9PONV3QdZukxHB-ASrwsvbB5CvjuovAs"
+                                                },
+                                                "usuarioId": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "canalId": {
+                                                    "type": "string",
+                                                    "example": "UCoQPEruJuFCppnu2fBtyEbA"
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "El Loco Pildorita"
+                                                },
+                                                "fechaSubscripcion": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2023-09-28"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Hola soy el LOCO PILDORITA, te envito a que te suscribas a mi canal, activa la campanita, dale me gusta, comparte. NO TE ARREPENTIRAS. TU AMIGO EL LOCO PILDORITA\\n#ellocopildorita #comicosambulantes #tendencia"
+                                                },
+                                                "fotoDefault": {
+                                                    "type": "string",
+                                                    "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s88-c-k-c0x00ffffff-no-rj"
+                                                },
+                                                "fotoMedium": {
+                                                    "type": "string",
+                                                    "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s240-c-k-c0x00ffffff-no-rj"
+                                                },
+                                                "fotoHigh": {
+                                                    "type": "string",
+                                                    "example": "https://yt3.ggpht.com/x90MXeHCLyZeGOvdVDqOjegCSpKbvVf-ZsVH_jHz16HowpXuENro3KrJSrfaicJiH9UZN315sw=s800-c-k-c0x00ffffff-no-rj"
+                                                },
+                                                "tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "identificador": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "nombre": {
+                                                                "type": "string",
+                                                                "example": "PROGRAMACIÓN"
+                                                            },
+                                                            "estilos": {
+                                                                "type": "string",
+                                                                "example": "bg-gray-900 text-white"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 }
                                             },
                                             "type": "object"

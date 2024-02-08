@@ -223,7 +223,7 @@
      *    tags={"Authentication"},
      *    summary="LogoOut current user authenticated",
      *    description="LogoOut current user authenticated",
-     *    security={{ "api_key": {} }},
+     *    security={{"bearerAuth":{}}},
      *    @OA\Response(
      *       response="200",
      *       description="Se cerro la sesión correctamente",
