@@ -24,6 +24,7 @@
       $request->validate(['email' => 'required|email']);
 
       $data = $this->passwordResetService->send_link_to_reset_password($request->input('email'));
+
       return $data
         ? $this->sendMessage("Se envió el link para reseteo de link a su correo", Response::HTTP_OK)
         : $this->sendError(Response::HTTP_BAD_GATEWAY, "Hubo un problema");

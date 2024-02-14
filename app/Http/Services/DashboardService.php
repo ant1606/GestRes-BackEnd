@@ -3,6 +3,7 @@
   namespace App\Http\Services;
 
   use App\Enums\StatusRecourseEnum;
+  use App\Enums\StatusRecourseStyleEnum;
   use App\Models\Recourse;
   use App\Models\Settings;
   use Illuminate\Support\Arr;
@@ -48,20 +49,15 @@
      */
     public function getAmountByState(): array
     {
-      $recoursesByStatusAmount = Recourse::where('user_id', Auth::user()->id)->get()->pluck('current_status_name')->countBy();
-      $result = [
-        StatusRecourseEnum::STATUS_REGISTRADO->value => 0,
-        StatusRecourseEnum::STATUS_POREMPEZAR->value => 0,
-        StatusRecourseEnum::STATUS_ENPROCESO->value => 0,
-        StatusRecourseEnum::STATUS_CULMINADO->value => 0,
-        StatusRecourseEnum::STATUS_DESCARTADO->value => 0,
-        StatusRecourseEnum::STATUS_DESFASADO->value => 0,
-      ];
 
-      foreach ($result as $key => $value) {
-        if (Arr::exists($recoursesByStatusAmount, $key)) {
-          $result[$key] = $recoursesByStatusAmount[$key];
-        }
+      $recoursesByStatusAmount = Recourse::where('user_id', Auth::user()->id)->get()->pluck('current_status_name')->countBy();
+      $result=[];
+      foreach (StatusRecourseEnum::cases() as $status) {
+        $result[] = [
+          "status" => $status->value,
+          "amount" => $recoursesByStatusAmount[$status->value] ?? 0,
+          "styles" => StatusRecourseStyleEnum::fromName($status->name)
+        ];
       }
       return $result;
     }

@@ -22,7 +22,8 @@
 //      return $this->sendError(, "No se encontró al usuario", ["email" => ["No se encuentra el usuario"]]);
 
       $status = Password::sendResetLink(["email" => $email]);
-
+      //TODO Validar los escenarios en donde se obtenga password.throtling, que es cuando ya se ha generado el token y se vuelve a solicitar
+      // Y el caso en cuando no se pueda enviar el email por alguna razón
       return $status === Password::RESET_LINK_SENT;
     }
 

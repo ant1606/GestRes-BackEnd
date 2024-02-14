@@ -119,7 +119,7 @@
       $page = LengthAwarePaginator::resolveCurrentPage();
 
       // Cantidad de elementos a mostrar por pagina
-      $perPage = 10;
+      $perPage = 5;
       if (request()->has('perPage')) {
         $perPage = (int)request()->perPage;
       }

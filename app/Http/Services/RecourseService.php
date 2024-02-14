@@ -62,8 +62,7 @@
       try {
         DB::beginTransaction();
 
-        array_merge($recourseRequest, ["user_id" => Auth::user()->id]);
-        $recourse = Recourse::create($recourseRequest);
+        $recourse = Recourse::create(array_merge($recourseRequest, ["user_id" => Auth::user()->id]));
 
         ProgressHistory::create([
           "recourse_id" => $recourse->id,
@@ -108,9 +107,11 @@
        * del recurso para añadirlo o sustraerlo a los registros de progreso existentes
        * Sólo debe realizarse si la unidad de medida no ha sido modificada
        */
+
+
       $differenceBetweenTotals = $old_unit_measure_progress_id === $new_unit_measure_progress_id
         ? ($is_unit_measure_hours
-          ? $this->timeUtils->processHours($recourseUpdate["total_hours"], $recourse->total_hours)
+          ? TimeHelper::processHours($recourseUpdate["total_hours"], $recourse->total_hours)
           : Recourse::getTotalValueFromUnitMeasureProgress($recourseUpdate) - Recourse::getTotalValueFromUnitMeasureProgress($recourse)
         )
         : 0;
@@ -141,8 +142,8 @@
 
           ProgressHistory::create([
             "recourse_id" => $recourse->id,
-            "done" => 0,
-            "advanced" => 0,
+            "done" => Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name ? "00:00:00" : "0",
+            "advanced" => Settings::getKeyfromId($recourse['unit_measure_progress_id']) === UnitMeasureProgressEnum::UNIT_HOURS->name ? "00:00:00" : "0",
             "pending" => Recourse::getTotalValueFromUnitMeasureProgress($recourse),
             "date" => $dateHistoryCreation,
             "comment" => $commentAutogenerate

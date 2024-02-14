@@ -34,6 +34,7 @@ class Recourse extends Model
 
   protected $appends = ['type_name', 'unit_measure_progress_name', 'current_status_name', 'total_progress_percentage'];
 
+
   protected function typeName(): Attribute
   {
     return new Attribute(
@@ -50,27 +51,18 @@ class Recourse extends Model
 
   protected function currentStatusName(): Attribute
   {
-    return new Attribute(
-      //TODO validar que exista la relacion antes de obtener el status
-      get: fn () => !$this->status->isEmpty() ? $this->loadExists('status')->status->last()->status_name : ''
-    );
+    if ($this->status()->exists()) {
+      return new Attribute(
+        get: fn () => !$this->status->isEmpty() ? $this->loadExists('status')->status->last()->status_name : ''
+      );
+    }else {
+      return new Attribute(
+        get: null
+      );
+    }
+
   }
 
-  // TODO Corregir test recourse_can_be_edited_when_change_all_values
-  // Error generando por esta función, posiblemente un error al contrastar datos con unidad de Medida Hora y de otro tipo
-  /*
-   * #message: "Undefined array key 1"
-      #code: 0
-      #file: "./app/Helpers/TimeHelper.php"
-      #line: 26
-      #severity: E_WARNING
-   * ./app/Helpers/TimeHelper.php:26 {
-      Illuminate\Foundation\Bootstrap\HandleExceptions->handleError($level, $message, $file = '', $line = 0, $context = [])^
-      › {
-      ›   list($hours, $minutes, $seconds) = explode(':', $hour);
-      ›   return (int)$hours * 3600 + (int)$minutes * 60 + (int)$seconds;
-    }
-   */
   protected function totalProgressPercentage(): Attribute
   {
     if ($this->progress()->exists()) {
@@ -103,6 +95,7 @@ class Recourse extends Model
 
   static public function getTotalValueFromUnitMeasureProgress(Recourse|array $recourse)
   {
+
     switch (Settings::getKeyfromId($recourse['unit_measure_progress_id'])) {
       case UnitMeasureProgressEnum::UNIT_CHAPTERS->name:
         return $recourse["total_chapters"];

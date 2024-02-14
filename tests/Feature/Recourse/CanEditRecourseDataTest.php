@@ -101,7 +101,7 @@ class CanEditRecourseDataTest extends TestCase
   /** @test */
   public function recourse_can_be_edited_when_change_all_values()
   {
-    $this->markTestSkipped();
+//    $this->markTestSkipped();
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
 
@@ -130,7 +130,7 @@ class CanEditRecourseDataTest extends TestCase
   /** @test */
   public function recourse_cannot_be_edited_when_any_values_have_not_changed()
   {
-    $this->markTestSkipped();
+//    $this->markTestSkipped();
     $user = User::factory()->create();
     $recourse = Recourse::factory()->create(["user_id" => $user->id]);
     $this->assertDatabaseCount('recourses', 1);
@@ -200,5 +200,40 @@ class CanEditRecourseDataTest extends TestCase
         "details"=>["name", "source", "type_id"]
       ]
     ]);
+  }
+
+  /** @test */
+  public function recourses_can_change_unit_measure_progress_to_hours_from_anything_unit_measure(){
+    $user = User::factory()->create();
+
+    $recourse = Recourse::factory()->create([
+      "user_id" => $user->id,
+      "type_id"=>Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name,"id")
+
+    ]);
+//    "type_id"=>Settings::getData(TypeRecourseEnum::TYPE_LIBRO->name,"id")
+//    dd($recourse->progress);
+    $recourseHours = $this->recourseValidData([
+      "type_id"=>Settings::getData(TypeRecourseEnum::TYPE_VIDEO->name,"id"),
+      "unit_measure_progress_id"=>Settings::getData(UnitMeasureProgressEnum::UNIT_HOURS->name,"id"),
+      "user_id" => $user->id,
+    ]);
+
+    $response = $this->actingAs($user)->putJson(route('recourses.update', $recourse), $recourseHours);
+//    dd($response->getContent());
+    $response->assertStatus(Response::HTTP_ACCEPTED);
+    $this->assertDatabaseCount('recourses', 1);
+    $this->assertDatabaseHas('recourses', [
+      "name" => $recourseHours["name"],
+      "source" => $recourseHours["source"],
+      "author" => $recourseHours["author"],
+      "editorial" => $recourseHours["editorial"],
+      "type_id" => $recourseHours["type_id"],
+      "total_pages" => $recourseHours["total_pages"],
+      "total_chapters" => $recourseHours["total_chapters"],
+      "total_videos" => $recourseHours["total_videos"],
+      "total_hours" => $recourseHours["total_hours"]
+    ]);
+    $response->assertJsonFragment(["nombre"=>$recourseHours["name"]]);
   }
 }

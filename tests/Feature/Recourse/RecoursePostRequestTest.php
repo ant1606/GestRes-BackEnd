@@ -255,7 +255,7 @@ class RecoursePostRequestTest extends TestCase
   }
 
   /** @test */
-  public function the_the_unit_measure_progress_id_can_not_be_a_value_different_to_UnitMeasureProgressEnum_cases_id()
+  public function the_unit_measure_progress_id_can_not_be_a_value_different_to_UnitMeasureProgressEnum_cases_id()
   {
     $acceptedId = [
       Settings::getData(UnitMeasureProgressEnum::UNIT_VIDEOS->name, "id"),

@@ -25,9 +25,9 @@ class TagRequest extends FormRequest
     public function rules()
     {
         // 'email|unique:users,email,' . $user->id,
-        // dd($this);
+//         dd($this);
         return [
-            'name' => 'required|unique:tags,name,' . $this->id . '|max:50',
+            'name' => 'required|unique:tags,name'.$this->id.'|max:50',
         ];
     }
 

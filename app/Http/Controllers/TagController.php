@@ -151,7 +151,7 @@
      */
     public function store(TagRequest $request): JsonResponse
     {
-      $data = $this->tagService->save_tag($request->input('name'));
+     $data = $this->tagService->save_tag($request->input('name'));
       return $this->sendResponse(new TagResource($data), Response::HTTP_CREATED);
     }
 

@@ -2,6 +2,7 @@
 
   namespace App\Http\Requests;
 
+  use App\Helpers\TimeHelper;
   use Illuminate\Foundation\Http\FormRequest;
 
   class ProgressHistoryStoreRequest extends FormRequest
@@ -27,7 +28,7 @@
         "advanced" => [
           'required',
           function (string $attribute, $value, $fail) {
-            $seconds = str_contains($value, ":") ? $this->convertHourToSeconds($value) : $value;
+            $seconds = str_contains($value, ":") ? TimeHelper::convertHourToSeconds($value) : $value;
             if($seconds <= 0){
               $fail("El valor avanzado debe ser mayor a 00:00:00 o a 0");
             }
@@ -36,14 +37,6 @@
         "date" => 'required|date',
         "comment" => 'max:1000'
       ];
-    }
-
-
-    //TODO ExtraerLogica Pasarlo como un helper
-    private function convertHourToSeconds($hour)
-    {
-      list($hours, $minutes, $seconds) = explode(':', $hour);
-      return $hours * 3600 + $minutes * 60 + $seconds;
     }
 
     // public function withValidator($validator){
