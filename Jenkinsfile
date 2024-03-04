@@ -52,8 +52,7 @@ pipeline {
       steps{
         script{
           sh """
-            cd ${PRODUCTION_PATH}/gestorRecursos/backend/
-            find . -type d \\( -name "storage" -o -name "vendor" -o -name "." -o -name ".." \\) -prune -o -print0 | xargs -0 rm -rf
+            find ${PRODUCTION_PATH}/gestorRecursos/backend/ -type d \\( -name "storage" -o -name "vendor" -o -name "." -o -name ".." \\) -prune -o -print0 | xargs -0 rm -rf
           """
         }
       }
