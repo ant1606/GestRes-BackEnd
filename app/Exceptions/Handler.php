@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
 
       // dd($request->is('api/*'));
       // dd($exception instanceof NotFoundHttpException);
-//       dd($exception);
+      //       dd($exception);
       // dd(get_class($exception));
       // dd($exception instanceof AuthenticationException);
       if ($request->is('api/*')) {
@@ -79,8 +79,8 @@ class Handler extends ExceptionHandler
             "Método no aceptado"
           ),
           default => $this->sendError(
-            $exception->getCode(),
-            $exception->getMessage()
+            Response::HTTP_METHOD_NOT_ALLOWED,
+            $exception->getMessage() . $exception->getCode()
           ),
         };
       }
@@ -89,7 +89,6 @@ class Handler extends ExceptionHandler
         Response::HTTP_NOT_FOUND,
         "Hubo un problema al comunicarse con el servidor"
       );
-
     });
   }
 
