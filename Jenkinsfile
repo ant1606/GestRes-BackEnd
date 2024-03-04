@@ -31,7 +31,9 @@ pipeline {
       steps{
         script{
           sh """
-          find . \\( -type f \\( -name ".dockerignore" -o -name ".editorconfig" -o -name ".env.example" -o -name "Dockerfile" -o -name "composer.lock" -o -name "docker-compose.prod.yml" -o -name "docker-compose.yml"\\) -o -type d \\( -name "Dockerfiles" \\) \\) -print0 | xargs -0 rm -rf
+            find . ( -type f ( -name ".dockerignore" -o -name ".editorconfig" -o -name ".env.example" -o -name "Dockerfile" -o -name "composer.lock" -o -name "docker-compose.prod.yml" -o -name "docker-compose.yml" ) ) -print0 | xargs -0 rm -f
+            find . -type d ( -name "Dockerfiles" ) -print0 | xargs -0 rm -rf
+          
           """
         }
       }
@@ -40,8 +42,8 @@ pipeline {
       steps {
         script {
           sh """
-            cp /home/scm/gestorRecursos/frontend/.env .env
-            cp /home/scm/gestorRecursos/frontend/docker-compose.yml docker-compose.yml
+            cp /home/scm/gestorRecursos/backend/.env .env
+            cp /home/scm/gestorRecursos/backend/docker-compose.yml docker-compose.yml
           """
         }
       }
@@ -51,7 +53,7 @@ pipeline {
         script{
           sh """
             cd ${PRODUCTION_PATH}/gestorRecursos/backend/
-            find . -type d \\( -name "storage" -o -name "vendor" \\) -prune -o -print0 | xargs -0 rm -rf
+            find . -type d ( -name "storage" -o -name "vendor" ) -prune -o -print0 | xargs -0 rm -rf
           """
         }
       }
