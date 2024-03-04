@@ -62,7 +62,7 @@ pipeline {
       steps{
         script{
           sh """
-            zip -r code_source.zip . -x "storage/*" "tests/*"
+            zip -r code_source.zip . -x "storage/*" "tests/*" "Jenkinsfile"
           """
         }
       }
