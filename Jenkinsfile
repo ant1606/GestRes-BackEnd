@@ -52,7 +52,8 @@ pipeline {
       steps{
         script{
           sh """
-            find ${PRODUCTION_PATH}/gestorRecursos/backend/ -type d \\( -name "storage" -o -name "vendor" -o -name "." -o -name ".." \\) -prune -o -print0 | xargs -0 rm -rf
+            cd ${PRODUCTION_PATH}/gestorRecursos/backend
+            find . -mindepth 1 -type d \\( -name "storage" -o -name "vendor" \\) -prune -o -print0 | xargs -0 rm -rf
           """
         }
       }
@@ -82,8 +83,11 @@ pipeline {
     stage('Ejecutar Docker Compose en entorno de producción') {
       steps {
         script {
+          def currentDirContainer = "/home/laptop/DesarrolloSoftware/proyectosDeploy/gestorRecursos/backend"  // Definir la variable de entorno
           sh """
-            cd ${PRODUCTION_PATH}/gestorRecursos && docker compose -f "docker-compose.yml" up -d --build ${SERVICE_NAME_PRODUCTION}
+            cd ${PRODUCTION_PATH}/gestorRecursos/
+            export CURRENT_DIR_CONTAINER=${currentDirContainer}
+            docker compose up -d --build prodlocal_pygestorrecursos_backend
           """
         }
       }
