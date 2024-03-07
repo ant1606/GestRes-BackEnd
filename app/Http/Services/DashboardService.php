@@ -36,6 +36,7 @@
         ->join('status_histories as sh', 'recourses.id', '=', 'sh.recourse_id')
         ->whereIn('sh.id', $latestStatusHistoryIds->pluck('max_id')->toArray())
         ->where('sh.status_id', $statusType["id"])
+        ->where('recourses.user_id',auth()->user()->id)
         ->orderBy('recourses.id')
         ->take(5)
         ->get();
