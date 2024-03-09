@@ -36,7 +36,7 @@
         });
       }
       if ($searchNombre !== null)
-        $recourses = $recourses->where('name', 'like', '%' . $searchNombre);
+        $recourses = $recourses->where('name', 'like', '%' . $searchNombre.'%');
 
       if ($searchTipo !== null)
         $recourses = $recourses->where('type_id', '=', $searchTipo);
