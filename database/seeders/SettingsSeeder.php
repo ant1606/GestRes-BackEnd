@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\APILimitRateEnum;
+use App\Enums\APINameEnum;
 use App\Enums\StatusRecourseEnum;
 use App\Enums\StatusRecourseStyleEnum;
 use App\Enums\TypeRecourseEnum;
@@ -9,7 +11,7 @@ use App\Enums\TypeSettingsEnum;
 use App\Enums\UnitMeasureProgressEnum;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 
 class SettingsSeeder extends Seeder
 {
@@ -63,5 +65,19 @@ class SettingsSeeder extends Seeder
       }
     });
 
+    //Insertando API_LIMIT para limitar las consultas a API_YOUTUBE
+    collect(APINameEnum::cases())->each(function ($item, $key) {
+      if(!DB::table('settings')
+        ->where('type', TypeSettingsEnum::SETTINGS_API->name)
+        ->where('key', $item->name)
+        ->exists()) {
+        DB::table('settings')->insert([
+          'type' => TypeSettingsEnum::SETTINGS_API->name,
+          'key' => $item->name,
+          'value' => APILimitRateEnum::fromName($item->name),
+          'value2' => '0'
+        ]);
+      }
+    });
   }
 }
