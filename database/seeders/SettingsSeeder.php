@@ -22,30 +22,46 @@ class SettingsSeeder extends Seeder
   {
 
     collect(TypeRecourseEnum::cases())->each(function ($item, $key) {
-      DB::table('settings')->insert([
-        'type' => TypeSettingsEnum::SETTINGS_TYPE->name,
-        'key' => $item->name,
-        'value' => $item->value,
-        'value2' => null,
-      ]);
+      if(!DB::table('settings')
+        ->where('type', TypeSettingsEnum::SETTINGS_TYPE->name)
+        ->where('key', $item->name)
+        ->exists()){
+        DB::table('settings')->insert([
+          'type' => TypeSettingsEnum::SETTINGS_TYPE->name,
+          'key' => $item->name,
+          'value' => $item->value,
+          'value2' => null,
+        ]);
+      }
     });
 
     collect(UnitMeasureProgressEnum::cases())->each(function ($item, $key) {
-      DB::table('settings')->insert([
-        'type' => TypeSettingsEnum::SETTINGS_UNIT_MEASURE_PROGRESS->name,
-        'key' => $item->name,
-        'value' => $item->value,
-        'value2' => null,
-      ]);
+      if(!DB::table('settings')
+        ->where('type', TypeSettingsEnum::SETTINGS_UNIT_MEASURE_PROGRESS->name)
+        ->where('key', $item->name)
+        ->exists()) {
+        DB::table('settings')->insert([
+          'type' => TypeSettingsEnum::SETTINGS_UNIT_MEASURE_PROGRESS->name,
+          'key' => $item->name,
+          'value' => $item->value,
+          'value2' => null,
+        ]);
+      }
     });
 
     collect(StatusRecourseEnum::cases())->each(function ($item, $key) {
-      DB::table('settings')->insert([
-        'type' => TypeSettingsEnum::SETTINGS_STATUS->name,
-        'key' => $item->name,
-        'value' => $item->value,
-        'value2' => StatusRecourseStyleEnum::fromName($item->name)
-      ]);
+      if(!DB::table('settings')
+        ->where('type', TypeSettingsEnum::SETTINGS_STATUS->name)
+        ->where('key', $item->name)
+        ->exists()) {
+        DB::table('settings')->insert([
+          'type' => TypeSettingsEnum::SETTINGS_STATUS->name,
+          'key' => $item->name,
+          'value' => $item->value,
+          'value2' => StatusRecourseStyleEnum::fromName($item->name)
+        ]);
+      }
     });
+
   }
 }
