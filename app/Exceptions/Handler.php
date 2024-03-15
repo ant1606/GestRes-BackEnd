@@ -80,7 +80,7 @@ class Handler extends ExceptionHandler
           ),
           default => $this->sendError(
             Response::HTTP_METHOD_NOT_ALLOWED,
-            $exception->getMessage() . $exception->getCode()
+            $exception->getMessage()
           ),
         };
       }
