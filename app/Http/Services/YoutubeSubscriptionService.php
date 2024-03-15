@@ -2,6 +2,8 @@
 
   namespace App\Http\Services;
 
+  use App\Enums\APINameEnum;
+  use App\Models\Settings;
   use App\Models\YoutubeSubscription;
   use Exception;
   use Google\Service\YouTube as ServiceYouTube;
@@ -49,7 +51,18 @@
         $youtube = new ServiceYouTube($client);
         $tokenPage = '';
         $buffer = [];
+        $limitRateAPI =(int)Settings::getData(APINameEnum::API_YOUTUBE->name)['value'];
+        $currentQueryAccumulatorAPI =(int)Settings::getData(APINameEnum::API_YOUTUBE->name)['value2'];
+        $APIQueryCounter = 0;
+//        if($limitRateAPI <= $currentQueryAccumulatorAPI  )
+//          throw new Exception("Se alcanzó el limite de peticiones a la API Youtube, intentelo el día de mañana", Response::HTTP_SERVICE_UNAVAILABLE);
         do {
+          $APIQueryCounter++;
+          if(($currentQueryAccumulatorAPI + $APIQueryCounter) > $limitRateAPI) {
+            // Descontando 1 al APICounter cuando se haya excedido el límite
+            $APIQueryCounter--;
+            break;
+          }
           /*
           El valor por defecto es SUBSCRIPTION_ORDER_RELEVANCE
           alphabetical – Sort alphabetically.
@@ -62,14 +75,21 @@
           );
           $tokenPage = $subs->getNextPageToken();
           array_push($buffer, ...$this->process_items($subs->getItems()));
+
         } while ($tokenPage !== null);
 
-        YoutubeSubscription::upsert(
-          $buffer,
-          ['youtube_id', 'channel_id'],
-          ['title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high']
-        );
+        if($buffer !== []) {
+          YoutubeSubscription::upsert(
+            $buffer,
+            ['youtube_id', 'channel_id'],
+            ['title', 'published_at', 'description', 'thumbnail_default', 'thumbnail_medium', 'thumbnail_high']
+          );
+        }
 
+        // Actualizando contador de consultas a la API
+        Settings::query()->where('key', APINameEnum::API_YOUTUBE->name)->update(['value2' => (string)($currentQueryAccumulatorAPI + $APIQueryCounter)]);
+        //Actualizamos los datos de Settings en cache
+        Settings::reload_data_settings_to_cache();
         return true;
       } catch (Exception $e) {
         throw new Exception("Ocurrió un error al importar las subscripciones de Youtube", Response::HTTP_NOT_FOUND);

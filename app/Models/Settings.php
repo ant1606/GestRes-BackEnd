@@ -80,7 +80,8 @@ class Settings extends Model
                 [
                     $item['key'] => [
                         'id' => $item['id'],
-                        'value' => $item['value']
+                        'value' => $item['value'],
+                        'value2' => $item['value2']
                     ]
                 ];
         });
