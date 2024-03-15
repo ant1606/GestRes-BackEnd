@@ -92,8 +92,9 @@ Route::middleware(['cors'])->group(function () {
     Route::get('tag/getTagsForTagSelector', [TagController::class, 'getTagsForTagSelector'])->name('tag.getTagForTagSelector');
 
     Route::get('youtube-subscription/checkStatus', [YoutubeSubscriptionController::class, 'checkProcessStatus'])->name('subscription.checking');
-    Route::resource('youtube-subscription', YoutubeSubscriptionController::class)->except(['create', 'edit']);
+    Route::get('youtube-subscription/checkQuota', [YoutubeSubscriptionController::class, 'checkLimitQuotaAPIYoutube'])->name('subscription.limitQuotaAPI');
 
+    Route::resource('youtube-subscription', YoutubeSubscriptionController::class)->except(['create', 'edit']);
     Route::resource('webpage', WebPageController::class)->except(['create', 'edit']);
     Route::resource('recourses', RecourseController::class)->except(['create', 'edit']);
     Route::resource('tag', TagController::class)->except(['create', 'edit']);

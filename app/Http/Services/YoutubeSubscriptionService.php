@@ -54,8 +54,7 @@
         $limitRateAPI =(int)Settings::getData(APINameEnum::API_YOUTUBE->name)['value'];
         $currentQueryAccumulatorAPI =(int)Settings::getData(APINameEnum::API_YOUTUBE->name)['value2'];
         $APIQueryCounter = 0;
-//        if($limitRateAPI <= $currentQueryAccumulatorAPI  )
-//          throw new Exception("Se alcanzó el limite de peticiones a la API Youtube, intentelo el día de mañana", Response::HTTP_SERVICE_UNAVAILABLE);
+
         do {
           $APIQueryCounter++;
           if(($currentQueryAccumulatorAPI + $APIQueryCounter) > $limitRateAPI) {
@@ -133,6 +132,20 @@
       $youtube_subscription->delete();
 
       return $youtube_subscription;
+    }
+
+    public function check_limit_quota_api_youtube(): bool
+    {
+      Settings::reload_data_settings_to_cache();
+      $limitRateAPI = (int)Settings::getData(APINameEnum::API_YOUTUBE->name)['value'];
+      $currentQueryAccumulatorAPI = Settings::getData(APINameEnum::API_YOUTUBE->name)['value2'];
+      if(!is_numeric($currentQueryAccumulatorAPI))
+        throw new Exception("Ocurrio un error al verificar el limite de la cuota", Response::HTTP_INTERNAL_SERVER_ERROR);
+
+      if ($limitRateAPI <= (int)$currentQueryAccumulatorAPI)
+        throw new Exception("Se alcanzó el limite de peticiones a la API Youtube, inténtelo el día de mañana", Response::HTTP_SERVICE_UNAVAILABLE);
+
+      return true;
     }
 
     /**

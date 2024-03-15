@@ -3564,6 +3564,47 @@
                 ]
             }
         },
+        "/youtube-subscription/checkQuota": {
+            "post": {
+                "tags": [
+                    "YoutubeSubscription"
+                ],
+                "summary": "Check Limit Quota to query data from API Youtube",
+                "description": "Check Limit Quota to query data from API Youtube",
+                "operationId": "checkQuotaYoutubeSubscription",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "permitido"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/youtube-subscription": {
             "post": {
                 "tags": [

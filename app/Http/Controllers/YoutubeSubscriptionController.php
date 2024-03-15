@@ -138,6 +138,34 @@
     }
 
     /**
+     * Verifica si estamos dentro de la cantidad de cuota para realizar peticiones a la API Youtube
+     * @OA\Get(
+     *    path="/youtube-subscription/checkQuota",
+     *    operationId="checkQuotaYoutubeSubscription",
+     *    tags={"YoutubeSubscription"},
+     *    summary="Check Limit Quota to query data from API Youtube",
+     *    description="Check Limit Quota to query data from API Youtube",
+     *    security={{"bearerAuth":{}}},
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="code", type="number", example=200),
+     *        @OA\Property(property="message", type="string", example="permitido"),
+     *      )
+     *    )
+     * )
+     * @throws Exception
+     */
+    public function checkLimitQuotaAPIYoutube(): JsonResponse
+    {
+      return $this->youtubeSubscriptionService->check_limit_quota_api_youtube() ?
+        $this->sendMessage("permitido", Response::HTTP_OK) :
+        $this->sendMessage("denegado", Response::HTTP_SERVICE_UNAVAILABLE);
+    }
+
+    /**
      * Importando Suscripciones de Youtube desde Autentificación OAuth con Google
      * @OA\Post(
      *    path="/youtube-subscription",
